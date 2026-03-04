@@ -1,0 +1,40 @@
+/**
+ * Navigation Component
+ * Gerencia a navegação entre seções do aplicativo
+ */
+
+export function loadSection(sectionName, buttonElement) {
+    fetch(`./modules/${sectionName}.html`)
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return response.text();
+        })
+        .then(html => {
+            document.getElementById('main-content').innerHTML = html;
+            updateNavState(buttonElement);
+        })
+        .catch(error => {
+            console.error(`Erro ao carregar módulo ${sectionName}:`, error);
+            document.getElementById('main-content').innerHTML = `
+                <div class="p-6 rounded-lg" style="background-color: var(--color-surface);">
+                    <p class="text-red-400 font-semibold mb-2">⚠️ Erro ao carregar conteúdo</p>
+                    <p class="text-sm text-gray-400">Módulo: ${sectionName}</p>
+                    <p class="text-xs text-gray-500 mt-2">Erro: ${error.message}</p>
+                </div>
+            `;
+        });
+}
+
+function updateNavState(buttonElement) {
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => item.classList.remove('nav-item-active'));
+    buttonElement.classList.add('nav-item-active');
+    buttonElement.style.backgroundColor = 'var(--color-primary)';
+    navItems.forEach(item => {
+        if (item !== buttonElement) {
+            item.style.backgroundColor = 'transparent';
+        }
+    });
+}
+
+export default { loadSection };

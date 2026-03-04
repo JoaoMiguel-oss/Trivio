@@ -1,7 +1,27 @@
 {
+  "name": "trivio",
+  "version": "1.0.0",
+  "description": "Trivio - Plataforma de Recrutamento",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node backend/servidor.js",
+    "dev": "node backend/servidor.js",
+    "frontend": "npx serve public"
+  },
+  "keywords": [
+    "recruitment",
+    "platform",
+    "trivio",
+    "employment"
+  ],
+  "author": "Trivio Team",
+  "license": "MIT",
   "dependencies": {
     "cloudinary": "^2.9.0",
     "multer": "^2.0.2",
-    "streamifier": "^0.1.1"
+    "streamifier": "^0.1.1",
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
   }
 }

@@ -1,0 +1,149 @@
+/* ===== TRIVIO - GLOBAL STYLES ===== */
+
+/* ===== IMPORTAÇÃO DE FONTE GOOGLE FONTS ===== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+/* ===== VARIÁVEIS CSS (Design Tokens) ===== */
+:root {
+    --color-dark-bg: #1A1A1A;
+    --color-surface: #242424;
+    --color-primary: #E91E63;
+    --color-accent: #FF1493;
+    --color-text: #FFFFFF;
+    --color-text-muted: #9CA3AF;
+}
+
+/* ===== ESTILO GLOBAL DO BODY ===== */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--color-dark-bg);
+    color: var(--color-text);
+    margin: 0;
+    padding: 0;
+}
+
+/* ===== ESTILO PARA ÍCONES SVG ===== */
+.icon {
+    fill: currentColor;
+    width: 24px;
+    height: 24px;
+}
+
+/* ===== ESTILO PARA ITEM DE NAVEGAÇÃO ATIVO ===== */
+.nav-item-active {
+    background-color: var(--color-primary) !important;
+    color: white;
+}
+
+/* ===== EFEITO HOVER PARA BOTÕES ===== */
+.btn-hover {
+    transition: all 0.2s ease;
+}
+
+.btn-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.3);
+}
+
+/* ===== ESTILO PARA CARDS DE ESTATÍSTICAS ===== */
+.card-stat {
+    background: linear-gradient(135deg, rgba(233, 30, 99, 0.1), rgba(255, 20, 147, 0.05));
+    border: 1px solid rgba(233, 30, 99, 0.2);
+    border-radius: 10px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.card-stat:hover {
+    border-color: rgba(233, 30, 99, 0.4);
+    background: linear-gradient(135deg, rgba(233, 30, 99, 0.15), rgba(255, 20, 147, 0.1));
+}
+
+/* ===== ANIMAÇÃO DE FADE IN ===== */
+#main-content {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== ESTILO PARA NAVBAR HORIZONTAL ===== */
+.navbar {
+    background-color: #0A0A0A;
+    border-bottom: 1px solid #1F1F1F;
+}
+
+/* ===== ESTILO PARA BOTÃO DE PESQUISA ===== */
+.search-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(233, 30, 99, 0.1);
+    border: 1px solid rgba(233, 30, 99, 0.3);
+    transition: all 0.2s ease;
+}
+
+.search-button:hover {
+    background-color: rgba(233, 30, 99, 0.2);
+    border-color: rgba(233, 30, 99, 0.5);
+}
+
+/* ===== ESTILO PARA ITENS DE NAVEGAÇÃO HORIZONTAL ===== */
+.nav-item-horizontal {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.nav-item-horizontal:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* ===== FLEXBOX UTILITIES ===== */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
+
+/* ===== PADDING UTILITIES ===== */
+.p-6 { padding: 1.5rem; }
+.p-8 { padding: 2rem; }
+.px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+.py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+
+/* ===== FONT UTILITIES ===== */
+.text-xl { font-size: 1.25rem; }
+.font-bold { font-weight: 700; }
+.font-semibold { font-weight: 600; }
+.font-medium { font-weight: 500; }
+
+/* ===== COLOR UTILITIES ===== */
+.text-white { color: white; }
+.text-gray-300 { color: #D1D5DB; }
+.text-gray-400 { color: #9CA3AF; }
+.text-gray-500 { color: #6B7280; }
+.text-red-400 { color: #F87171; }
+
+/* ===== BACKGROUND UTILITIES ===== */
+.bg-gradient-to-b {
+    background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
+}
+.from-gray-900 { --tw-gradient-from: #111827; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(17, 24, 39, 0)); }
+.to-black { --tw-gradient-to: #000000; }
+.bg-dark { background-color: var(--color-dark-bg); }
+.bg-surface { background-color: var(--color-surface); }
+
+/* ===== HEIGHT UTILITIES ===== */
+.h-screen { height: 100vh; }
+.flex-1 { flex: 1 1 0%; }
+.overflow-y-auto { overflow-y: auto; }
+
+/* ===== BORDER UTILITIES ===== */
+.rounded-lg { border-radius: 0.5rem; }
+.rounded-10 { border-radius: 10px; }
