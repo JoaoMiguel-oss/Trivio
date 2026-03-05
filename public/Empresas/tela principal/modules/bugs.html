@@ -17,6 +17,9 @@
         <!-- Container do feed de usuários -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="active-users-feed">
             <!-- Usuários serão inseridos aqui via JavaScript -->
+            <div class="p-4 rounded-lg text-center text-gray-500 col-span-full" style="background-color: rgba(36, 36, 36, 0.8); border: 1px solid rgba(255,255,255,0.05);">
+                <p>Nenhum usuário ativo no momento.</p>
+            </div>
         </div>
     </div>
 </div>
@@ -27,73 +30,19 @@
     // ==========================================
     
     /**
-     * Dados mockados de usuários ativos
-     * Simula usuários que estão resolvendo desafios no momento
+     * Dados de usuários ativos - Preencher via API
      */
-    const activeUsersData = [
-        {
-            id: 1,
-            name: "Carlos Silva",
-            avatar: "CS",
-            challenge: "Login não funciona",
-            company: "Google Workspace",
-            startTime: Date.now() - Math.random() * 3600000, // 0-60 min atrás
-            color: "blue"
-        },
-        {
-            id: 2,
-            name: "Ana Rodrigues",
-            avatar: "AR",
-            challenge: "API timeout aleatório",
-            company: "Netflix Clone",
-            startTime: Date.now() - Math.random() * 7200000, // 0-120 min atrás
-            color: "green"
-        },
-        {
-            id: 3,
-            name: "Pedro Santos",
-            avatar: "PS",
-            challenge: "Memory leak em produção",
-            company: "Analytics Platform",
-            startTime: Date.now() - Math.random() * 1800000, // 0-30 min atrás
-            color: "red"
-        },
-        {
-            id: 4,
-            name: "Julia Oliveira",
-            avatar: "JO",
-            challenge: "Validação de email",
-            company: "SaaS Platform",
-            startTime: Date.now() - Math.random() * 5400000, // 0-90 min atrás
-            color: "yellow"
-        },
-        {
-            id: 5,
-            name: "Marcos Costa",
-            avatar: "MC",
-            challenge: "CSS responsivo quebrado",
-            company: "E-commerce XYZ",
-            startTime: Date.now() - Math.random() * 2400000, // 0-40 min atrás
-            color: "purple"
-        },
-        {
-            id: 6,
-            name: "Fernanda Lima",
-            avatar: "FL",
-            challenge: "Cache não invalida",
-            company: "Banco de Dados App",
-            startTime: Date.now() - Math.random() * 4500000, // 0-75 min atrás
-            color: "cyan"
-        }
-    ];
+    const activeUsersData = [];
     
     /**
      * Função que formata o tempo decorrido
      * @param {number} startTime - Timestamp de início em milissegundos
-     * @returns {string} Tempo formatado (ex: "15 min", "1h 23min")
+     * @returns {string} Tempo formatado
      */
     function formatElapsedTime(startTime) {
-        const elapsed = Math.floor((Date.now() - startTime) / 1000); // segundos
+        if (!startTime) return '0s';
+        
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
         
         if (elapsed < 60) {
             return `${elapsed}s`;
@@ -130,6 +79,19 @@
     function renderActiveUsersFeed() {
         const feedContainer = document.getElementById('active-users-feed');
         if (!feedContainer) return;
+
+        if (activeUsersData.length === 0) {
+            feedContainer.innerHTML = `
+                <div class="p-4 rounded-lg text-center text-gray-500 col-span-full" style="background-color: rgba(36, 36, 36, 0.8); border: 1px solid rgba(255,255,255,0.05);">
+                    <p>Nenhum usuário ativo no momento.</p>
+                </div>
+            `;
+            const countElement = document.getElementById('active-count');
+            if (countElement) {
+                countElement.textContent = '0';
+            }
+            return;
+        }
         
         // Ordena por tempo (mais antigos primeiro)
         const sortedUsers = [...activeUsersData].sort((a, b) => a.startTime - b.startTime);
@@ -141,21 +103,21 @@
                     <div class="flex items-center gap-3">
                         <!-- Avatar do usuário -->
                         <div class="w-10 h-10 rounded-full ${getAvatarColor(user.color)} flex items-center justify-center text-white font-bold text-sm">
-                            ${user.avatar}
+                            ${user.avatar || '?'}
                         </div>
                         <!-- Informações do usuário -->
                         <div class="flex-1 min-w-0">
-                            <p class="font-semibold text-white truncate">${user.name}</p>
-                            <p class="text-xs text-gray-400 truncate">${user.challenge}</p>
+                            <p class="font-semibold text-white truncate">${user.name || 'Usuário'}</p>
+                            <p class="text-xs text-gray-400 truncate">${user.challenge || 'Desafio'}</p>
                         </div>
                         <!-- Tempo decorrido -->
                         <div class="text-right">
                             <span class="text-xs font-mono" style="color: var(--color-primary);">${formatElapsedTime(user.startTime)}</span>
                         </div>
                     </div>
-                    <!-- Barra de progresso simulada -->
+                    <!-- Barra de progresso -->
                     <div class="mt-3 h-1.5 rounded-full bg-gray-700 overflow-hidden">
-                        <div class="h-full rounded-full transition-all duration-1000" style="width: ${Math.random() * 60 + 20}%; background: linear-gradient(90deg, var(--color-primary), var(--color-accent));"></div>
+                        <div class="h-full rounded-full transition-all duration-1000" style="width: 0%; background: linear-gradient(90deg, var(--color-primary), var(--color-accent));"></div>
                     </div>
                 </div>
             `;
@@ -172,18 +134,13 @@
     
     /**
      * Função que atualiza o feed periodicamente
-     * Simula mudanças dinâmicas nos usuários ativos
      */
     function updateFeedPeriodically() {
         // Atualiza o tempo decorrido a cada segundo
         renderActiveUsersFeed();
         
-        // Simula mudanças aleatórias a cada 10 segundos
+        // Atualiza a cada 10 segundos
         setInterval(() => {
-            // Muda aleatoriamente o progresso de alguns usuários
-            const randomIndex = Math.floor(Math.random() * activeUsersData.length);
-            // Pequena variação no tempo (simula atividade)
-            activeUsersData[randomIndex].startTime -= Math.random() * 5000;
             renderActiveUsersFeed();
         }, 10000);
     }

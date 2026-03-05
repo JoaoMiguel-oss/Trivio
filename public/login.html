@@ -30,12 +30,12 @@
             color: var(--text);
             min-height: 100vh;
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: center;
             overflow-y: auto;
             overflow-x: hidden;
             position: relative;
-            padding: 2rem 0;
+            padding: 2rem;
         }
 
         .bg-glow {
@@ -73,8 +73,8 @@
             position: relative;
             z-index: 1;
             width: 100%;
-            max-width: 420px;
-            padding: 2rem;
+            max-width: 520px;
+            padding: 3rem;
         }
 
         .logo {
@@ -82,17 +82,17 @@
             align-items: center;
             justify-content: center;
             gap: 0.75rem;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
         }
 
         .logo svg {
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
             color: var(--primary);
         }
 
         .logo span {
-            font-size: 1.75rem;
+            font-size: 2rem;
             font-weight: 800;
             background: linear-gradient(135deg, var(--primary), var(--accent));
             -webkit-background-clip: text;
@@ -103,12 +103,24 @@
         .card {
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 2rem;
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
         }
 
         .card-title {
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
             text-align: center;
@@ -118,49 +130,51 @@
             color: var(--muted);
             text-align: center;
             margin-bottom: 2rem;
-            font-size: 0.9rem;
+            font-size: 1rem;
         }
 
         .form-group {
-            margin-bottom: 1.25rem;
+            margin-bottom: 1.5rem;
         }
 
         .form-label {
             display: block;
-            font-size: 0.875rem;
+            font-size: 0.95rem;
             font-weight: 500;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.6rem;
             color: var(--text);
         }
 
         .form-input {
             width: 100%;
-            padding: 0.875rem 1rem;
-            font-size: 1rem;
+            padding: 1rem 1.25rem;
+            font-size: 1.05rem;
             font-family: inherit;
             background: var(--bg);
             border: 1px solid var(--border);
-            border-radius: 10px;
+            border-radius: 12px;
             color: var(--text);
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
         }
 
         .form-input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+            box-shadow: 0 0 0 4px rgba(233, 30, 99, 0.15);
+            transform: translateY(-1px);
         }
 
         .btn {
             width: 100%;
-            padding: 1rem;
-            font-size: 1rem;
+            padding: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 600;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: inherit;
+            margin-top: 0.5rem;
         }
 
         .btn-primary {
@@ -170,7 +184,7 @@
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
             box-shadow: 0 8px 30px rgba(233, 30, 99, 0.4);
         }
 
@@ -183,9 +197,9 @@
         .divider {
             display: flex;
             align-items: center;
-            margin: 1.5rem 0;
+            margin: 2rem 0;
             color: var(--muted);
-            font-size: 0.875rem;
+            font-size: 0.9rem;
         }
 
         .divider::before, .divider::after {
@@ -201,18 +215,20 @@
 
         .switch-mode {
             text-align: center;
-            margin-top: 1.5rem;
+            margin-top: 2rem;
             color: var(--muted);
-            font-size: 0.9rem;
+            font-size: 1rem;
         }
 
         .switch-mode a {
             color: var(--primary);
             text-decoration: none;
             font-weight: 500;
+            transition: color 0.2s ease;
         }
 
         .switch-mode a:hover {
+            color: var(--accent);
             text-decoration: underline;
         }
 
@@ -247,35 +263,109 @@
         /* User Type Selector */
         .user-type-selector {
             display: flex;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            position: relative;
+            background: var(--bg);
+            padding: 0.5rem;
+            border-radius: 14px;
+            border: 1px solid var(--border);
         }
 
         .user-type-btn {
             flex: 1;
-            padding: 0.75rem;
-            background: var(--bg);
-            border: 1px solid var(--border);
+            padding: 1rem 1.25rem;
+            background: transparent;
+            border: none;
             border-radius: 10px;
             color: var(--muted);
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             font-family: inherit;
-            font-size: 0.9rem;
+            font-size: 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 0.6rem;
+            position: relative;
+            z-index: 1;
         }
 
         .user-type-btn.active {
-            border-color: var(--primary);
-            color: var(--primary);
-            background: rgba(233, 30, 99, 0.1);
+            color: white;
         }
 
         .user-type-btn:hover:not(.active) {
-            border-color: var(--muted);
+            color: var(--text);
+        }
+
+        /* Sliding indicator for animation */
+        .selector-indicator {
+            position: absolute;
+            top: 0.5rem;
+            bottom: 0.5rem;
+            width: calc(50% - 0.5rem);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
+        }
+
+        .selector-indicator.empresa {
+            transform: translateX(100%);
+        }
+
+        /* Form content animation container */
+        .form-content {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .form-content.slide-left {
+            animation: slideContentLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .form-content.slide-right {
+            animation: slideContentRight 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes slideContentLeft {
+            0% { opacity: 1; transform: translateX(0); }
+            100% { opacity: 0; transform: translateX(-30px); }
+        }
+
+        @keyframes slideContentRight {
+            0% { opacity: 1; transform: translateX(0); }
+            100% { opacity: 0; transform: translateX(30px); }
+        }
+
+        @keyframes slideContentReset {
+            0% { opacity: 0; transform: translateX(30px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideContentResetReverse {
+            0% { opacity: 0; transform: translateX(-30px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        .form-content.reset-left {
+            animation: slideContentResetReverse 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .form-content.reset-right {
+            animation: slideContentReset 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        /* Welcome text animation */
+        .welcome-text {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .welcome-text.switching {
+            opacity: 0;
+            transform: translateY(-10px);
         }
     </style>
 </head>
@@ -293,20 +383,21 @@
         </div>
 
         <div class="card">
-            <h2 class="card-title">Bem-vindo de volta</h2>
-            <p class="card-subtitle">Entre com sua conta para continuar</p>
+            <h2 class="card-title welcome-text" id="cardTitle">Bem-vindo de volta</h2>
+            <p class="card-subtitle welcome-text" id="cardSubtitle">Entre com sua conta para continuar</p>
 
             <!-- User Type Selector -->
             <div class="user-type-selector">
+                <div class="selector-indicator" id="selectorIndicator"></div>
                 <button type="button" class="user-type-btn active" data-type="candidato" onclick="selectUserType('candidato')">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                         <circle cx="12" cy="7" r="4"/>
                     </svg>
                     Candidato
                 </button>
                 <button type="button" class="user-type-btn" data-type="empresa" onclick="selectUserType('empresa')">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                         <polyline points="9 22 9 12 15 12 15 22"/>
                     </svg>
@@ -315,17 +406,19 @@
             </div>
 
             <form id="loginForm">
-                <div class="form-group">
-                    <label class="form-label" for="email">E-mail</label>
-                    <input type="email" id="email" class="form-input" placeholder="seu@email.com" required>
-                </div>
+                <div class="form-content" id="formContent">
+                    <div class="form-group">
+                        <label class="form-label" for="email">E-mail</label>
+                        <input type="email" id="email" class="form-input" placeholder="seu@email.com" required>
+                    </div>
 
-                <div class="form-group">
-                    <label class="form-label" for="password">Senha</label>
-                    <input type="password" id="password" class="form-input" placeholder="••••••••" required>
-                </div>
+                    <div class="form-group">
+                        <label class="form-label" for="password">Senha</label>
+                        <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+                    </div>
 
-                <button type="submit" class="btn btn-primary" id="loginBtn">Entrar</button>
+                    <button type="submit" class="btn btn-primary" id="loginBtn">Entrar</button>
+                </div>
             </form>
 
             <div class="switch-mode">
@@ -338,12 +431,57 @@
 
     <script>
         let selectedUserType = 'candidato';
+        let isAnimating = false;
 
         function selectUserType(type) {
-            selectedUserType = type;
+            if (isAnimating || type === selectedUserType) return;
+            
+            isAnimating = true;
+            const formContent = document.getElementById('formContent');
+            const cardTitle = document.getElementById('cardTitle');
+            const cardSubtitle = document.getElementById('cardSubtitle');
+            const indicator = document.getElementById('selectorIndicator');
+            
+            // Determine direction based on type
+            const isToEmpresa = type === 'empresa';
+            
+            // Update indicator position
+            indicator.classList.toggle('empresa', isToEmpresa);
+            
+            // Animate form content
+            formContent.classList.add(isToEmpresa ? 'slide-left' : 'slide-right');
+            cardTitle.classList.add('switching');
+            cardSubtitle.classList.add('switching');
+            
+            // Update button states
             document.querySelectorAll('.user-type-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.type === type);
             });
+            
+            // After first animation, reset and show new content
+            setTimeout(() => {
+                formContent.classList.remove('slide-left', 'slide-right');
+                formContent.classList.add(isToEmpresa ? 'reset-right' : 'reset-left');
+                
+                // Update title and subtitle text
+                if (type === 'empresa') {
+                    cardTitle.textContent = 'Área da Empresa';
+                    cardSubtitle.textContent = 'Acesse sua conta corporativa';
+                } else {
+                    cardTitle.textContent = 'Bem-vindo de volta';
+                    cardSubtitle.textContent = 'Entre com sua conta para continuar';
+                }
+                
+                selectedUserType = type;
+                
+                // After reset animation completes
+                setTimeout(() => {
+                    formContent.classList.remove('reset-left', 'reset-right');
+                    cardTitle.classList.remove('switching');
+                    cardSubtitle.classList.remove('switching');
+                    isAnimating = false;
+                }, 400);
+            }, 400);
         }
 
         function showToast(message, isError = false) {
