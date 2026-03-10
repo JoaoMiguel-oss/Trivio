@@ -1,6 +1,7 @@
 // servidor principal
 require('dotenv').config();
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -10,23 +11,31 @@ const morgan = require('morgan');
 // const rotasUsuario = require('./rotas/usuario');
 // const rotasTelas = require('./rotas/telas');
 
-const userRoutes = require('./routes/userRoutes');
+const userRoutes = require('./userRoutes');
+const authRoutes = require('./rotas/auth');
 const inicializarTabelas = require('./database/setup');
 
 const app = express();
-const porta = process.env.PORT || 3000;
+const porta = process.env.PORT || 3001;
 
-app.use(helmet()); // Adiciona headers de segurança
+// app.use(helmet()); // Adiciona headers de segurança
 app.use(morgan('dev')); // Loga as requisições no console
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
+
+// Servir arquivos estáticos da pasta public (caminho absoluto)
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Inicializa tabelas do banco (MVP)
 inicializarTabelas();
 
 // Rotas da API (Prefixo /api/v1 para versionamento)
 app.use('/api/v1', userRoutes);
-// As rotas agora serão: /api/v1/users e /api/v1/upload
+app.use('/api/v1/auth', authRoutes); // POST /api/v1/auth/cadastro | POST /api/v1/auth/login
 
 // Middleware para tratar rota não encontrada (404)
 app.use((req, res, next) => {

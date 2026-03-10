@@ -28,8 +28,8 @@
         :root {
             --color-dark-bg: #1A1A1A;      /* Cor de fundo escuro principal */
             --color-surface: #242424;       /* Cor de superfície para cards e elementos */
-            --color-primary: #E91E63;       /* Cor primária rosa/magenta */
-            --color-accent: #FF1493;        /* Cor de destaque rosa vibrante */
+            --color-primary: #AD1457;       /* Cor primária rosa/magenta menos vibrante */
+            --color-accent: #D81B60;        /* Cor de destaque rosa menos neon */
         }
 
         /* ===== ESTILO GLOBAL DO BODY ===== */
@@ -253,7 +253,7 @@
         async function loadSection(sectionName) {
             try {
                 // Faz requisição HTTP para buscar o arquivo HTML do módulo
-                const response = await fetch(`modules/${sectionName}.html`);
+                const response = await fetch(`/Empresas/tela%20principal/modules/${sectionName}?v=${Date.now()}`);
                 
                 // Extrai o conteúdo HTML da resposta
                 const html = await response.text();

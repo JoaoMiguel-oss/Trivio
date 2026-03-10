@@ -34,10 +34,10 @@
             /* Cor de fundo escuro principal */
             --color-surface: #242424;
             /* Cor de superfície para cards e elementos */
-            --color-primary: #E91E63;
-            /* Cor primária rosa/magenta */
-            --color-accent: #FF1493;
-            /* Cor de destaque rosa vibrante */
+            --color-primary: #AD1457;
+            /* Cor primária rosa/magenta menos vibrante */
+            --color-accent: #D81B60;
+            /* Cor de destaque rosa menos neon */
         }
 
         /* ===== ESTILO GLOBAL DO BODY ===== */
@@ -275,17 +275,20 @@
                 <!-- Itens de navegação horizontal entre logo e pesquisa -->
                 <div class="flex items-center gap-2">
 
-                    <!-- Botão: Bugs para Resolver (Item ativo por padrão) -->
+                    <!-- Botão: Desafios (Item ativo por padrão) -->
                     <button onclick="loadSection('bugs', this)"
                         class="nav-item nav-item-horizontal nav-item-active flex items-center gap-2"
                         style="background-color: var(--color-primary);">
-                        <!-- Ícone de bug/escudo -->
-                        <svg class="w-5 h-5" viewBox="0 0 24 24">
-                            <path
-                                d="M12 2L2 12H5.09C5.39 15.11 7.23 18.04 10.02 19.46L12 21.36L13.98 19.46C16.77 18.04 18.61 15.11 18.91 12H22L12 2Z"
-                                fill="currentColor" />
+                        <!-- Ícone de troféu/desafio -->
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="14.5 17 14.5 22 9.5 22 9.5 17" />
+                            <path d="M6.5 8H3a1 1 0 0 0-1 1v1a4 4 0 0 0 4 4h.5" />
+                            <path d="M17.5 8H21a1 1 0 0 1 1 1v1a4 4 0 0 1-4 4h-.5" />
+                            <path d="M6 2h12v10a6 6 0 0 1-6 6 6 6 0 0 1-6-6V2Z" />
+                            <line x1="9.5" y1="22" x2="14.5" y2="22" />
                         </svg>
-                        <span>Bugs</span>
+                        <span>Desafios</span>
                     </button>
 
                     <!-- Botão: Pagamentos -->
@@ -423,7 +426,7 @@
         async function loadSection(sectionName, buttonElement) {
             try {
                 // Faz requisição HTTP para buscar o arquivo HTML do módulo
-                const response = await fetch(`./modules/${sectionName}.html`);
+                const response = await fetch(`/Empresas/tela%20principal/modules/${sectionName}.html?v=${Date.now()}`);
 
                 // Verifica se a requisição foi bem-sucedida (status 200)
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);

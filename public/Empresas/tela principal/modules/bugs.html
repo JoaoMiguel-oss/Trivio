@@ -22,6 +22,94 @@
             </div>
         </div>
     </div>
+
+    <!-- Vagas da Empresa -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold">Minhas Vagas Publicadas</h2>
+            <button id="btn-nova-vaga" class="px-4 py-2 rounded-lg font-semibold text-white transition hover:opacity-90" style="background-color: var(--color-primary);">
+                + Nova Vaga
+            </button>
+        </div>
+        
+        <!-- Container de vagas -->
+        <div id="vagas-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Vagas serão inseridas aqui via JavaScript -->
+            <div class="col-span-full text-center text-gray-500 p-8" style="background-color: rgba(36, 36, 36, 0.8); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px;">
+                <p>Carregando vagas...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Nova Vaga -->
+    <div id="vaga-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+        <div class="bg-gray-900 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto" style="background-color: var(--color-surface);">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold" id="modal-title">Nova Vaga</h2>
+                    <button onclick="hideVagaForm()" class="text-gray-400 hover:text-white text-2xl">✕</button>
+                </div>
+                
+                <form id="vaga-form" onsubmit="saveVaga(event)">
+                    <input type="hidden" id="vaga-id">
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Título da Vaga *</label>
+                            <input type="text" id="vaga-titulo" class="w-full py-3 px-4 rounded-lg bg-gray-900 border border-gray-700 text-white focus:outline-none focus:border-pink-500" placeholder="Ex: Desenvolvedor Frontend" required>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Descrição</label>
+                            <textarea id="vaga-descricao" rows="4" class="w-full py-3 px-4 rounded-lg bg-gray-900 border border-gray-700 text-white focus:outline-none focus:border-pink-500" placeholder="Descreva as responsabilidades da vaga..."></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Requisitos</label>
+                            <textarea id="vaga-requisitos" rows="3" class="w-full py-3 px-4 rounded-lg bg-gray-900 border border-gray-700 text-white focus:outline-none focus:border-pink-500" placeholder="Liste os requisitos para a vaga..."></textarea>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">Remuneração</label>
+                                <input type="text" id="vaga-remuneracao" class="w-full py-3 px-4 rounded-lg bg-gray-900 border border-gray-700 text-white focus:outline-none focus:border-pink-500" placeholder="Ex: R$ 5.000 - R$ 8.000">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">Tipo de Contrato</label>
+                                <select id="vaga-tipo" class="w-full py-3 px-4 rounded-lg bg-gray-900 border border-gray-700 text-white focus:outline-none focus:border-pink-500">
+                                    <option value="CLT">CLT</option>
+                                    <option value="PJ">PJ</option>
+                                    <option value="Estágio">Estágio</option>
+                                    <option value="Temporário">Temporário</option>
+                                    <option value="Freelancer">Freelancer</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Localização</label>
+                            <input type="text" id="vaga-localizacao" class="w-full py-3 px-4 rounded-lg bg-gray-900 border border-gray-700 text-white focus:outline-none focus:border-pink-500" placeholder="Ex: São Paulo, SP (Híbrido)">
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-3 mt-6">
+                        <button type="submit" class="flex-1 py-3 rounded-lg font-semibold text-white transition hover:opacity-90" style="background-color: var(--color-primary);" id="save-vaga-btn">
+                            Publicar Vaga
+                        </button>
+                        <button type="button" onclick="hideVagaForm()" class="px-6 py-3 rounded-lg font-semibold border-2 transition hover:opacity-90" style="border-color: var(--color-accent); color: var(--color-accent);">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-4 right-4 px-6 py-3 rounded-lg font-semibold text-white transition-all transform translate-y-20 opacity-0 z-50" style="background-color: var(--color-primary);">
+        <span id="toast-message">Mensagem</span>
+    </div>
 </div>
 
 <script>
@@ -148,4 +236,243 @@
     // Inicializa o feed de usuários ativos
     renderActiveUsersFeed();
     updateFeedPeriodically();
+
+    // ==========================================
+    // GESTÃO DE VAGAS
+    // ==========================================
+    
+    const API_URL = 'http://localhost:3001/api/v1/vagas';
+    let vagas = [];
+    
+    /**
+     * Função para carregar vagas do backend
+     */
+    async function loadVagas() {
+        const container = document.getElementById('vagas-container');
+        
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) throw new Error('Erro ao carregar vagas');
+            
+            vagas = await response.json();
+            renderVagas();
+        } catch (error) {
+            console.error('Erro:', error);
+            container.innerHTML = `
+                <div class="col-span-full text-center text-red-400 p-8" style="background-color: rgba(36, 36, 36, 0.8); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px;">
+                    <p>Erro ao carregar vagas. Tente novamente.</p>
+                </div>
+            `;
+        }
+    }
+    
+    /**
+     * Função para renderizar as vagas na tela
+     */
+    function renderVagas() {
+        const container = document.getElementById('vagas-container');
+        
+        if (vagas.length === 0) {
+            container.innerHTML = `
+                <div class="col-span-full text-center text-gray-500 p-8" style="background-color: rgba(36, 36, 36, 0.8); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px;">
+                    <p>Nenhuma vaga publicada ainda.</p>
+                    <p class="text-sm mt-2">Clique em "Nova Vaga" para publicar a primeira!</p>
+                </div>
+            `;
+            return;
+        }
+        
+        let html = '';
+        vagas.forEach(vaga => {
+            html += `
+                <div class="p-5 rounded-lg transition-all hover:shadow-lg" style="background-color: rgba(36, 36, 36, 0.8); border: 1px solid rgba(255,255,255,0.05);">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <h3 class="font-bold text-lg text-white">${vaga.titulo}</h3>
+                            <p class="text-sm text-gray-400">${vaga.localizacao || 'Local não especificado'}</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-lg text-xs font-semibold" style="background-color: rgba(233, 30, 99, 0.2); color: var(--color-primary);">${vaga.tipo}</span>
+                    </div>
+                    
+                    ${vaga.descricao ? `<p class="text-sm text-gray-400 mb-3 line-clamp-2">${vaga.descricao}</p>` : ''}
+                    
+                    ${vaga.remuneracao ? `<p class="text-sm font-semibold mb-3" style="color: var(--color-primary);">${vaga.remuneracao}</p>` : ''}
+                    
+                    <div class="flex gap-2">
+                        <button onclick="editVaga(${vaga.id})" class="flex-1 py-2 rounded-lg font-semibold text-white transition hover:opacity-90 text-sm" style="background-color: var(--color-primary);">Editar</button>
+                        <button onclick="deleteVaga(${vaga.id})" class="px-4 py-2 rounded-lg font-semibold border-2 transition hover:opacity-90 text-sm" style="border-color: #ef4444; color: #ef4444;">Excluir</button>
+                    </div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+    }
+    
+    /**
+     * Função para mostrar o modal de nova vaga
+     */
+    function showVagaForm(vagaId = null) {
+        const modal = document.getElementById('vaga-modal');
+        const form = document.getElementById('vaga-form');
+        const title = document.getElementById('modal-title');
+        const saveBtn = document.getElementById('save-vaga-btn');
+        
+        // Reset form
+        form.reset();
+        document.getElementById('vaga-id').value = '';
+        
+        if (vagaId) {
+            const vaga = vagas.find(v => v.id === vagaId);
+            if (vaga) {
+                title.textContent = 'Editar Vaga';
+                saveBtn.textContent = 'Salvar Alterações';
+                document.getElementById('vaga-id').value = vaga.id;
+                document.getElementById('vaga-titulo').value = vaga.titulo || '';
+                document.getElementById('vaga-descricao').value = vaga.descricao || '';
+                document.getElementById('vaga-requisitos').value = vaga.requisitos || '';
+                document.getElementById('vaga-remuneracao').value = vaga.remuneracao || '';
+                document.getElementById('vaga-tipo').value = vaga.tipo || 'CLT';
+                document.getElementById('vaga-localizacao').value = vaga.localizacao || '';
+            }
+        } else {
+            title.textContent = 'Nova Vaga';
+            saveBtn.textContent = 'Publicar Vaga';
+        }
+        
+        modal.classList.remove('hidden');
+    }
+    
+    /**
+     * Função para ocultar o modal de vaga
+     */
+    function hideVagaForm() {
+        const modal = document.getElementById('vaga-modal');
+        modal.classList.add('hidden');
+    }
+    
+    /**
+     * Função para salvar uma vaga (criar ou atualizar)
+     */
+    async function saveVaga(event) {
+        event.preventDefault();
+        
+        const vagaId = document.getElementById('vaga-id').value;
+        const vagaData = {
+            titulo: document.getElementById('vaga-titulo').value,
+            descricao: document.getElementById('vaga-descricao').value,
+            requisitos: document.getElementById('vaga-requisitos').value,
+            remuneracao: document.getElementById('vaga-remuneracao').value,
+            tipo: document.getElementById('vaga-tipo').value,
+            localizacao: document.getElementById('vaga-localizacao').value
+        };
+        
+        const saveBtn = document.getElementById('save-vaga-btn');
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Salvando...';
+        
+        try {
+            let response;
+            if (vagaId) {
+                // Update existing vaga
+                response = await fetch(`${API_URL}/${vagaId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(vagaData)
+                });
+            } else {
+                // Create new vaga
+                response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(vagaData)
+                });
+            }
+            
+            if (!response.ok) throw new Error('Erro ao salvar vaga');
+            
+            const savedVaga = await response.json();
+            
+            if (vagaId) {
+                // Update in local array
+                const index = vagas.findIndex(v => v.id === parseInt(vagaId));
+                if (index !== -1) {
+                    vagas[index] = savedVaga;
+                }
+                showToast('Vaga atualizada com sucesso!');
+            } else {
+                // Add to local array
+                vagas.unshift(savedVaga);
+                showToast('Vaga publicada com sucesso!');
+            }
+            
+            renderVagas();
+            hideVagaForm();
+        } catch (error) {
+            console.error('Erro:', error);
+            showToast('Erro ao salvar vaga. Tente novamente.');
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.textContent = vagaId ? 'Salvar Alterações' : 'Publicar Vaga';
+        }
+    }
+    
+    /**
+     * Função para editar uma vaga
+     */
+    function editVaga(vagaId) {
+        showVagaForm(vagaId);
+    }
+    
+    /**
+     * Função para excluir uma vaga
+     */
+    async function deleteVaga(vagaId) {
+        if (!confirm('Tem certeza que deseja excluir esta vaga?')) return;
+        
+        try {
+            const response = await fetch(`${API_URL}/${vagaId}`, {
+                method: 'DELETE'
+            });
+            
+            if (!response.ok) throw new Error('Erro ao excluir vaga');
+            
+            // Remove from local array
+            vagas = vagas.filter(v => v.id !== vagaId);
+            
+            renderVagas();
+            showToast('Vaga excluída com sucesso!');
+        } catch (error) {
+            console.error('Erro:', error);
+            showToast('Erro ao excluir vaga. Tente novamente.');
+        }
+    }
+    
+    /**
+     * Função para mostrar toast de feedback
+     */
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+        
+        toastMessage.textContent = message;
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        
+        setTimeout(() => {
+            toast.classList.add('translate-y-20', 'opacity-0');
+        }, 3000);
+    }
+    
+    // Makes functions globally accessible for dynamically loaded HTML
+    window.showVagaForm = showVagaForm;
+    window.hideVagaForm = hideVagaForm;
+    window.saveVaga = saveVaga;
+    window.editVaga = editVaga;
+    window.deleteVaga = deleteVaga;
+    
+    // Add event listener for the Nova Vaga button
+    document.getElementById('btn-nova-vaga').addEventListener('click', showVagaForm);
+    
+    // Carregar vagas ao inicializar a página
+    loadVagas();
 </script>

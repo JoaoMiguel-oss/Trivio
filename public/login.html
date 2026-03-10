@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trivio · Login</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
-        *, *::before, *::after {
+        *,
+        *::before,
+        *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -65,8 +69,15 @@
         }
 
         @keyframes pulse-glow {
-            from { opacity: 0.6; transform: scale(1); }
-            to { opacity: 1; transform: scale(1.15); }
+            from {
+                opacity: 0.6;
+                transform: scale(1);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1.15);
+            }
         }
 
         .container {
@@ -202,7 +213,8 @@
             font-size: 0.9rem;
         }
 
-        .divider::before, .divider::after {
+        .divider::before,
+        .divider::after {
             content: '';
             flex: 1;
             height: 1px;
@@ -256,8 +268,15 @@
         }
 
         @keyframes slideIn {
-            from { opacity: 0; transform: translateX(100px); }
-            to { opacity: 1; transform: translateX(0); }
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         /* User Type Selector */
@@ -331,23 +350,51 @@
         }
 
         @keyframes slideContentLeft {
-            0% { opacity: 1; transform: translateX(0); }
-            100% { opacity: 0; transform: translateX(-30px); }
+            0% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
         }
 
         @keyframes slideContentRight {
-            0% { opacity: 1; transform: translateX(0); }
-            100% { opacity: 0; transform: translateX(30px); }
+            0% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateX(30px);
+            }
         }
 
         @keyframes slideContentReset {
-            0% { opacity: 0; transform: translateX(30px); }
-            100% { opacity: 1; transform: translateX(0); }
+            0% {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         @keyframes slideContentResetReverse {
-            0% { opacity: 0; transform: translateX(-30px); }
-            100% { opacity: 1; transform: translateX(0); }
+            0% {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .form-content.reset-left {
@@ -369,6 +416,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="bg-glow bg-glow-1"></div>
     <div class="bg-glow bg-glow-2"></div>
@@ -376,8 +424,10 @@
     <div class="container">
         <div class="logo">
             <svg viewBox="0 0 24 24">
-                <polygon points="12,2 15,10 23,10 17,15 19,23 12,18 5,23 7,15 1,10 9,10" fill="currentColor" opacity="0.8"/>
-                <polygon points="12,6 14,12 20,12 15,16 17,22 12,18 7,22 9,16 4,12 10,12" fill="currentColor" opacity="1"/>
+                <polygon points="12,2 15,10 23,10 17,15 19,23 12,18 5,23 7,15 1,10 9,10" fill="currentColor"
+                    opacity="0.8" />
+                <polygon points="12,6 14,12 20,12 15,16 17,22 12,18 7,22 9,16 4,12 10,12" fill="currentColor"
+                    opacity="1" />
             </svg>
             <span>Trivio</span>
         </div>
@@ -389,17 +439,18 @@
             <!-- User Type Selector -->
             <div class="user-type-selector">
                 <div class="selector-indicator" id="selectorIndicator"></div>
-                <button type="button" class="user-type-btn active" data-type="candidato" onclick="selectUserType('candidato')">
+                <button type="button" class="user-type-btn active" data-type="candidato"
+                    onclick="selectUserType('candidato')">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                        <circle cx="12" cy="7" r="4"/>
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
                     </svg>
                     Candidato
                 </button>
                 <button type="button" class="user-type-btn" data-type="empresa" onclick="selectUserType('empresa')">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                        <polyline points="9 22 9 12 15 12 15 22"/>
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                        <polyline points="9 22 9 12 15 12 15 22" />
                     </svg>
                     Empresa
                 </button>
@@ -435,34 +486,34 @@
 
         function selectUserType(type) {
             if (isAnimating || type === selectedUserType) return;
-            
+
             isAnimating = true;
             const formContent = document.getElementById('formContent');
             const cardTitle = document.getElementById('cardTitle');
             const cardSubtitle = document.getElementById('cardSubtitle');
             const indicator = document.getElementById('selectorIndicator');
-            
+
             // Determine direction based on type
             const isToEmpresa = type === 'empresa';
-            
+
             // Update indicator position
             indicator.classList.toggle('empresa', isToEmpresa);
-            
+
             // Animate form content
             formContent.classList.add(isToEmpresa ? 'slide-left' : 'slide-right');
             cardTitle.classList.add('switching');
             cardSubtitle.classList.add('switching');
-            
+
             // Update button states
             document.querySelectorAll('.user-type-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.type === type);
             });
-            
+
             // After first animation, reset and show new content
             setTimeout(() => {
                 formContent.classList.remove('slide-left', 'slide-right');
                 formContent.classList.add(isToEmpresa ? 'reset-right' : 'reset-left');
-                
+
                 // Update title and subtitle text
                 if (type === 'empresa') {
                     cardTitle.textContent = 'Área da Empresa';
@@ -471,9 +522,9 @@
                     cardTitle.textContent = 'Bem-vindo de volta';
                     cardSubtitle.textContent = 'Entre com sua conta para continuar';
                 }
-                
+
                 selectedUserType = type;
-                
+
                 // After reset animation completes
                 setTimeout(() => {
                     formContent.classList.remove('reset-left', 'reset-right');
@@ -489,36 +540,59 @@
             toast.textContent = message;
             toast.className = 'toast ' + (isError ? 'error' : 'success');
             toast.style.display = 'block';
-            
+
             setTimeout(() => {
                 toast.style.display = 'none';
             }, 3000);
         }
 
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            
-            const email = document.getElementById('email').value;
+
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const loginBtn = document.getElementById('loginBtn');
 
             loginBtn.disabled = true;
             loginBtn.textContent = 'Entrando...';
 
-            // Simulate login - replace with actual API call
-            setTimeout(() => {
+            try {
+                const resposta = await fetch('/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tipo: selectedUserType, email, senha: password })
+                });
+
+                const dados = await resposta.json();
+
+                if (!resposta.ok) {
+                    showToast(dados.erro || 'Erro ao fazer login', true);
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Entrar';
+                    return;
+                }
+
+                // Salva dados do usuário na sessão
+                sessionStorage.setItem('usuario', JSON.stringify(dados.usuario));
+
                 showToast('Login realizado com sucesso! Redirecionando...', false);
-                
+
                 setTimeout(() => {
-                    // Redirect based on user type
                     if (selectedUserType === 'candidato') {
                         window.location.href = 'frontend/tela principal/main.html';
                     } else {
                         window.location.href = 'Empresas/tela principal/main.html';
                     }
                 }, 1200);
-            }, 1200);
+
+            } catch (err) {
+                console.error(err);
+                showToast('Não foi possível conectar ao servidor', true);
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Entrar';
+            }
         });
     </script>
 </body>
+
 </html>

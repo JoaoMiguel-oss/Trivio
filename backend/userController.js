@@ -1,7 +1,8 @@
-const db = require('../banco/conexao');
+const db = require('./banco/conexao');
 const bcrypt = require('bcrypt');
-const { gerarIdUnico } = require('../utils/geradores'); // Reutilizando seu gerador
-const { uploadParaCloudinary } = require('../services/uploadService');
+
+// Gerador de ID simples
+const gerarIdUnico = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
 
 const criarUsuario = async (req, res) => {
   try {
