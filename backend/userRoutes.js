@@ -14,6 +14,9 @@ router.post('/users', upload.single('imagem'), userController.criarUsuario);
 router.post('/upload', upload.single('arquivo'), userController.uploadImagemAvulsa);
 router.put('/users/:id/foto', upload.single('imagem'), userController.atualizarFotoPerfil);
 
+// Endpoints de configurações
+router.get('/user/:tipo/:id/configuracoes', userController.getConfiguracoes);
+router.put('/user/:tipo/:id/configuracoes', userController.atualizarConfiguracoes);
 // Endpoints de vagas
 router.get('/vagas', vagaController.listarVagas);
 router.post('/vagas', vagaController.criarVaga);

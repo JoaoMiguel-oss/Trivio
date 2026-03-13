@@ -20,6 +20,21 @@ function inicializarTabelas() {
   `);
 
   console.log('Database tables initialized');
+
+  // Adicionar coluna de configurações se não existir
+  try {
+    db.exec(`ALTER TABLE candidatos ADD COLUMN configuracoes TEXT DEFAULT '{}'`);
+    console.log('Coluna configuracoes alterada em candidatos');
+  } catch (err) {
+    // a coluna já existe
+  }
+
+  try {
+    db.exec(`ALTER TABLE empresas ADD COLUMN configuracoes TEXT DEFAULT '{}'`);
+    console.log('Coluna configuracoes alterada em empresas');
+  } catch (err) {
+    // a coluna já existe
+  }
 }
 
 module.exports = inicializarTabelas;

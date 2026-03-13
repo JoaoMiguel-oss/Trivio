@@ -1,0 +1,457 @@
+<style>
+    .vagas-container {
+        animation: fadeIn 0.4s ease;
+    }
+
+    .vagas-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .vagas-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #fff;
+    }
+
+    .btn-create-vaga {
+        padding: 10px 20px;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+        border: none;
+        border-radius: 10px;
+        color: #fff;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-create-vaga:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
+    }
+
+    .vagas-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .vaga-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: all 0.2s;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .vaga-card:hover {
+        border-color: rgba(233, 30, 99, 0.3);
+        background: rgba(233, 30, 99, 0.05);
+    }
+
+    .vaga-status {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        width: fit-content;
+    }
+
+    .status-ativa {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+        border: 1px solid rgba(34, 197, 94, 0.2);
+    }
+
+    .status-inativa {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .vaga-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 0.5rem;
+    }
+
+    .vaga-meta {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.5);
+        margin-bottom: 1rem;
+    }
+
+    .vaga-meta span {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .vaga-desc {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 1.5rem;
+        line-height: 1.5;
+        flex: 1;
+    }
+
+    .vaga-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: auto;
+    }
+
+    .btn-edit {
+        flex: 1;
+        padding: 8px;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        color: #fff;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn-edit:hover {
+        border-color: #fff;
+    }
+
+    .btn-delete {
+        padding: 8px 12px;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: 8px;
+        color: #ef4444;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn-delete:hover {
+        background: rgba(239, 68, 68, 0.2);
+    }
+
+    /* MODAL STYLES */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(4px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .modal-overlay.show {
+        display: flex;
+        opacity: 1;
+    }
+
+    .modal-content {
+        background: #1a1a1a;
+        border: 1px solid rgba(233, 30, 99, 0.3);
+        border-radius: 16px;
+        width: 100%;
+        max-width: 600px;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 2rem;
+        position: relative;
+        transform: translateY(20px);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .modal-overlay.show .modal-content {
+        transform: translateY(0);
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        font-size: 1.5rem;
+    }
+
+    .modal-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        color: #fff;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: white;
+        font-family: inherit;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: var(--color-primary);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    textarea.form-input {
+        min-height: 100px;
+        resize: vertical;
+    }
+</style>
+
+<div class="vagas-container">
+    <div class="vagas-header">
+        <div>
+            <h1 class="vagas-title">Gerenciar Vagas</h1>
+            <p style="color: rgba(255,255,255,0.5); margin-top: 5px;">Crie e administre as vagas e desafios técnicos da
+                sua empresa.</p>
+        </div>
+        <button class="btn-create-vaga" onclick="openVagaModal()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Postar Nova Vaga
+        </button>
+    </div>
+
+    <!-- Container das vagas dinâmicas -->
+    <div class="vagas-grid" id="vagas-list">
+        <!-- Vagas serão carregadas aqui via JS -->
+        <p style="color: rgba(255,255,255,0.4); grid-column: 1/-1; text-align: center; padding: 3rem;">Carregando
+            vagas...</p>
+    </div>
+</div>
+
+<!-- MODAL CRIAR/EDITAR VAGA -->
+<div class="modal-overlay" id="vagaModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeVagaModal()">×</button>
+        <h2 class="modal-title" id="modalVagaTitle">Postar Nova Vaga</h2>
+
+        <form id="vagaForm" onsubmit="handleVagaSubmit(event)">
+            <input type="hidden" id="vaga-id">
+
+            <div class="form-group">
+                <label class="form-label">Título da Vaga / Desafio</label>
+                <input type="text" class="form-input" id="vaga-titulo" required
+                    placeholder="Ex: Desenvolvedor Frontend Pleno">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Remuneração (R$)</label>
+                    <input type="text" class="form-input" id="vaga-remuneracao" placeholder="Ex: 5000 - 7000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Localização ou Modelo</label>
+                    <input type="text" class="form-input" id="vaga-localizacao" placeholder="Ex: Remoto / São Paulo">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Descrição Geral da Vaga</label>
+                <textarea class="form-input" id="vaga-descricao" required
+                    placeholder="O que a pessoa irá fazer? Qual o contexto da área?"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Necessidades / Requisitos do Desafio</label>
+                <textarea class="form-input" id="vaga-requisitos" required
+                    placeholder="Quais tecnologias a pessoa precisa dominar? Qual o escopo do desafio técnico que ela enfrentará?"></textarea>
+            </div>
+
+            <button type="submit" class="btn-create-vaga"
+                style="width: 100%; justify-content: center; padding: 14px; margin-top: 1rem;">
+                Salvar Vaga
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // ==========================================
+    // LÓGICA DE GERENCIAMENTO DE VAGAS (EMPRESA)
+    // ==========================================
+
+    async function carregarVagas() {
+        const listDiv = document.getElementById('vagas-list');
+        try {
+            // Em um app real vc passaria o ID da empresa para filtrar só as dela.
+            // Para simplificar, vou bater no endpoint geral de listar as ativas.
+            const response = await fetch('/api/v1/vagas');
+            if (!response.ok) throw new Error('Falha ao buscar vagas');
+
+            const vagas = await response.json();
+
+            if (vagas.length === 0) {
+                listDiv.innerHTML = '<p style="color:rgba(255,255,255,0.4); text-align:center; grid-column:1/-1; padding:3rem;">Nenhuma vaga postada ainda.</p>';
+                return;
+            }
+
+            // A empresa só deve ver as dela. Como backend não tem filtro no endpoint get/vagas
+            // vamos filtrar no front ou assumir que o mock de listar traga.
+            // Aqui renderizamos tudo que vier ativo.
+            listDiv.innerHTML = vagas.map(v => `
+                <div class="vaga-card">
+                    <span class="vaga-status status-${v.status}">${v.status.toUpperCase()}</span>
+                    <h3 class="vaga-title">${v.titulo}</h3>
+                    
+                    <div class="vaga-meta">
+                        <span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            ${v.tipo}
+                        </span>
+                        <span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            ${v.localizacao || 'N/A'}
+                        </span>
+                    </div>
+                    
+                    <div class="vaga-desc">
+                        ${v.descricao.slice(0, 100)}${v.descricao.length > 100 ? '...' : ''}
+                    </div>
+                    
+                    <div class="vaga-actions">
+                        <button class="btn-edit" onclick='editarVaga(${JSON.stringify(v).replace(/'/g, "&#39;")})'>Editar Detahes</button>
+                        <button class="btn-delete" onclick="apagarVaga(${v.id})" title="Remover Vaga">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+        } catch (err) {
+            console.error(err);
+            listDiv.innerHTML = '<p style="color:#ef4444;text-align:center;grid-column:1/-1;">Erro ao carregar vagas. Tente novamente.</p>';
+        }
+    }
+
+    function openVagaModal() {
+        document.getElementById('vagaForm').reset();
+        document.getElementById('vaga-id').value = '';
+        document.getElementById('modalVagaTitle').innerText = 'Postar Nova Vaga';
+        document.getElementById('vagaModal').classList.add('show');
+    }
+
+    function closeVagaModal() {
+        document.getElementById('vagaModal').classList.remove('show');
+    }
+
+    function editarVaga(vagaObj) {
+        document.getElementById('vaga-id').value = vagaObj.id;
+        document.getElementById('vaga-titulo').value = vagaObj.titulo;
+        document.getElementById('vaga-remuneracao').value = vagaObj.remuneracao || '';
+        document.getElementById('vaga-localizacao').value = vagaObj.localizacao || '';
+        document.getElementById('vaga-descricao').value = vagaObj.descricao || '';
+        document.getElementById('vaga-requisitos').value = vagaObj.requisitos || '';
+
+        document.getElementById('modalVagaTitle').innerText = 'Editar Vaga';
+        document.getElementById('vagaModal').classList.add('show');
+    }
+
+    async function apagarVaga(id) {
+        if (!confirm('Deseja realmente apagar/inativar esta vaga?')) return;
+
+        try {
+            const res = await fetch(`/api/v1/vagas/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                if (typeof showToast === 'function') showToast('Vaga removida com sucesso!');
+                carregarVagas();
+            } else {
+                alert('Erro ao excluir a vaga.');
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async function handleVagaSubmit(e) {
+        e.preventDefault();
+
+        const btn = e.target.querySelector('button[type="submit"]');
+        const origText = btn.innerText;
+        btn.innerText = 'Salvando...';
+        btn.disabled = true;
+
+        const us = JSON.parse(sessionStorage.getItem('usuario') || '{}');
+
+        const isEdicao = document.getElementById('vaga-id').value;
+        const payload = {
+            titulo: document.getElementById('vaga-titulo').value,
+            remuneracao: document.getElementById('vaga-remuneracao').value,
+            localizacao: document.getElementById('vaga-localizacao').value,
+            descricao: document.getElementById('vaga-descricao').value,
+            requisitos: document.getElementById('vaga-requisitos').value,
+            empresa_id: us.public_id || 'emp-demo'
+        };
+
+        try {
+            const url = isEdicao ? `/api/v1/vagas/${isEdicao}` : '/api/v1/vagas';
+            const method = isEdicao ? 'PUT' : 'POST';
+
+            const response = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                closeVagaModal();
+                if (typeof showToast === 'function') showToast('Vaga salva com sucesso!');
+                carregarVagas();
+            } else {
+                alert('Falha ao salvar a vaga.');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Erro de comunicação.');
+        } finally {
+            btn.innerText = origText;
+            btn.disabled = false;
+        }
+    }
+
+    // Inicializa carregando a lista
+    carregarVagas();
+</script>

@@ -1162,40 +1162,6 @@
 
 <script>
     /* ===== NAVEGAÇÃO ENTRE PAINÉIS ===== */
-    function cfgShowPanel(name) {
-        document.querySelectorAll('.cfg-panel').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.cfg-nav-item').forEach(i => i.classList.remove('active'));
-        const panel = document.getElementById('cfg-panel-' + name);
-        const nav = document.getElementById('cfg-nav-' + name);
-        if (panel) panel.classList.add('active');
-        if (nav) nav.classList.add('active');
-    }
-
-    /* ===== TOAST ===== */
-    function cfgToast(msg, isError) {
-        const t = document.getElementById('cfg-toast');
-        const m = document.getElementById('cfg-toast-msg');
-        if (!t || !m) return;
-        m.textContent = msg;
-        t.style.borderColor = isError ? 'rgba(239,68,68,0.5)' : 'rgba(233,30,99,0.4)';
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 3000);
-    }
-
-    /* ===== SALVAR (com animação no botão) ===== */
-    function cfgSave(tab, btn) {
-        const orig = btn.textContent;
-        btn.textContent = 'Salvando...';
-        btn.style.opacity = '0.7';
-        btn.disabled = true;
-        setTimeout(() => {
-            btn.textContent = '✓ Salvo!';
-            btn.style.opacity = '1';
-            cfgToast('Configurações salvas com sucesso!');
-            setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 1800);
-        }, 750);
-    }
-
     /* ===== CANCELAR ===== */
     function cfgCancel(tab) {
         cfgToast('Alterações descartadas.');

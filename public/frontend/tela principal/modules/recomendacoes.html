@@ -1,0 +1,401 @@
+<style>
+    .recom-container {
+        animation: fadeIn 0.4s ease;
+    }
+
+    .recom-header {
+        margin-bottom: 2rem;
+    }
+
+    .recom-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #fff;
+    }
+
+    .recom-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .recom-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: all 0.2s;
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+    }
+
+    .recom-card:hover {
+        border-color: rgba(233, 30, 99, 0.4);
+        background: rgba(233, 30, 99, 0.08);
+        transform: translateY(-2px);
+    }
+
+    .recom-company {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 1rem;
+    }
+
+    .company-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: white;
+    }
+
+    .company-name {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .recom-job-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 0.5rem;
+    }
+
+    .recom-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.5);
+        margin-bottom: 1rem;
+    }
+
+    .recom-meta span {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 4px 8px;
+        border-radius: 6px;
+    }
+
+    .recom-desc {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 1.5rem;
+        line-height: 1.5;
+        flex: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .btn-apply {
+        width: 100%;
+        padding: 10px;
+        background: rgba(233, 30, 99, 0.1);
+        border: 1px solid rgba(233, 30, 99, 0.3);
+        border-radius: 8px;
+        color: var(--color-primary);
+        font-weight: 600;
+        text-align: center;
+        transition: 0.2s;
+    }
+
+    .recom-card:hover .btn-apply {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+        color: white;
+        border-color: transparent;
+    }
+
+    /* MODAL DE DETALHES */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(4px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .modal-overlay.show {
+        display: flex;
+        opacity: 1;
+    }
+
+    .modal-content {
+        background: #1a1a1a;
+        border: 1px solid rgba(233, 30, 99, 0.3);
+        border-radius: 16px;
+        width: 100%;
+        max-width: 650px;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 2.5rem;
+        position: relative;
+        transform: translateY(20px);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .modal-overlay.show .modal-content {
+        transform: translateY(0);
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        font-size: 1.5rem;
+    }
+
+    .modal-section {
+        margin-top: 1.5rem;
+    }
+
+    .modal-section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--color-primary);
+        margin-bottom: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+</style>
+
+<div class="recom-container">
+    <div class="recom-header"
+        style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h1 class="recom-title">Desafios e Recomendações</h1>
+            <p style="color: rgba(255,255,255,0.5); margin-top: 5px;">Baseado no seu perfil e atividades recentes na
+                plataforma.</p>
+        </div>
+
+        <div
+            style="display: flex; align-items: center; gap: 1.5rem; background: rgba(0,0,0,0.2); padding: 10px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+            <div style="text-align: center; margin-right: 10px;">
+                <span
+                    style="display: block; font-size: 1.5rem; font-weight: 800; color: var(--color-primary); line-height: 1;">12</span>
+                <span
+                    style="font-size: 0.7rem; color: rgba(255,255,255,0.5); text-transform: uppercase; font-weight: bold;">Desafios
+                    Concluídos</span>
+            </div>
+
+            <div style="height: 30px; width: 1px; background: rgba(255,255,255,0.1);"></div>
+
+            <div style="display: flex; gap: 10px;">
+                <div style="position: relative;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)"
+                        stroke-width="2" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" placeholder="Pesquisar desafios..."
+                        style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px 8px 34px; border-radius: 8px; color: white; font-size: 0.85rem; width: 200px; outline: none;">
+                </div>
+
+                <button
+                    style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s;"
+                    onmouseover="this.style.background='rgba(255,255,255,0.12)'"
+                    onmouseout="this.style.background='rgba(255,255,255,0.08)'">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    Filtrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container das recomendações -->
+    <div class="recom-grid" id="recom-list">
+        <p style="color: rgba(255,255,255,0.4); grid-column: 1/-1; text-align: center; padding: 3rem;">Buscando
+            recomendações para você...</p>
+    </div>
+</div>
+
+<!-- MODAL COM DETALHES DA VAGA -->
+<div class="modal-overlay" id="vagaDetailsModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeVagaDetailsModal()">×</button>
+
+        <div style="margin-bottom: 1.5rem;">
+            <span id="detail-company" style="color:rgba(255,255,255,0.5); font-weight:600; font-size:0.9rem;"></span>
+            <h2 id="detail-title" style="font-size: 2rem; font-weight: 800; color: #fff; margin-top:0.3rem;"></h2>
+
+            <div style="display:flex; gap:10px; margin-top:1rem; flex-wrap:wrap;">
+                <span class="status-badge badge-green"
+                    style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff;"
+                    id="detail-tipo"></span>
+                <span class="status-badge badge-green"
+                    style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff;"
+                    id="detail-loc"></span>
+                <span class="status-badge badge-green"
+                    style="background:rgba(233,30,99,0.15); border:1px solid rgba(233,30,99,0.3); color:var(--color-primary);"
+                    id="detail-remun"></span>
+            </div>
+        </div>
+
+        <div class="modal-section">
+            <h3 class="modal-section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                Sobre a Vaga
+            </h3>
+            <p style="color: rgba(255,255,255,0.7); line-height:1.6;" id="detail-desc"></p>
+        </div>
+
+        <div class="modal-section">
+            <h3 class="modal-section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z"></path>
+                </svg>
+                Necessidades & Desafio
+            </h3>
+            <div
+                style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); padding:1.2rem; border-radius:10px;">
+                <p style="color: rgba(255,255,255,0.8); line-height:1.6; white-space:pre-wrap;" id="detail-reqs"></p>
+            </div>
+        </div>
+
+        <div style="margin-top:2.5rem; display:flex; gap:15px;">
+            <button class="btn-create-vaga" style="flex:1; justify-content:center; padding:15px; font-size:1.05rem;"
+                onclick="candidatarVaga()">
+                Aceitar Desafio e Candidatar-se
+            </button>
+            <button class="btn-secondary"
+                style="background:transparent; border:1px solid rgba(255,255,255,0.2); color:white; border-radius:10px; padding:0 20px; cursor:pointer;"
+                onclick="closeVagaDetailsModal()">Voltar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ==========================================
+    // LÓGICA DE RECOMENDAÇÕES (CANDIDATOS)
+    // ==========================================
+
+    let currentVagaDetails = null;
+
+    async function carregarRecomendacoes() {
+        const listDiv = document.getElementById('recom-list');
+        try {
+            // Em aplicação real, esse endpoint traria vagas recomendadas via machine learning / rules.
+            // Para simplicidade, vamos listar TODAS e mockar como se fossem pra ele.
+            const response = await fetch('/api/v1/vagas');
+            if (!response.ok) throw new Error('Falha ao buscar vagas');
+
+            const vagas = await response.json();
+
+            if (vagas.length === 0) {
+                listDiv.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 4rem; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2" style="margin:0 auto 1rem;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <p style="color:rgba(255,255,255,0.6); font-size:1.1rem;">Nenhuma vaga nova recomendada no momento.</p>
+                    <p style="color:rgba(255,255,255,0.4); font-size:0.85rem; margin-top:5px;">Atualize seu perfil com mais tecnologias para receber desafios!</p>
+                </div>`;
+                return;
+            }
+
+            listDiv.innerHTML = vagas.map(v => `
+                <div class="recom-card" onclick='abrirDetalhesVaga(${JSON.stringify(v).replace(/'/g, "&#39;")})'>
+                    <div class="recom-company">
+                        <!-- Mock visual da empresa (pois o nome da empresa estaria idealmente na query/join banco) -->
+                        <div class="company-avatar">${(v.empresa_id || 'EM').substring(0, 2).toUpperCase()}</div>
+                        <span class="company-name">Empresa Parceira</span>
+                        <!-- Mock da compatibilidade -->
+                        <div style="margin-left:auto; display: flex; flex-direction: column; align-items: flex-end;">
+                            <span style="color:rgba(233,30,99,0.9); font-size:0.85rem; font-weight:800;">98% Aceitação</span>
+                            <span style="color:rgba(255,255,255,0.3); font-size:0.65rem; text-transform:uppercase;">Compatibilidade</span>
+                        </div>
+                    </div>
+
+                    <h3 class="recom-job-title">${v.titulo}</h3>
+                    
+                    <div class="recom-meta">
+                        <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ${v.tipo}</span>
+                        <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ${v.localizacao || 'N/D'}</span>
+                    </div>
+                    
+                    <div class="recom-desc">${v.descricao}</div>
+                    
+                    <div class="btn-apply">Ver Desafio</div>
+                </div>
+            `).join('');
+
+        } catch (err) {
+            console.error(err);
+            listDiv.innerHTML = '<p style="color:#ef4444;text-align:center;grid-column:1/-1;">Erro ao carregar recomendações. Tente mais tarde.</p>';
+        }
+    }
+
+    function abrirDetalhesVaga(vaga) {
+        currentVagaDetails = vaga;
+
+        document.getElementById('detail-title').innerText = vaga.titulo;
+        document.getElementById('detail-company').innerText = 'Empresa Parceira · Postada recentemente';
+        document.getElementById('detail-tipo').innerText = vaga.tipo || 'Modelo Indefinido';
+        document.getElementById('detail-loc').innerText = vaga.localizacao || 'Localização não informada';
+        document.getElementById('detail-remun').innerText = vaga.remuneracao ? `R$ ${vaga.remuneracao}` : 'Salário a combinar';
+        document.getElementById('detail-desc').innerText = vaga.descricao || 'Sem descrição detalhada.';
+        document.getElementById('detail-reqs').innerText = vaga.requisitos || 'Sem informações de requisitos/desafio cadastradas.';
+
+        document.getElementById('vagaDetailsModal').classList.add('show');
+    }
+
+    function closeVagaDetailsModal() {
+        document.getElementById('vagaDetailsModal').classList.remove('show');
+    }
+
+    function candidatarVaga() {
+        if (!currentVagaDetails) return;
+
+        const btn = document.querySelector('#vagaDetailsModal .btn-create-vaga');
+        const origText = btn.innerText;
+        btn.innerText = 'Processando candidatura...';
+        btn.style.opacity = '0.7';
+
+        // Fake timing for applying
+        setTimeout(() => {
+            btn.innerText = origText;
+            btn.style.opacity = '1';
+            closeVagaDetailsModal();
+
+            if (typeof showToast === 'function') {
+                showToast(`Desafio de ${currentVagaDetails.titulo} aceito! 🎉`);
+            } else {
+                alert('Desafio aceito! Verifique suas notificações.');
+            }
+
+            // Aqui removeríamos ou faríamos animação sumindo o card pois ele já se candidatou.
+        }, 1500);
+    }
+
+    // Inicializa
+    carregarRecomendacoes();
+</script>

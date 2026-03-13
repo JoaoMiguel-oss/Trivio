@@ -39,7 +39,7 @@ const criarUsuario = async (req, res) => {
       INSERT INTO users (public_id, name, email, password_hash, photo_url)
       VALUES (?, ?, ?, ?, ?)
     `);
-    
+
     stmt.run(public_id, nome, email, password_hash, photo_url);
 
     // Retorno (MVP)
@@ -98,8 +98,85 @@ const atualizarFotoPerfil = async (req, res) => {
   }
 };
 
+const getConfiguracoes = async (req, res) => {
+  try {
+    const { tipo, id } = req.params;
+    if (!['candidato', 'empresa'].includes(tipo)) {
+      return res.status(400).json({ erro: 'Tipo inválido' });
+    }
+    const tabela = tipo === 'candidato' ? 'candidatos' : 'empresas';
+
+    // As tabelas usam 'public_id' como identificador no frontend
+    const usuario = db.prepare(`SELECT * FROM ${tabela} WHERE public_id = ?`).get(id);
+    if (!usuario) {
+      return res.status(404).json({ erro: 'Usuário não encontrado' });
+    }
+
+    let configuracoes = {};
+    if (usuario.configuracoes) {
+      try {
+        configuracoes = JSON.parse(usuario.configuracoes);
+      } catch (e) {
+        configuracoes = {};
+      }
+    }
+
+    res.status(200).json({
+      configuracoes,
+      dadosBasicos: {
+        nome: usuario.nome,
+        email: usuario.email,
+        foto_url: usuario.foto_url || usuario.logo_url
+      }
+    });
+  } catch (erro) {
+    console.error(erro);
+    res.status(500).json({ erro: 'Erro ao buscar configurações' });
+  }
+};
+
+const atualizarConfiguracoes = async (req, res) => {
+  try {
+    const { tipo, id } = req.params;
+    const { configuracoes, dadosBasicos } = req.body;
+
+    if (!['candidato', 'empresa'].includes(tipo)) {
+      return res.status(400).json({ erro: 'Tipo inválido' });
+    }
+    const tabela = tipo === 'candidato' ? 'candidatos' : 'empresas';
+
+    const usuario = db.prepare(`SELECT id FROM ${tabela} WHERE public_id = ?`).get(id);
+    if (!usuario) {
+      return res.status(404).json({ erro: 'Usuário não encontrado' });
+    }
+
+    // Atualiza configurações JSON
+    if (configuracoes) {
+      const configStr = JSON.stringify(configuracoes);
+      db.prepare(`UPDATE ${tabela} SET configuracoes = ? WHERE public_id = ?`).run(configStr, id);
+    }
+
+    // Atualiza dados básicos se fornecido (Nome, Email)
+    if (dadosBasicos) {
+      if (dadosBasicos.nome) {
+        db.prepare(`UPDATE ${tabela} SET nome = ? WHERE public_id = ?`).run(dadosBasicos.nome, id);
+      }
+      if (dadosBasicos.email) {
+        db.prepare(`UPDATE ${tabela} SET email = ? WHERE public_id = ?`).run(dadosBasicos.email, id);
+      }
+    }
+
+    res.status(200).json({ mensagem: 'Configurações atualizadas com sucesso' });
+  } catch (erro) {
+    console.error(erro);
+    res.status(500).json({ erro: 'Erro ao atualizar configurações' });
+  }
+};
+
 module.exports = {
   criarUsuario,
   uploadImagemAvulsa,
-  atualizarFotoPerfil
+  atualizarFotoPerfil,
+  getConfiguracoes,
+  atualizarConfiguracoes
 };
