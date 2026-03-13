@@ -1,0 +1,526 @@
+<div>
+    <div class="mb-10">
+        <h1 class="text-4xl font-bold mb-3">Desafios para resolver</h1>
+        <p class="text-gray-500">Desafios Técnicos enviados por empresas para a comunidade resolver</p>
+    </div>
+
+    <!-- Cards de Estatísticas -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+        <div class="card-stat">
+            <p class="text-gray-500 text-sm mb-2">Total de Desafios</p>
+            <h3 class="text-3xl font-bold">156</h3>
+            <p class="text-xs mt-2" style="color: var(--color-accent);">↑ 24% vs mês anterior</p>
+        </div>
+        <div class="card-stat">
+            <p class="text-gray-500 text-sm mb-2">Desafios Resolvidos</p>
+            <h3 class="text-3xl font-bold">89</h3>
+            <p class="text-xs mt-2 text-green-400">✓ 57% resolvidos</p>
+        </div>
+        <div class="card-stat">
+            <p class="text-gray-500 text-sm mb-2">Dificuldade Média</p>
+            <h3 class="text-3xl font-bold">Média</h3>
+            <p class="text-xs mt-2" style="color: var(--color-primary);">Todos os níveis</p>
+        </div>
+        <div class="card-stat">
+            <p class="text-gray-500 text-sm mb-2">Novos Hoje</p>
+            <h3 class="text-3xl font-bold">12</h3>
+            <p class="text-xs mt-2 text-blue-400">Aguardando resolução</p>
+        </div>
+    </div>
+
+    <!-- Filtros e Busca -->
+    <div class="flex flex-col md:flex-row gap-4 mb-10">
+        <div class="relative flex-1">
+            <input type="text" id="searchInput" placeholder="Buscar por título, linguagem ou empresa..." 
+                class="w-full py-3 pl-12 pr-4 rounded-lg bg-gray-900 border border-gray-700 text-white focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500/30 transition"
+                style="border-color: rgba(233, 30, 99, 0.2); background-color: #2D2D2D;">
+            <svg class="icon absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5" viewBox="0 0 24 24">
+                <path d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM21.5 21.5L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+        </div>
+        <button onclick="filterBugs()" class="px-6 py-3 rounded-lg font-semibold text-white transition hover:opacity-90 btn-hover" style="background-color: var(--color-primary);">Filtrar</button>
+        <button onclick="searchBugs()" class="px-6 py-3 rounded-lg font-semibold border-2 transition btn-hover" style="border-color: var(--color-accent); color: var(--color-accent);">Pesquisar</button>
+    </div>
+
+    <!-- Container para renderizar bugs dinamicamente -->
+    <div class="grid grid-cols-1 gap-6 mb-8" id="bugs-container">
+        <!-- Card 1 -->
+        <div class="p-6 rounded-lg transition-all hover:shadow-lg" style="background-color: var(--color-surface); border: 1px solid rgba(255,255,255,0.05);">
+            <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-14 h-14 rounded-lg bg-red-900 flex items-center justify-center text-white font-bold text-lg">BUG</div>
+                    <div>
+                        <h3 class="font-bold text-lg">Login não funciona</h3>
+                        <p class="text-sm text-gray-500">Google Workspace</p>
+                    </div>
+                </div>
+                <span class="px-3 py-1 rounded-lg text-xs font-semibold" style="background-color: rgba(220, 38, 38, 0.2); color: #DC2626;">Alto</span>
+            </div>
+            <div class="space-y-2 mb-4 text-sm">
+                <div class="flex justify-between"><span class="text-gray-500">Linguagem:</span><span>JavaScript/React</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Recompensa:</span><span style="color: var(--color-accent); font-weight: bold;">R$ 500</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Tentativas:</span><span>3 pessoas</span></div>
+            </div>
+            <div class="flex gap-2">
+                <button class="flex-1 py-2 rounded-lg font-semibold text-white transition hover:opacity-90 btn-hover" style="background-color: var(--color-primary);">Ver Detalhes</button>
+                <button class="flex-1 py-2 rounded-lg font-semibold border-2 transition btn-hover" style="border-color: var(--color-accent); color: var(--color-accent);">Resolver</button>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="p-6 rounded-lg transition-all hover:shadow-lg" style="background-color: var(--color-surface); border: 1px solid rgba(255,255,255,0.05);">
+            <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-14 h-14 rounded-lg bg-yellow-900 flex items-center justify-center text-white font-bold text-lg">BUG</div>
+                    <div>
+                        <h3 class="font-bold text-lg">Botão Save não envia</h3>
+                        <p class="text-sm text-gray-500">Shopify</p>
+                    </div>
+                </div>
+                <span class="px-3 py-1 rounded-lg text-xs font-semibold" style="background-color: rgba(217, 119, 6, 0.2); color: #D97706;">Médio</span>
+            </div>
+            <div class="space-y-2 mb-4 text-sm">
+                <div class="flex justify-between"><span class="text-gray-500">Linguagem:</span><span>Python/Django</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Recompensa:</span><span style="color: var(--color-accent); font-weight: bold;">R$ 350</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Tentativas:</span><span>1 pessoa</span></div>
+            </div>
+            <div class="flex gap-2">
+                <button class="flex-1 py-2 rounded-lg font-semibold text-white transition hover:opacity-90 btn-hover" style="background-color: var(--color-primary);">Ver Detalhes</button>
+                <button class="flex-1 py-2 rounded-lg font-semibold border-2 transition btn-hover" style="border-color: var(--color-accent); color: var(--color-accent);">Resolver</button>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="p-6 rounded-lg transition-all hover:shadow-lg" style="background-color: var(--color-surface); border: 1px solid rgba(255,255,255,0.05);">
+            <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-14 h-14 rounded-lg bg-blue-900 flex items-center justify-center text-white font-bold text-lg">BUG</div>
+                    <div>
+                        <h3 class="font-bold text-lg">API timeout aleatório</h3>
+                        <p class="text-sm text-gray-500">Netflix Clone</p>
+                    </div>
+                </div>
+                <span class="px-3 py-1 rounded-lg text-xs font-semibold" style="background-color: rgba(59, 130, 246, 0.2); color: #3B82F6;">Baixo</span>
+            </div>
+            <div class="space-y-2 mb-4 text-sm">
+                <div class="flex justify-between"><span class="text-gray-500">Linguagem:</span><span>Node.js/Express</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Recompensa:</span><span style="color: var(--color-accent); font-weight: bold;">R$ 250</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Tentativas:</span><span>5 pessoas</span></div>
+            </div>
+            <div class="flex gap-2">
+                <button class="flex-1 py-2 rounded-lg font-semibold text-white transition hover:opacity-90 btn-hover" style="background-color: var(--color-primary);">Ver Detalhes</button>
+                <button class="flex-1 py-2 rounded-lg font-semibold border-2 transition btn-hover" style="border-color: var(--color-accent); color: var(--color-accent);">Resolver</button>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="p-6 rounded-lg transition-all hover:shadow-lg" style="background-color: var(--color-surface); border: 1px solid rgba(255,255,255,0.05);">
+            <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-14 h-14 rounded-lg bg-red-900 flex items-center justify-center text-white font-bold text-lg">BUG</div>
+                    <div>
+                        <h3 class="font-bold text-lg">CSS responsivo quebrado</h3>
+                        <p class="text-sm text-gray-500">E-commerce XYZ</p>
+                    </div>
+                </div>
+                <span class="px-3 py-1 rounded-lg text-xs font-semibold" style="background-color: rgba(220, 38, 38, 0.2); color: #DC2626;">Alto</span>
+            </div>
+            <div class="space-y-2 mb-4 text-sm">
+                <div class="flex justify-between"><span class="text-gray-500">Linguagem:</span><span>HTML/CSS/Vue</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Recompensa:</span><span style="color: var(--color-accent); font-weight: bold;">R$ 400</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Tentativas:</span><span>2 pessoas</span></div>
+            </div>
+            <div class="flex gap-2">
+                <button class="flex-1 py-2 rounded-lg font-semibold text-white transition hover:opacity-90 btn-hover" style="background-color: var(--color-primary);">Ver Detalhes</button>
+                <button class="flex-1 py-2 rounded-lg font-semibold border-2 transition btn-hover" style="border-color: var(--color-accent); color: var(--color-accent);">Resolver</button>
+            </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="p-6 rounded-lg transition-all hover:shadow-lg" style="background-color: var(--color-surface); border: 1px solid rgba(255,255,255,0.05);">
+            <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-14 h-14 rounded-lg bg-yellow-900 flex items-center justify-center text-white font-bold text-lg">BUG</div>
+                    <div>
+                        <h3 class="font-bold text-lg">Validação de email</h3>
+                        <p class="text-sm text-gray-500">SaaS Platform</p>
+                    </div>
+                </div>
+                <span class="px-3 py-1 rounded-lg text-xs font-semibold" style="background-color: rgba(217, 119, 6, 0.2); color: #D97706;">Médio</span>
+            </div>
+            <div class="space-y-2 mb-4 text-sm">
+                <div class="flex justify-between"><span class="text-gray-500">Linguagem:</span><span>Java/Spring Boot</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Recompensa:</span><span style="color: var(--color-accent); font-weight: bold;">R$ 300</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Tentativas:</span><span>4 pessoas</span></div>
+            </div>
+            <div class="flex gap-2">
+                <button class="flex-1 py-2 rounded-lg font-semibold text-white transition hover:opacity-90 btn-hover" style="background-color: var(--color-primary);">Ver Detalhes</button>
+                <button class="flex-1 py-2 rounded-lg font-semibold border-2 transition btn-hover" style="border-color: var(--color-accent); color: var(--color-accent);">Resolver</button>
+            </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="p-6 rounded-lg transition-all hover:shadow-lg" style="background-color: var(--color-surface); border: 1px solid rgba(255,255,255,0.05);">
+            <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-14 h-14 rounded-lg bg-blue-900 flex items-center justify-center text-white font-bold text-lg">BUG</div>
+                    <div>
+                        <h3 class="font-bold text-lg">Erro ao fazer upload</h3>
+                        <p class="text-sm text-gray-500">Cloud Storage App</p>
+                    </div>
+                </div>
+                <span class="px-3 py-1 rounded-lg text-xs font-semibold" style="background-color: rgba(59, 130, 246, 0.2); color: #3B82F6;">Baixo</span>
+            </div>
+            <div class="space-y-2 mb-4 text-sm">
+                <div class="flex justify-between"><span class="text-gray-500">Linguagem:</span><span>PHP/Laravel</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Recompensa:</span><span style="color: var(--color-accent); font-weight: bold;">R$ 280</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Tentativas:</span><span>6 pessoas</span></div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container para renderizar bugs dinamicamente -->
+    <div id="bugs-container" class="grid grid-cols-1 gap-4 mb-8"></div>
+
+    <!-- Paginação -->
+    <div class="flex justify-center items-center gap-2 mt-12" id="pagination-container">
+        <button onclick="previousPage()" class="px-3 py-2 rounded-lg border border-gray-700 hover:border-gray-500 transition">←</button>
+        <!-- Números serão adicionados via JavaScript -->
+        <button onclick="nextPage()" class="px-3 py-2 rounded-lg border border-gray-700 hover:border-gray-500 transition">→</button>
+    </div>
+
+    <!-- Modal de Detalhes -->
+    <div id="detailsModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-gray-900 rounded-lg max-w-2xl w-full max-h-96 overflow-y-auto" style="background-color: var(--color-surface);">
+            <div class="p-8">
+                <div class="flex items-start justify-between mb-6">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-2" id="modalTitle">Título do Bug</h2>
+                        <p class="text-gray-400" id="modalCompany">Empresa</p>
+                    </div>
+                    <button onclick="closeDetails()" class="text-gray-400 hover:text-white text-2xl">✕</button>
+                </div>
+
+                <div class="space-y-4 mb-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-gray-500 text-sm mb-1">Dificuldade</p>
+                            <p class="font-semibold text-lg" id="modalDifficulty">Alto</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm mb-1">Linguagem/Stack</p>
+                            <p class="font-semibold text-lg" id="modalLanguage">JavaScript/React</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm mb-1">Recompensa</p>
+                            <p class="font-semibold text-lg" style="color: var(--color-accent);" id="modalReward">R$ 500</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm mb-1">Tentativas</p>
+                            <p class="font-semibold text-lg" id="modalAttempts">3 pessoas</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-700 pt-6">
+                    <h3 class="font-bold text-lg mb-3">Descrição do Bug</h3>
+                    <p class="text-gray-300 mb-6" id="modalDescription">
+                        Descrição detalhada do bug será exibida aqui...
+                    </p>
+                </div>
+
+                <div class="flex gap-3">
+                    <button onclick="closeDetails()" class="flex-1 py-2 rounded-lg font-semibold border-2 transition btn-hover" style="border-color: var(--color-accent); color: var(--color-accent);">Fechar</button>
+                    <button class="flex-1 py-2 rounded-lg font-semibold text-white transition hover:opacity-90 btn-hover" style="background-color: var(--color-primary);">Resolver Bug</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Dados dos bugs com descrições
+    const bugsData = [
+        {
+            title: "Login não funciona",
+            company: "Google Workspace",
+            difficulty: "Alto",
+            language: "JavaScript/React",
+            reward: "R$ 500",
+            attempts: "3 pessoas",
+            color: "red",
+            description: "O sistema de login não está autenticando usuários. Quando o usuário tenta fazer login com credenciais válidas, ele recebe erro 403. O problema parece estar na integração com o OAuth do Google Workspace. É necessário revisar o fluxo de autenticação e debugar os tokens JWT."
+        },
+        {
+            title: "Botão Save não envia",
+            company: "Shopify",
+            difficulty: "Médio",
+            language: "Python/Django",
+            reward: "R$ 350",
+            attempts: "1 pessoa",
+            color: "yellow",
+            description: "O botão de salvar dados no formulário de produtos não está enviando as informações para o servidor. A requisição AJAX não está sendo realizada corretamente. Verifique o listeners do evento click e valide se os dados estão sendo capturados corretamente."
+        },
+        {
+            title: "API timeout aleatório",
+            company: "Netflix Clone",
+            difficulty: "Baixo",
+            language: "Node.js/Express",
+            reward: "R$ 250",
+            attempts: "5 pessoas",
+            color: "blue",
+            description: "A API está retornando timeout em requisições aleatórias. O problema ocorre principalmente durante picos de tráfego. É necessário otimizar as queries do banco de dados, implementar cache e revisar a configuração do pool de conexões."
+        },
+        {
+            title: "CSS responsivo quebrado",
+            company: "E-commerce XYZ",
+            difficulty: "Alto",
+            language: "HTML/CSS/Vue",
+            reward: "R$ 400",
+            attempts: "2 pessoas",
+            color: "red",
+            description: "O layout responsivo não está funcionando corretamente em dispositivos móveis menores que 320px. Os elementos estão se sobrepondo e o menu não aparece. Revise os media queries e os valores de breakpoint do Tailwind CSS."
+        },
+        {
+            title: "Validação de email",
+            company: "SaaS Platform",
+            difficulty: "Médio",
+            language: "Java/Spring Boot",
+            reward: "R$ 300",
+            attempts: "4 pessoas",
+            color: "yellow",
+            description: "A validação de email não está aceitando endereços válidos com certos domínios. Alguns emails com caracteres especiais também estão sendo rejeitados incorretamente. Melhore a regex de validação ou use uma biblioteca dedicada."
+        },
+        {
+            title: "Erro ao fazer upload",
+            company: "Cloud Storage App",
+            difficulty: "Baixo",
+            language: "PHP/Laravel",
+            reward: "R$ 280",
+            attempts: "6 pessoas",
+            color: "blue",
+            description: "O upload de arquivos está falhando para arquivos maiores que 50MB. O sistema retorna erro 413. Configure o limite de upload no servidor e implemente upload chunked para arquivos grandes."
+        },
+        {
+            title: "Cache não invalida",
+            company: "Banco de Dados App",
+            difficulty: "Médio",
+            language: "C#/.NET",
+            reward: "R$ 450",
+            attempts: "2 pessoas",
+            color: "yellow",
+            description: "Os dados em cache não estão sendo invalidados quando registros são atualizados. Usuários veem dados desatualizados. Implemente cache invalidation automática ou use TTL apropriado nos tokens de cache."
+        },
+        {
+            title: "Memory leak em produção",
+            company: "Analytics Platform",
+            difficulty: "Alto",
+            language: "Go/Rust",
+            reward: "R$ 600",
+            attempts: "1 pessoa",
+            color: "red",
+            description: "O aplicativo está consumindo cada vez mais memória e eventualmente cai. Memory profilers indicam um vazamento em handlers de eventos. Procure por listeners não removidos e referências circulares."
+        },
+        {
+            title: "Segurança SQL Injection",
+            company: "Social Network",
+            difficulty: "Alto",
+            language: "SQL/PHP",
+            reward: "R$ 750",
+            attempts: "0 pessoas",
+            color: "red",
+            description: "Vulnerabilidade crítica de SQL Injection detectada na página de pesquisa de usuários. Use prepared statements ou ORM para sanitizar todas as inputs do usuário. Isso é uma prioridade de segurança."
+        }
+    ];
+
+    const BUGS_PER_PAGE = 3;
+    let currentPage = 1;
+
+    function getDifficultyColor(difficulty) {
+        const colors = {
+            "Alto": "#DC2626",
+            "Médio": "#D97706",
+            "Baixo": "#3B82F6"
+        };
+        return colors[difficulty] || "#666";
+    }
+
+    function getDifficultyBgColor(difficulty) {
+        const colors = {
+            "Alto": "rgba(220, 38, 38, 0.2)",
+            "Médio": "rgba(217, 119, 6, 0.2)",
+            "Baixo": "rgba(59, 130, 246, 0.2)"
+        };
+        return colors[difficulty] || "rgba(100, 100, 100, 0.2)";
+    }
+
+    function getColorBg(color) {
+        const colors = {
+            "red": "bg-red-900",
+            "yellow": "bg-yellow-900",
+            "blue": "bg-blue-900"
+        };
+        return colors[color] || "bg-gray-900";
+    }
+
+    function renderBugs() {
+        const startIndex = (currentPage - 1) * BUGS_PER_PAGE;
+        const endIndex = startIndex + BUGS_PER_PAGE;
+        const bugsToShow = bugsData.slice(startIndex, endIndex);
+
+        let html = '';
+        bugsToShow.forEach((bug, i) => {
+            const globalIndex = startIndex + i;
+            html += `
+                <div class="p-6 rounded-lg transition-all hover:shadow-lg" style="background-color: var(--color-surface); border: 1px solid rgba(255,255,255,0.05);">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-14 h-14 rounded-lg ${getColorBg(bug.color)} flex items-center justify-center text-white font-bold text-lg">BUG</div>
+                            <div>
+                                <h3 class="font-bold text-lg">${bug.title}</h3>
+                                <p class="text-sm text-gray-500">${bug.company}</p>
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 rounded-lg text-xs font-semibold" style="background-color: ${getDifficultyBgColor(bug.difficulty)}; color: ${getDifficultyColor(bug.difficulty)};">${bug.difficulty}</span>
+                    </div>
+                    <div class="space-y-2 mb-4 text-sm">
+                        <div class="flex justify-between"><span class="text-gray-500">Linguagem:</span><span>${bug.language}</span></div>
+                        <div class="flex justify-between"><span class="text-gray-500">Recompensa:</span><span style="color: var(--color-accent); font-weight: bold;">${bug.reward}</span></div>
+                        <div class="flex justify-between"><span class="text-gray-500">Tentativas:</span><span>${bug.attempts}</span></div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="showDetails(${globalIndex})" class="flex-1 py-2 rounded-lg font-semibold text-white transition hover:opacity-90 btn-hover" style="background-color: var(--color-primary);">Ver Detalhes</button>
+                        <button class="flex-1 py-2 rounded-lg font-semibold border-2 transition btn-hover" style="border-color: var(--color-accent); color: var(--color-accent);">Resolver</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        document.getElementById('bugs-container').innerHTML = html;
+        renderPagination();
+    }
+
+    function renderPagination() {
+        const totalPages = Math.ceil(bugsData.length / BUGS_PER_PAGE);
+        const paginationContainer = document.getElementById('pagination-container');
+        
+        let html = '<button onclick="previousPage()" class="px-3 py-2 rounded-lg border border-gray-700 hover:border-gray-500 transition">←</button>';
+        
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === currentPage) {
+                html += `<button onclick="goToPage(${i})" class="px-4 py-2 rounded-lg" style="background-color: var(--color-primary); color: white; font-weight: 600;">${i}</button>`;
+            } else {
+                html += `<button onclick="goToPage(${i})" class="px-4 py-2 rounded-lg border border-gray-700 hover:border-gray-500 transition">${i}</button>`;
+            }
+        }
+        
+        html += '<button onclick="nextPage()" class="px-3 py-2 rounded-lg border border-gray-700 hover:border-gray-500 transition">→</button>';
+        
+        paginationContainer.innerHTML = html;
+    }
+
+    function goToPage(page) {
+        const totalPages = Math.ceil(bugsData.length / BUGS_PER_PAGE);
+        if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+            renderBugs();
+        }
+    }
+
+    function nextPage() {
+        const totalPages = Math.ceil(bugsData.length / BUGS_PER_PAGE);
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderBugs();
+        }
+    }
+
+    function previousPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            renderBugs();
+        }
+    }
+
+    // Renderizar bugs ao carregar
+    renderBugs();
+
+    function searchBugs() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        if (!searchTerm) {
+            alert('Por favor, digite algo para pesquisar');
+            return;
+        }
+        
+        const results = bugsData.filter(bug => 
+            bug.title.toLowerCase().includes(searchTerm) ||
+            bug.company.toLowerCase().includes(searchTerm) ||
+            bug.language.toLowerCase().includes(searchTerm)
+        );
+
+        if (results.length === 0) {
+            document.getElementById('bugs-container').innerHTML = `
+                <div class="p-6 rounded-lg col-span-full text-center" style="background-color: var(--color-surface); border: 1px solid rgba(255,255,255,0.05);">
+                    <p class="text-gray-400">Nenhum bug encontrado para "<strong>${searchTerm}</strong>"</p>
+                </div>
+            `;
+            document.getElementById('pagination-container').innerHTML = '';
+        } else {
+            let html = '';
+            results.forEach(bug => {
+                const globalIndex = bugsData.indexOf(bug);
+                html += `
+                    <div class="p-6 rounded-lg transition-all hover:shadow-lg" style="background-color: var(--color-surface); border: 1px solid rgba(255,255,255,0.05);">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-14 h-14 rounded-lg ${getColorBg(bug.color)} flex items-center justify-center text-white font-bold text-lg">BUG</div>
+                                <div>
+                                    <h3 class="font-bold text-lg">${bug.title}</h3>
+                                    <p class="text-sm text-gray-500">${bug.company}</p>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 rounded-lg text-xs font-semibold" style="background-color: ${getDifficultyBgColor(bug.difficulty)}; color: ${getDifficultyColor(bug.difficulty)};">${bug.difficulty}</span>
+                        </div>
+                        <div class="space-y-2 mb-4 text-sm">
+                            <div class="flex justify-between"><span class="text-gray-500">Linguagem:</span><span>${bug.language}</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Recompensa:</span><span style="color: var(--color-accent); font-weight: bold;">${bug.reward}</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">Tentativas:</span><span>${bug.attempts}</span></div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="showDetails(${globalIndex})" class="flex-1 py-2 rounded-lg font-semibold text-white transition hover:opacity-90 btn-hover" style="background-color: var(--color-primary);">Ver Detalhes</button>
+                            <button class="flex-1 py-2 rounded-lg font-semibold border-2 transition btn-hover" style="border-color: var(--color-accent); color: var(--color-accent);">Resolver</button>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('bugs-container').innerHTML = html;
+            document.getElementById('pagination-container').innerHTML = `
+                <button onclick="renderBugs()" class="px-6 py-2 rounded-lg font-semibold text-white transition hover:opacity-90 btn-hover" style="background-color: var(--color-primary);">Voltar</button>
+                <p class="text-gray-400">${results.length} resultado(s) encontrado(s)</p>
+            `;
+        }
+    }
+
+    function filterBugs() {
+        // Resetar para exibição normal
+        currentPage = 1;
+        renderBugs();
+    }
+
+    function showDetails(index) {
+        const bug = bugsData[index];
+        document.getElementById('modalTitle').textContent = bug.title;
+        document.getElementById('modalCompany').textContent = bug.company;
+        document.getElementById('modalDifficulty').textContent = bug.difficulty;
+        document.getElementById('modalLanguage').textContent = bug.language;
+        document.getElementById('modalReward').textContent = bug.reward;
+        document.getElementById('modalAttempts').textContent = bug.attempts;
+        document.getElementById('modalDescription').textContent = bug.description;
+        document.getElementById('detailsModal').classList.remove('hidden');
+    }
+
+    function closeDetails() {
+        document.getElementById('detailsModal').classList.add('hidden');
+    }
+</script>

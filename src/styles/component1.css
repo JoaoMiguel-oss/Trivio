@@ -1,0 +1,53 @@
+/* ===== COMPONENT 1 - Navigation Styles ===== */
+
+.navigation {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-item {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--color-text-muted);
+}
+
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--color-text);
+}
+
+.nav-item.active {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.nav-item svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+}
+
+.search-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(233, 30, 99, 0.1);
+    border: 1px solid rgba(233, 30, 99, 0.3);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-button:hover {
+    background-color: rgba(233, 30, 99, 0.2);
+    border-color: rgba(233, 30, 99, 0.5);
+}

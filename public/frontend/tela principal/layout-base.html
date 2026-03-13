@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <!-- ===== CONFIGURAÇÕES BÁSICAS DO DOCUMENTO ===== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivio - Plataforma de Recrutamento</title>
+
+    <!-- ===== TAILWIND CSS - Framework de utilitários CSS ===== -->
+    <!-- Carrega o Tailwind CSS via CDN para estilização rápida -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- ===== LUCIDE ICONS - Biblioteca de ícones ===== -->
+    <!-- Carrega os ícones Lucide para usar ícone de pesquisa e outros -->
+    <link href="https://cdn.jsdelivr.net/npm/lucide-static/font/lucide.css" rel="stylesheet">
+
+    <!-- ===== CSS DE RESPONSIVIDADE ===== -->
+    <!-- Arquivo dedicado com media queries e estilos responsivos -->
+    <link href="css/responsive.css" rel="stylesheet">
+
+    <style>
+        /* ===== IMPORTAÇÃO DE FONTE GOOGLE FONTS ===== */
+        /* Importa a fonte Inter com todos os pesos (100-900) para uma tipografia moderna */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        /* ===== VARIÁVEIS CSS (Design Tokens) ===== */
+        /* Define as cores principais da aplicação em variáveis reutilizáveis */
+        :root {
+            --color-dark-bg: #1A1A1A;
+            /* Cor de fundo escuro principal */
+            --color-surface: #242424;
+            /* Cor de superfície para cards e elementos */
+            --color-primary: #AD1457;
+            /* Cor primária rosa/magenta menos vibrante */
+            --color-accent: #D81B60;
+            /* Cor de destaque rosa menos neon */
+        }
+
+        /* ===== ESTILO GLOBAL DO BODY ===== */
+        /* Aplica fonte e cores base para toda a aplicação */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-dark-bg);
+            color: #FFFFFF;
+        }
+
+        /* ===== ESTILO PARA ÍCONES SVG ===== */
+        /* Define tamanho padrão para ícones */
+        .icon {
+            fill: currentColor;
+            width: 24px;
+            height: 24px;
+        }
+
+        /* ===== ESTILO PARA ITEM DE NAVEGAÇÃO ATIVO ===== */
+        /* Destaca o item de menu atualmente selecionado */
+        .nav-item-active {
+            background-color: var(--color-primary) !important;
+            color: white;
+        }
+
+        /* ===== CONTROLE DE EXIBIÇÃO DE SEÇÕES ===== */
+        /* Esconde todas as seções de conteúdo por padrão */
+        .content-section {
+            display: none;
+        }
+
+        /* Exibe a seção ativa com animação de fade in */
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        /* Define a animação de fade in (entrada suave) */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== EFEITO HOVER PARA BOTÕES ===== */
+        /* Adiciona transição suave em botões */
+        .btn-hover {
+            transition: all 0.2s ease;
+        }
+
+        /* Efeito de elevação ao passar o mouse sobre botões */
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ===== ESTILO PARA CARDS DE ESTATÍSTICAS ===== */
+        /* Cards com gradiente e borda para exibir métricas */
+        .card-stat {
+            background: linear-gradient(135deg, rgba(233, 30, 99, 0.1), rgba(255, 20, 147, 0.05));
+            border: 1px solid rgba(233, 30, 99, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        /* Efeito de hover nos cards de estatísticas */
+        .card-stat:hover {
+            border-color: rgba(233, 30, 99, 0.4);
+            background: linear-gradient(135deg, rgba(233, 30, 99, 0.15), rgba(255, 20, 147, 0.1));
+        }
+
+        /* ===== ESTILO PARA NAVBAR HORIZONTAL ===== */
+        /* Estilo específico para a barra de navegação no topo */
+        .navbar {
+            background-color: #0A0A0A;
+            border-bottom: 1px solid #1F1F1F;
+        }
+
+        /* ===== ESTILO PARA BOTÃO DE PESQUISA ===== */
+        /* Botão circular para o ícone de pesquisa */
+        .search-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(233, 30, 99, 0.1);
+            border: 1px solid rgba(233, 30, 99, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        /* Efeito hover no botão de pesquisa */
+        .search-button:hover {
+            background-color: rgba(233, 30, 99, 0.2);
+            border-color: rgba(233, 30, 99, 0.5);
+        }
+
+        /* ===== ESTILO PARA ITENS DE NAVEGAÇÃO HORIZONTAL ===== */
+        /* Ajusta os itens de menu para layout horizontal */
+        .nav-item-horizontal {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        /* Estado hover para itens de navegação */
+        .nav-item-horizontal:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ===== CONTAINER PRINCIPAL ===== -->
+    <!-- Estrutura de layout com navbar no topo e conteúdo abaixo -->
+    <div class="flex flex-col h-screen">
+
+        <!-- ===== BARRA DE NAVEGAÇÃO SUPERIOR (NAVBAR) ===== -->
+        <!-- Barra fixa no topo com logo, menu e pesquisa -->
+        <nav class="navbar px-6 py-4">
+            <div class="flex items-center justify-between">
+
+                <!-- ===== LOGO DA EMPRESA (CANTO ESQUERDO) ===== -->
+                <!-- Logo com ícone e nome da empresa Trivio -->
+                <div class="flex items-center gap-3">
+                    <svg class="w-8 h-8" style="color: var(--color-primary);" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                        </polygon>
+                    </svg>
+                    <!-- Nome da empresa -->
+                    <span class="text-xl font-bold text-white">Trivio</span>
+                </div>
+
+                <!-- ===== MENU DE NAVEGAÇÃO (CENTRO) ===== -->
+                <!-- Itens de navegação horizontal entre logo e pesquisa -->
+                <div class="flex items-center gap-2">
+
+                    <!-- Botão: Desafios -->
+                    <button onclick="loadSection('recomendacoes')"
+                        class="nav-item nav-item-horizontal nav-item-active flex items-center gap-2">
+                        <!-- Ícone de troféu/desafio -->
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="14.5 17 14.5 22 9.5 22 9.5 17"></polyline>
+                            <path d="M6.5 8H3a1 1 0 0 0-1 1v1a4 4 0 0 0 4 4h.5"></path>
+                            <path d="M17.5 8H21a1 1 0 0 1 1 1v1a4 4 0 0 1-4 4h-.5"></path>
+                            <path d="M6 2h12v10a6 6 0 0 1-6 6 6 6 0 0 1-6-6V2Z"></path>
+                            <line x1="9.5" y1="22" x2="14.5" y2="22"></line>
+                        </svg>
+                        <span>Desafios</span>
+                    </button>
+
+                    <!-- Botão: Pagamentos -->
+                    <button onclick="loadSection('pagamentos')"
+                        class="nav-item nav-item-horizontal text-gray-300 hover:text-white flex items-center gap-2">
+                        <!-- Ícone de cartão de crédito -->
+                        <svg class="w-5 h-5" viewBox="0 0 24 24">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2" stroke="currentColor"
+                                stroke-width="2" fill="none" />
+                            <path d="M1 9h22" stroke="currentColor" stroke-width="2" fill="none" />
+                        </svg>
+                        <span>Pagamentos</span>
+                    </button>
+
+                    <!-- Botão: Configurações -->
+                    <button onclick="loadSection('configuracoes')"
+                        class="nav-item nav-item-horizontal text-gray-300 hover:text-white flex items-center gap-2">
+                        <!-- Ícone de configurações (três pontos) -->
+                        <svg class="w-5 h-5" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="1" stroke="currentColor" stroke-width="2" fill="none" />
+                            <circle cx="12" cy="19" r="1" stroke="currentColor" stroke-width="2" fill="none" />
+                            <circle cx="12" cy="5" r="1" stroke="currentColor" stroke-width="2" fill="none" />
+                            <path d="M9.09 9.09a3 3 0 0 0 4.24 4.24" stroke="currentColor" stroke-width="2"
+                                fill="none" />
+                        </svg>
+                        <span>Configurações</span>
+                    </button>
+
+                    <!-- Botão: Perfil -->
+                    <button onclick="loadSection('perfil')"
+                        class="nav-item nav-item-horizontal text-gray-300 hover:text-white flex items-center gap-2">
+                        <!-- Ícone de usuário/perfil -->
+                        <svg class="w-5 h-5" viewBox="0 0 24 24">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" fill="none" />
+                        </svg>
+                        <span>Perfil</span>
+                    </button>
+
+                </div>
+
+                <!-- ===== ÍCONE DE PESQUISA (CANTO DIREITO) ===== -->
+                <!-- Botão circular com ícone de lupa para pesquisa -->
+                <button class="search-button flex items-center justify-center" aria-label="Pesquisar">
+                    <!-- Ícone de pesquisa da biblioteca Lucide -->
+                    <i class="icon-search" style="font-size: 20px; color: var(--color-primary);"></i>
+                </button>
+
+            </div>
+        </nav>
+
+        <!-- ===== CONTEÚDO PRINCIPAL ===== -->
+        <!-- Área onde o conteúdo dinâmico será carregado via JavaScript -->
+        <main class="flex-1 overflow-y-auto bg-gradient-to-b from-gray-900 to-black p-8" id="main-content">
+            <!-- O conteúdo será injetado aqui dinamicamente pela função loadSection() -->
+        </main>
+    </div>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        // Global User Config State
+        window.userConfig = {};
+        window.userBasicData = {};
+
+        async function fetchUserConfig() {
+            try {
+                const usuario = JSON.parse(sessionStorage.getItem('usuario'));
+                if (!usuario || !usuario.public_id) return;
+
+                const response = await fetch(`/api/v1/user/${usuario.tipo}/${usuario.public_id}/configuracoes`);
+                if (response.ok) {
+                    const data = await response.json();
+                    window.userConfig = data.configuracoes || {};
+                    window.userBasicData = data.dadosBasicos || {};
+
+                    // Aplicar configs globais (ex: tema)
+                    if (window.userConfig.primaryColor) {
+                        document.documentElement.style.setProperty('--color-primary', window.userConfig.primaryColor);
+                    }
+                }
+            } catch (err) {
+                console.error("Erro ao carregar configuracoes:", err);
+            }
+        }
+
+        async function saveConfigToServer(basicDataUpdate, configUpdate) {
+            try {
+                const usuario = JSON.parse(sessionStorage.getItem('usuario'));
+                if (!usuario || !usuario.public_id) throw new Error('Usuário não autenticado');
+
+                // Merge with global state
+                window.userConfig = { ...window.userConfig, ...configUpdate };
+                window.userBasicData = { ...window.userBasicData, ...basicDataUpdate };
+
+                const response = await fetch(`/api/v1/user/${usuario.tipo}/${usuario.public_id}/configuracoes`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ configuracoes: window.userConfig, dadosBasicos: window.userBasicData })
+                });
+
+                return response.ok;
+            } catch (err) {
+                console.error("Erro ao salvar:", err);
+                return false;
+            }
+        }
+
+        /**
+         * Função: loadSection
+         * Descrição: Carrega dinamicamente o conteúdo de um módulo HTML externo
+         * 
+         * @param {string} sectionName - Nome do módulo a ser carregado (ex: 'bugs', 'pagamentos')
+         * 
+         * Como funciona:
+         * 1. Busca o arquivo HTML do módulo na pasta modules/
+         * 2. Injeta o HTML no elemento #main-content
+         * 3. Atualiza os estilos dos botões para destacar o item ativo
+         * 4. Exibe mensagem de erro caso o módulo não seja encontrado
+         */
+        async function loadSection(sectionName) {
+            try {
+                // Faz requisição HTTP para buscar o arquivo HTML do módulo
+                const response = await fetch(`modules/${sectionName}.html`);
+
+                // Extrai o conteúdo HTML da resposta
+                const html = await response.text();
+
+                // Injeta o HTML no elemento principal da página
+                const mainContent = document.getElementById('main-content');
+                mainContent.innerHTML = html;
+
+                // Força execução dos scripts injetados
+                const scripts = mainContent.querySelectorAll('script');
+                scripts.forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                    newScript.textContent = oldScript.textContent;
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+
+                // ===== ATUALIZAÇÃO DO ESTADO VISUAL DOS BOTÕES DE NAVEGAÇÃO =====
+                const navItems = document.querySelectorAll('.nav-item');
+                navItems.forEach(item => item.classList.remove('nav-item-active'));
+
+                const activeBtn = document.querySelector(`.nav-item[onclick*="loadSection('${sectionName}')"]`);
+                if (activeBtn) activeBtn.classList.add('nav-item-active');
+
+                // Autopreencher dados se disponiveis
+                setTimeout(() => {
+                    populateModuleFields(sectionName);
+                }, 50);
+
+            } catch (error) {
+                // ===== TRATAMENTO DE ERRO =====
+                // Exibe mensagem de erro caso o módulo não seja encontrado
+
+                console.error('Erro ao carregar módulo:', error);
+
+                // Injeta mensagem de erro visual no conteúdo principal
+                document.getElementById('main-content').innerHTML = '<p class="text-red-500">Erro ao carregar conteúdo</p>';
+            }
+        }
+
+        /**
+         * Event Listener: DOMContentLoaded
+         */
+        document.addEventListener('DOMContentLoaded', async () => {
+            await fetchUserConfig();
+            loadSection('recomendacoes');
+        });
+
+        function populateModuleFields(sectionName) {
+            const config = window.userConfig || {};
+            const basic = window.userBasicData || {};
+
+            if (sectionName === 'configuracoes') {
+                const cfgNome = document.getElementById('cfg-nome');
+                if (cfgNome) cfgNome.value = basic.nome || '';
+
+                const cfgSobrenome = document.getElementById('cfg-sobrenome');
+                if (cfgSobrenome) cfgSobrenome.value = config.sobrenome || '';
+
+                const cfgUsername = document.getElementById('cfg-username');
+                if (cfgUsername) cfgUsername.value = config.username || '';
+
+                const cfgBio = document.getElementById('cfg-bio');
+                if (cfgBio) cfgBio.value = config.bio || '';
+
+                const inputs = document.getElementById('cfg-panel-dados')?.querySelectorAll('input');
+                if (inputs && inputs.length > 0) {
+                    inputs[0].value = basic.email || '';
+                    if (inputs[2]) inputs[2].value = config.telefone || '';
+                }
+            } else if (sectionName === 'perfil') {
+                const inputNome = document.getElementById('perfil-nome');
+                if (inputNome) inputNome.value = basic.nome || '';
+
+                const inputSobrenome = document.getElementById('perfil-sobrenome');
+                if (inputSobrenome) inputSobrenome.value = config.sobrenome || '';
+
+                const inputBio = document.getElementById('perfil-bio');
+                if (inputBio) inputBio.value = config.bio || '';
+
+                const inputEmail = document.getElementById('perfil-email');
+                if (inputEmail) inputEmail.value = basic.email || '';
+            }
+        }
+
+        async function saveProfileData() {
+            const basic = {
+                nome: document.getElementById('perfil-nome')?.value,
+                email: document.getElementById('perfil-email')?.value
+            };
+            const conf = {
+                sobrenome: document.getElementById('perfil-sobrenome')?.value,
+                bio: document.getElementById('perfil-bio')?.value
+            };
+
+            const btn = document.getElementById('btn-save-profile');
+            const orig = btn ? btn.textContent : 'Salvar alterações';
+            if (btn) btn.textContent = 'Salvando...';
+
+            const sucesso = await saveConfigToServer(basic, conf);
+            showToast(sucesso ? 'Informações salvas com sucesso!' : 'Erro ao salvar informações!');
+
+            if (btn) setTimeout(() => { btn.textContent = orig; }, 1500);
+        }
+
+        // ==========================================
+        // FUNÇÕES DE CONFIGURAÇÕES (GLOBAIS)
+        // ==========================================
+
+        /* ===== NAVEGAÇÃO ENTRE PAINÉIS ===== */
+        function cfgShowPanel(name) {
+            document.querySelectorAll('.cfg-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.cfg-nav-item').forEach(i => i.classList.remove('active'));
+            const panel = document.getElementById('cfg-panel-' + name);
+            const nav = document.getElementById('cfg-nav-' + name);
+            if (panel) panel.classList.add('active');
+            if (nav) nav.classList.add('active');
+        }
+
+        /* ===== TOAST ===== */
+        function cfgToast(msg, isError) {
+            const t = document.getElementById('cfg-toast');
+            const m = document.getElementById('cfg-toast-msg');
+            if (!t || !m) return;
+            m.textContent = msg;
+            t.style.borderColor = isError ? 'rgba(239,68,68,0.5)' : 'rgba(233,30,99,0.4)';
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        /* ===== SALVAR ===== */
+        async function cfgSave(tab, btn) {
+            const orig = btn.textContent;
+            btn.textContent = 'Salvando...';
+            btn.style.opacity = '0.7';
+            btn.disabled = true;
+
+            let conf = {};
+            let basic = {};
+
+            if (tab === 'perfil') {
+                basic.nome = document.getElementById('cfg-nome')?.value;
+                conf.sobrenome = document.getElementById('cfg-sobrenome')?.value;
+                conf.username = document.getElementById('cfg-username')?.value;
+                conf.bio = document.getElementById('cfg-bio')?.value;
+            } else if (tab === 'dados') {
+                const inputs = document.getElementById('cfg-panel-dados').querySelectorAll('input');
+                if (inputs.length > 0) basic.email = inputs[0].value;
+                conf.telefone = inputs[2]?.value;
+            } else if (tab === 'seguranca') {
+                // apenas placeholder front
+            }
+
+            const sucesso = await saveConfigToServer(basic, conf);
+
+            setTimeout(() => {
+                btn.textContent = sucesso ? '✓ Salvo!' : 'Erro!';
+                btn.style.opacity = '1';
+                cfgToast(sucesso ? 'Configurações salvas com sucesso!' : 'Erro ao salvar', !sucesso);
+                setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 1800);
+            }, 750);
+        }
+
+        /* ===== CANCELAR ===== */
+        function cfgCancel(tab) {
+            cfgToast('Alterações descartadas.');
+        }
+
+        /* ===== RESTAURAR PADRÕES ===== */
+        function cfgRestoreDefaults() {
+            if (confirm('Deseja restaurar todas as configurações para o padrão? Esta ação não pode ser desfeita.')) {
+                cfgToast('Configurações restauradas para o padrão.');
+            }
+        }
+
+        /* ===== SENHA - indicador de força ===== */
+        function cfgCheckStrength(val) {
+            const fill = document.getElementById('cfg-strength-fill');
+            const txt = document.getElementById('cfg-strength-txt');
+            if (!fill || !txt) return;
+            let score = 0;
+            if (val.length >= 8) score++;
+            if (/[A-Z]/.test(val)) score++;
+            if (/[0-9]/.test(val)) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+            const levels = [
+                { w: '0%', c: 'transparent', l: '' },
+                { w: '25%', c: '#ef4444', l: 'Fraca' },
+                { w: '50%', c: '#f97316', l: 'Razoável' },
+                { w: '75%', c: '#eab308', l: 'Boa' },
+                { w: '100%', c: '#22c55e', l: 'Excelente' }
+            ];
+            const lv = levels[Math.min(score, 4)];
+            fill.style.width = lv.w;
+            fill.style.background = lv.c;
+            txt.textContent = lv.l;
+            txt.style.color = lv.c;
+        }
+
+        /* ===== ATUALIZAR SENHA ===== */
+        function cfgUpdatePassword(btn) {
+            const atual = document.getElementById('cfg-senha-atual').value;
+            const nova = document.getElementById('cfg-nova-senha').value;
+            const conf = document.getElementById('cfg-confirmar-senha').value;
+            if (!atual || !nova || !conf) { cfgToast('⚠ Preencha todos os campos.', true); return; }
+            if (nova !== conf) { cfgToast('⚠ As senhas não coincidem.', true); return; }
+            if (nova.length < 8) { cfgToast('⚠ A senha deve ter pelo menos 8 caracteres.', true); return; }
+            cfgSave('seguranca', btn);
+            document.getElementById('cfg-senha-atual').value = '';
+            document.getElementById('cfg-nova-senha').value = '';
+            document.getElementById('cfg-confirmar-senha').value = '';
+            cfgCheckStrength('');
+        }
+
+        /* ===== 2FA TOGGLE ===== */
+        function cfgToggle2FA(btn) {
+            const badge = document.getElementById('cfg-2fa-badge');
+            const ativo = badge.classList.contains('badge-green');
+            if (ativo) {
+                badge.className = 'status-badge badge-red';
+                badge.textContent = 'Desativado';
+                btn.textContent = 'Ativar 2FA';
+                cfgToast('2FA desativado.');
+            } else {
+                badge.className = 'status-badge badge-green';
+                badge.textContent = 'Ativado';
+                btn.textContent = 'Desativar 2FA';
+                cfgToast('2FA ativado com sucesso!');
+            }
+        }
+
+        /* ===== ENCERRAR SESSÃO ===== */
+        function cfgEndSession(sessionId, btn) {
+            const el = document.getElementById(sessionId);
+            if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateX(20px)';
+                el.style.transition = 'all 0.3s';
+                setTimeout(() => el.remove(), 300);
+                cfgToast('Sessão encerrada.');
+            }
+        }
+
+        /* ===== ENCERRAR TODAS ===== */
+        function cfgEndAllSessions(btn) {
+            if (!confirm('Deseja encerrar todas as outras sessões? Você permanecerá logado neste dispositivo.')) return;
+            document.querySelectorAll('#cfg-sessions .session-item:not(:first-child)').forEach(s => {
+                s.style.opacity = '0'; s.style.transition = 'all 0.3s';
+                setTimeout(() => s.remove(), 300);
+            });
+            cfgToast('Todas as outras sessões foram encerradas.');
+        }
+
+        /* ===== DELETAR CONTA ===== */
+        function cfgConfirmDelete() {
+            if (confirm('⚠ Esta ação é irreversível! Deseja realmente deletar sua conta?')) {
+                cfgToast('Entre em contato com o suporte para concluir.', true);
+            }
+        }
+
+        /* ===== CONTATO - ENVIAR ===== */
+        function cfgSubmitContact(e) {
+            e.preventDefault();
+            const btn = document.getElementById('cfg-contact-btn');
+            const orig = btn.textContent;
+            btn.textContent = 'Enviando...';
+            btn.disabled = true;
+            setTimeout(() => {
+                btn.textContent = '✓ Enviado!';
+                cfgToast('Mensagem enviada! Entraremos em contato em breve.');
+                e.target.reset();
+                setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 2000);
+            }, 900);
+        }
+
+        /* ===== ATIVAR OU DESATIVAR TODAS NOTIFICAÇÕES ===== */
+        function cfgSelectAllNotif(state) {
+            document.querySelectorAll('#cfg-panel-notificacoes input[type="checkbox"]').forEach(cb => cb.checked = state);
+            cfgToast(state ? 'Todas as notificações ativadas.' : 'Todas as notificações desativadas.');
+        }
+
+        /* ===== FORMATAR CEP ===== */
+        function cfgFormatCEP(input) {
+            let v = input.value.replace(/\D/g, '').substring(0, 8);
+            if (v.length > 5) v = v.slice(0, 5) + '-' + v.slice(5);
+            input.value = v;
+        }
+
+        /* ===== PREVIEW DE AVATAR ===== */
+        function cfgPreviewAvatar(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            cfgToast('Foto selecionada: ' + file.name);
+        }
+
+        // ==========================================
+        // FUNÇÕES DO PERFIL (GLOBAIS)
+        // ==========================================
+
+        /* ===== MOSTRA PAINEL CORRESPONDENTE ===== */
+        function showPanel(panelName) {
+            // Esconde todos os painéis
+            document.querySelectorAll('.content-panel').forEach(p => {
+                p.classList.remove('active');
+            });
+
+            // Remove estado ativo de todos os itens da sidebar
+            document.querySelectorAll('.sidebar-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Mostra o painel solicitado
+            const panel = document.getElementById('panel-' + panelName);
+            const navItem = document.getElementById('nav-' + panelName);
+
+            if (panel) panel.classList.add('active');
+            if (navItem) navItem.classList.add('active');
+        }
+
+        /* ===== TOAST DE FEEDBACK ===== */
+        function showToast(message) {
+            const toast = document.getElementById('profileToast');
+            const msgEl = document.getElementById('toastMessage');
+            if (!toast || !msgEl) return;
+
+            msgEl.textContent = message || 'Salvo com sucesso!';
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        /* ===== SELETOR DE CORES DO TEMA ===== */
+        function selectColor(el, color) {
+            document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+            el.classList.add('selected');
+            // Aplica a cor em toda a plataforma como preview
+            document.documentElement.style.setProperty('--color-primary', color);
+            saveConfigToServer({}, { primaryColor: color }).then(() => {
+                showToast('Cor de tema atualizada e salva!');
+            });
+        }
+    </script>
+
+</body>
+
+</html>

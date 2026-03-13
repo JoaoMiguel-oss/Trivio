@@ -1,0 +1,232 @@
+<div>
+    <div class="mb-10">
+        <h1 class="text-4xl font-bold mb-3">Desafios para resolver</h1>
+        <p class="text-gray-500">Desafios Técnicos enviados por empresas para a comunidade resolver</p>
+    </div>
+
+    <!-- Cards de Estatísticas -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+        <div class="card-stat">
+            <p class="text-gray-500 text-sm mb-2">Total de Desafios</p>
+            <h3 class="text-3xl font-bold">0</h3>
+            <p class="text-xs mt-2" style="color: var(--color-accent);">Aguardando desafios</p>
+        </div>
+        <div class="card-stat">
+            <p class="text-gray-500 text-sm mb-2">Desafios Resolvidos</p>
+            <h3 class="text-3xl font-bold">0</h3>
+            <p class="text-xs mt-2 text-green-400">Nenhum resolvido</p>
+        </div>
+        <div class="card-stat">
+            <p class="text-gray-500 text-sm mb-2">Dificuldade Média</p>
+            <h3 class="text-3xl font-bold">-</h3>
+            <p class="text-xs mt-2" style="color: var(--color-primary);">Aguardando dados</p>
+        </div>
+        <div class="card-stat">
+            <p class="text-gray-500 text-sm mb-2">Novos Hoje</p>
+            <h3 class="text-3xl font-bold">0</h3>
+            <p class="text-xs mt-2 text-blue-400">Aguardando desafios</p>
+        </div>
+    </div>
+
+    <!-- Filtros e Busca -->
+    <div class="flex flex-col md:flex-row gap-4 mb-10">
+        <div class="relative flex-1">
+            <input type="text" id="searchInput" placeholder="Buscar por título, linguagem ou empresa..." 
+                class="w-full py-3 pl-12 pr-4 rounded-lg bg-gray-900 border border-gray-700 text-white focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500/30 transition"
+                style="border-color: rgba(233, 30, 99, 0.2); background-color: #2D2D2D;">
+            <svg class="icon absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5" viewBox="0 0 24 24">
+                <path d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM21.5 21.5L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+        </div>
+        <button onclick="filterBugs()" class="px-6 py-3 rounded-lg font-semibold text-white transition hover:opacity-90 btn-hover" style="background-color: var(--color-primary);">Filtrar</button>
+        <button onclick="searchBugs()" class="px-6 py-3 rounded-lg font-semibold border-2 transition btn-hover" style="border-color: var(--color-accent); color: var(--color-accent);">Pesquisar</button>
+    </div>
+
+    <!-- Container para renderizar bugs dinamicamente -->
+    <div id="bugs-container" class="grid grid-cols-1 gap-4 mb-8">
+        <div class="p-8 text-center text-gray-500" style="background-color: var(--color-surface); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px;">
+            <p>Nenhum desafio disponível no momento.</p>
+            <p class="text-sm mt-2">Volte em breve para novos desafios.</p>
+        </div>
+    </div>
+
+    <!-- Paginação -->
+    <div class="flex justify-center items-center gap-2 mt-12" id="pagination-container">
+        <button onclick="previousPage()" class="px-3 py-2 rounded-lg border border-gray-700 hover:border-gray-500 transition">←</button>
+        <button onclick="nextPage()" class="px-3 py-2 rounded-lg border border-gray-700 hover:border-gray-500 transition">→</button>
+    </div>
+
+    <!-- Modal de Detalhes -->
+    <div id="detailsModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-gray-900 rounded-lg max-w-2xl w-full max-h-96 overflow-y-auto" style="background-color: var(--color-surface);">
+            <div class="p-8">
+                <div class="flex items-start justify-between mb-6">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-2" id="modalTitle">Título do Bug</h2>
+                        <p class="text-gray-400" id="modalCompany">Empresa</p>
+                    </div>
+                    <button onclick="closeDetails()" class="text-gray-400 hover:text-white text-2xl">✕</button>
+                </div>
+
+                <div class="space-y-4 mb-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-gray-500 text-sm mb-1">Dificuldade</p>
+                            <p class="font-semibold text-lg" id="modalDifficulty">-</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm mb-1">Linguagem/Stack</p>
+                            <p class="font-semibold text-lg" id="modalLanguage">-</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm mb-1">Recompensa</p>
+                            <p class="font-semibold text-lg" style="color: var(--color-accent);" id="modalReward">-</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm mb-1">Tentativas</p>
+                            <p class="font-semibold text-lg" id="modalAttempts">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-700 pt-6">
+                    <h3 class="font-bold text-lg mb-3">Descrição do Bug</h3>
+                    <p class="text-gray-300 mb-6" id="modalDescription">
+                        -
+                    </p>
+                </div>
+
+                <div class="flex gap-3">
+                    <button onclick="closeDetails()" class="flex-1 py-2 rounded-lg font-semibold border-2 transition btn-hover" style="border-color: var(--color-accent); color: var(--color-accent);">Fechar</button>
+                    <button class="flex-1 py-2 rounded-lg font-semibold text-white transition hover:opacity-90 btn-hover" style="background-color: var(--color-primary);">Resolver Bug</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Dados dos bugs - Preencher via API
+    const bugsData = [];
+
+    const BUGS_PER_PAGE = 3;
+    let currentPage = 1;
+
+    function getDifficultyColor(difficulty) {
+        const colors = {
+            "Alto": "#DC2626",
+            "Médio": "#D97706",
+            "Baixo": "#3B82F6"
+        };
+        return colors[difficulty] || "#666";
+    }
+
+    function getDifficultyBgColor(difficulty) {
+        const colors = {
+            "Alto": "rgba(220, 38, 38, 0.2)",
+            "Médio": "rgba(217, 119, 6, 0.2)",
+            "Baixo": "rgba(59, 130, 246, 0.2)"
+        };
+        return colors[difficulty] || "rgba(102, 102, 102, 0.2)";
+    }
+
+    function getColorClass(color) {
+        const colors = {
+            "red": "bg-red-900",
+            "yellow": "bg-yellow-900",
+            "blue": "bg-blue-900",
+            "green": "bg-green-900",
+            "purple": "bg-purple-900",
+            "cyan": "bg-cyan-900"
+        };
+        return colors[color] || "bg-gray-900";
+    }
+
+    function renderBugs() {
+        const container = document.getElementById('bugs-container');
+        
+        if (bugsData.length === 0) {
+            container.innerHTML = `
+                <div class="p-8 text-center text-gray-500" style="background-color: var(--color-surface); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px;">
+                    <p>Nenhum desafio disponível no momento.</p>
+                    <p class="text-sm mt-2">Volte em breve para novos desafios.</p>
+                </div>
+            `;
+            return;
+        }
+
+        const start = (currentPage - 1) * BUGS_PER_PAGE;
+        const end = start + BUGS_PER_PAGE;
+        const pageBugs = bugsData.slice(start, end);
+
+        container.innerHTML = pageBugs.map(bug => `
+            <div class="p-6 rounded-lg transition-all hover:shadow-lg" style="background-color: var(--color-surface); border: 1px solid rgba(255,255,255,0.05);">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-14 h-14 rounded-lg ${getColorClass(bug.color)} flex items-center justify-center text-white font-bold text-lg">BUG</div>
+                        <div>
+                            <h3 class="font-bold text-lg">${bug.title}</h3>
+                            <p class="text-sm text-gray-500">${bug.company}</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 rounded-lg text-xs font-semibold" style="background-color: ${getDifficultyBgColor(bug.difficulty)}; color: ${getDifficultyColor(bug.difficulty)};">${bug.difficulty}</span>
+                </div>
+                <div class="space-y-2 mb-4 text-sm">
+                    <div class="flex justify-between"><span class="text-gray-500">Linguagem:</span><span>${bug.language}</span></div>
+                    <div class="flex justify-between"><span class="text-gray-500">Recompensa:</span><span style="color: var(--color-accent); font-weight: bold;">${bug.reward}</span></div>
+                    <div class="flex justify-between"><span class="text-gray-500">Tentativas:</span><span>${bug.attempts}</span></div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="openDetails(${bug.id})" class="flex-1 py-2 rounded-lg font-semibold text-white transition hover:opacity-90 btn-hover" style="background-color: var(--color-primary);">Ver Detalhes</button>
+                    <button class="flex-1 py-2 rounded-lg font-semibold border-2 transition btn-hover" style="border-color: var(--color-accent); color: var(--color-accent);">Resolver</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function openDetails(bugId) {
+        const bug = bugsData.find(b => b.id === bugId);
+        if (!bug) return;
+
+        document.getElementById('modalTitle').textContent = bug.title;
+        document.getElementById('modalCompany').textContent = bug.company;
+        document.getElementById('modalDifficulty').textContent = bug.difficulty;
+        document.getElementById('modalLanguage').textContent = bug.language;
+        document.getElementById('modalReward').textContent = bug.reward;
+        document.getElementById('modalAttempts').textContent = bug.attempts;
+        document.getElementById('modalDescription').textContent = bug.description || 'Descrição não disponível.';
+
+        document.getElementById('detailsModal').classList.remove('hidden');
+    }
+
+    function closeDetails() {
+        document.getElementById('detailsModal').classList.add('hidden');
+    }
+
+    function filterBugs() {
+        console.log('Filtrar bugs - Implementar via API');
+    }
+
+    function searchBugs() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        console.log('Buscar bugs:', query);
+    }
+
+    function previousPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            renderBugs();
+        }
+    }
+
+    function nextPage() {
+        const totalPages = Math.ceil(bugsData.length / BUGS_PER_PAGE);
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderBugs();
+        }
+    }
+
+    // Inicializar
+    renderBugs();
+</script>
