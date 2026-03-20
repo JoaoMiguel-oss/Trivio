@@ -30,6 +30,20 @@ app.use(express.json());
 // Servir arquivos estáticos da pasta public (caminho absoluto)
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
+// Aliases para pastas com espaço no nome
+app.use('/frontend/tela-principal', express.static(path.join(__dirname, '..', 'public', 'frontend', 'tela principal')));
+app.use('/Empresas/tela-principal', express.static(path.join(__dirname, '..', 'public', 'Empresas', 'tela principal')));
+
+// Rotas explícitas para arquivos dentro de pastas com espaço
+app.get('/frontend/tela principal/*', (req, res) => {
+  const filePath = req.params[0];
+  res.sendFile(path.join(__dirname, '..', 'public', 'frontend', 'tela principal', filePath));
+});
+app.get('/Empresas/tela principal/*', (req, res) => {
+  const filePath = req.params[0];
+  res.sendFile(path.join(__dirname, '..', 'public', 'Empresas', 'tela principal', filePath));
+});
+
 // Inicializa tabelas do banco (MVP)
 inicializarTabelas();
 

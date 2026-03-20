@@ -178,17 +178,15 @@
                 <!-- Itens de navegação horizontal entre logo e pesquisa -->
                 <div class="flex items-center gap-2">
 
-                    <!-- Botão: Desafios para Resolver (Item ativo por padrão) -->
-                    <button onclick="loadSection('bugs', this)"
+                    <!-- Botão: Vagas (Item ativo por padrão) -->
+                    <button onclick="loadSection('vagas', this)"
                         class="nav-item nav-item-horizontal nav-item-active flex items-center gap-2"
                         style="background-color: var(--color-primary);">
-                        <!-- Ícone de bug/escudo -->
-                        <svg class="w-5 h-5" viewBox="0 0 24 24">
-                            <path
-                                d="M12 2L2 12H5.09C5.39 15.11 7.23 18.04 10.02 19.46L12 21.36L13.98 19.46C16.77 18.04 18.61 15.11 18.91 12H22L12 2Z"
-                                fill="currentColor" />
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                            <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path>
                         </svg>
-                        <span>Desafios</span>
+                        <span>Vagas</span>
                     </button>
 
                     <!-- Botão: Pagamentos -->
@@ -267,7 +265,7 @@
         async function loadSection(sectionName, buttonElement) {
             try {
                 // Faz requisição HTTP para buscar o arquivo HTML do módulo
-                const response = await fetch(`/Empresas/tela%20principal/modules/${sectionName}?v=${Date.now()}`);
+                const response = await fetch(`/Empresas/tela%20principal/modules/${sectionName}.html?v=${Date.now()}`);
 
                 // Verifica se a requisição foi bem-sucedida (status 200)
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -327,11 +325,8 @@
          * 3. Carrega automaticamente a seção de bugs como conteúdo inicial
          */
         document.addEventListener('DOMContentLoaded', () => {
-            // Seleciona o botão que contém 'bugs' no atributo onclick
-            const bugsButton = document.querySelector('button[onclick*="bugs"]');
-
-            // Se o botão existir, carrega a seção de bugs
-            if (bugsButton) loadSection('bugs', bugsButton);
+            const vagasButton = document.querySelector('button[onclick*="vagas"]');
+            if (vagasButton) loadSection('vagas', vagasButton);
         });
 
         // ==========================================

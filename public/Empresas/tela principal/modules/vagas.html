@@ -317,9 +317,10 @@
     async function carregarVagas() {
         const listDiv = document.getElementById('vagas-list');
         try {
-            // Em um app real vc passaria o ID da empresa para filtrar só as dela.
-            // Para simplificar, vou bater no endpoint geral de listar as ativas.
-            const response = await fetch('/api/v1/vagas');
+            const us = JSON.parse(sessionStorage.getItem('usuario') || '{}');
+            const empresaId = us.public_id || '';
+            const url = empresaId ? `/api/v1/vagas?empresa_id=${encodeURIComponent(empresaId)}` : '/api/v1/vagas';
+            const response = await fetch(url);
             if (!response.ok) throw new Error('Falha ao buscar vagas');
 
             const vagas = await response.json();
@@ -329,9 +330,6 @@
                 return;
             }
 
-            // A empresa só deve ver as dela. Como backend não tem filtro no endpoint get/vagas
-            // vamos filtrar no front ou assumir que o mock de listar traga.
-            // Aqui renderizamos tudo que vier ativo.
             listDiv.innerHTML = vagas.map(v => `
                 <div class="vaga-card">
                     <span class="vaga-status status-${v.status}">${v.status.toUpperCase()}</span>

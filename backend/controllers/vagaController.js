@@ -2,12 +2,24 @@ const db = require('../banco/conexao');
 
 const listarVagas = async (req, res) => {
   try {
-    const vagas = db.prepare(`
-      SELECT * FROM vagas 
-      WHERE status = 'ativa' 
-      ORDER BY created_at DESC
-    `).all();
-    
+    const { empresa_id } = req.query;
+
+    let query = `
+      SELECT v.*, COALESCE(e.nome, 'Empresa Parceira') as empresa_nome
+      FROM vagas v
+      LEFT JOIN empresas e ON v.empresa_id = e.public_id
+      WHERE v.status = 'ativa'
+    `;
+    const params = [];
+
+    if (empresa_id) {
+      query += ` AND v.empresa_id = ?`;
+      params.push(empresa_id);
+    }
+
+    query += ` ORDER BY v.created_at DESC`;
+
+    const vagas = db.prepare(query).all(...params);
     res.status(200).json(vagas);
   } catch (erro) {
     console.error(erro);
