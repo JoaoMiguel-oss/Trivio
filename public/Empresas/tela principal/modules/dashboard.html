@@ -1,0 +1,522 @@
+<style>
+    .dashboard-container {
+        animation: fadeIn 0.4s ease;
+    }
+
+    .dashboard-header {
+        margin-bottom: 2rem;
+    }
+
+    .dashboard-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #fff;
+    }
+
+    .dashboard-subtitle {
+        color: rgba(255, 255, 255, 0.5);
+        margin-top: 5px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, rgba(233, 30, 99, 0.1), rgba(255, 20, 147, 0.05));
+        border: 1px solid rgba(233, 30, 99, 0.2);
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: all 0.3s;
+    }
+
+    .stat-card:hover {
+        border-color: rgba(233, 30, 99, 0.4);
+        transform: translateY(-2px);
+    }
+
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .stat-icon.vagas {
+        background: rgba(59, 130, 246, 0.15);
+        color: #3b82f6;
+    }
+
+    .stat-icon.candidatos {
+        background: rgba(168, 85, 247, 0.15);
+        color: #a855f7;
+    }
+
+    .stat-icon.entregues {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+    }
+
+    .stat-icon.conversao {
+        background: rgba(233, 30, 99, 0.15);
+        color: #e91e63;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #fff;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.5);
+        margin-top: 4px;
+    }
+
+    /* Financial Section */
+    .financial-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .financial-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+    }
+
+    .financial-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .financial-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .financial-value {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #fff;
+    }
+
+    .financial-value.pendente {
+        color: #f59e0b;
+    }
+
+    .financial-value.pago {
+        color: #22c55e;
+    }
+
+    /* Process Flow */
+    .process-section {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .process-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 1.5rem;
+    }
+
+    .process-steps {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .process-step {
+        flex: 1;
+        text-align: center;
+        position: relative;
+    }
+
+    .process-step:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        right: -50%;
+        top: 25px;
+        width: 100%;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .step-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: rgba(233, 30, 99, 0.1);
+        border: 2px solid rgba(233, 30, 99, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 0.75rem;
+        color: #e91e63;
+        font-weight: 700;
+    }
+
+    .step-label {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .step-count {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.4);
+        margin-top: 4px;
+    }
+
+    /* Info Cards */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .info-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+    }
+
+    .info-card-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .info-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .info-list li {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+    }
+
+    .info-list li:last-child {
+        border-bottom: none;
+    }
+
+    .info-list li strong {
+        color: #fff;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        font-weight: 700;
+    }
+
+    .badge-pendente {
+        background: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+    }
+
+    .badge-pago {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+    }
+
+    /* How It Works */
+    .how-it-works {
+        background: linear-gradient(135deg, rgba(233, 30, 99, 0.08), rgba(255, 20, 147, 0.03));
+        border: 1px solid rgba(233, 30, 99, 0.2);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-top: 2rem;
+    }
+
+    .how-title {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    .how-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .how-item {
+        text-align: center;
+    }
+
+    .how-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: rgba(233, 30, 99, 0.15);
+        border: 2px solid rgba(233, 30, 99, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+    }
+
+    .how-icon svg {
+        color: #e91e63;
+    }
+
+    .how-step-title {
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 0.5rem;
+    }
+
+    .how-step-desc {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.6);
+    }
+</style>
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Dashboard</h1>
+        <p class="dashboard-subtitle">Visão geral do seu processo seletivo técnico</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid" id="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon vagas">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+            </div>
+            <div class="stat-value" id="stat-vagas">0</div>
+            <div class="stat-label">Vagas Ativas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon candidatos">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+            </div>
+            <div class="stat-value" id="stat-candidatos">0</div>
+            <div class="stat-label">Total Candidaturas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon entregues">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 11 12 14 22 4"></polyline>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                </svg>
+            </div>
+            <div class="stat-value" id="stat-entregues">0</div>
+            <div class="stat-label">Desafios Entregues</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon conversao">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="20" x2="12" y2="10"></line>
+                    <line x1="18" y1="20" x2="18" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="16"></line>
+                </svg>
+            </div>
+            <div class="stat-value" id="stat-conversao">0%</div>
+            <div class="stat-label">Taxa de Conversão</div>
+        </div>
+    </div>
+
+    <!-- Financial Section -->
+    <div class="financial-grid">
+        <div class="financial-card">
+            <div class="financial-header">
+                <span class="financial-title">💰 Bolsas Pagas</span>
+            </div>
+            <div class="financial-value pago" id="fin-bolsa-pago">R$ 0</div>
+            <p style="color: rgba(255,255,255,0.4); font-size: 0.8rem; margin-top: 8px;">Total pago aos candidatos</p>
+        </div>
+        <div class="financial-card">
+            <div class="financial-header">
+                <span class="financial-title">⏳ Pendências</span>
+            </div>
+            <div class="financial-value pendente" id="fin-pendencias">R$ 0</div>
+            <p style="color: rgba(255,255,255,0.4); font-size: 0.8rem; margin-top: 8px;">Aguardando pagamento</p>
+        </div>
+    </div>
+
+    <!-- Process Flow -->
+    <div class="process-section">
+        <h2 class="process-title">Fluxo do Processo Seletivo</h2>
+        <div class="process-steps">
+            <div class="process-step">
+                <div class="step-icon">1</div>
+                <div class="step-label">Vaga Postada</div>
+                <div class="step-count" id="step-vagas">0 vagas</div>
+            </div>
+            <div class="process-step">
+                <div class="step-icon">2</div>
+                <div class="step-label">Desafios Iniciados</div>
+                <div class="step-count" id="step-iniciados">0 desafios</div>
+            </div>
+            <div class="process-step">
+                <div class="step-icon">3</div>
+                <div class="step-label">Avaliados</div>
+                <div class="step-count" id="step-avaliados">0 avaliações</div>
+            </div>
+            <div class="process-step">
+                <div class="step-icon">4</div>
+                <div class="step-label">Avançados</div>
+                <div class="step-count" id="step-avancados">0 candidatos</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info & How It Works -->
+    <div class="info-grid">
+        <div class="info-card">
+            <h3 class="info-card-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                Como Funciona
+            </h3>
+            <ul class="info-list">
+                <li><strong>1. Publique uma vaga</strong> com critérios técnicos objetivos</li>
+                <li><strong>2. Crie um desafio</strong> derivado de um problema real já resolvido</li>
+                <li><strong>3. Defina a bolsa técnica</strong> que será paga ao candidato</li>
+                <li><strong>4. Receba avaliações</strong> com score de IA e relatório técnico</li>
+                <li><strong>5. Avance candidatos</strong> para entrevistas com canal privado</li>
+            </ul>
+        </div>
+        <div class="info-card">
+            <h3 class="info-card-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                Diferenciais da Plataforma
+            </h3>
+            <ul class="info-list">
+                <li>✓ <strong>Avaliação contextual</strong> - Competências no contexto real da vaga</li>
+                <li>✓ <strong>Reduz falso positivo</strong> - Testes práticos, não teóricos</li>
+                <li>✓ <strong>Sem exploração</strong> - Candidato recebe bolsa independente de contratação</li>
+                <li>✓ <strong>Rastreabilidade</strong> - Padronização na avaliação técnica</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- How It Works -->
+    <div class="how-it-works">
+        <h2 class="how-title">Modelo de Negócio</h2>
+        <div class="how-grid">
+            <div class="how-item">
+                <div class="how-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                    </svg>
+                </div>
+                <div class="how-step-title">Empresas Pagam</div>
+                <div class="how-step-desc">Taxa por vaga publicada + bolsa técnica do desafio</div>
+            </div>
+            <div class="how-item">
+                <div class="how-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div class="how-step-title">Desenvolvedores Grátis</div>
+                <div class="how-step-desc">Participam sem custo e recebem bolsa garantida</div>
+            </div>
+            <div class="how-item">
+                <div class="how-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="20" x2="12" y2="10"></line>
+                        <line x1="18" y1="20" x2="18" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="16"></line>
+                    </svg>
+                </div>
+                <div class="how-step-title">Eficiência</div>
+                <div class="how-step-desc">Monetização ligada ao sucesso da contratação</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function carregarDashboard() {
+        const us = JSON.parse(sessionStorage.getItem('usuario') || '{}');
+        const empresaId = us.public_id;
+
+        if (!empresaId) {
+            document.getElementById('stats-grid').innerHTML = '<p style="color:rgba(255,255,255,0.4);">Carregando métricas...</p>';
+            return;
+        }
+
+        try {
+            // Carregar métricas
+            const res = await fetch(`/api/v1/pagamentos/metricas?empresa_id=${encodeURIComponent(empresaId)}`);
+            if (!res.ok) throw new Error('Falha ao carregar métricas');
+
+            const dados = await res.json();
+
+            // Atualizar cards
+            document.getElementById('stat-vagas').textContent = dados.vagas_ativas || 0;
+            document.getElementById('stat-candidatos').textContent = dados.candidaturas_total || 0;
+            document.getElementById('stat-entregues').textContent = dados.desafios_entregues || 0;
+            document.getElementById('stat-conversao').textContent = (dados.taxa_conversao_percent || 0) + '%';
+
+            // Financeiro
+            document.getElementById('fin-bolsa-pago').textContent = 'R$ ' + (dados.total_bolsa_pago || 0).toLocaleString('pt-BR');
+            document.getElementById('fin-pendencias').textContent = 'R$ ' + (dados.pendencias_valor || 0).toLocaleString('pt-BR');
+
+            // Fluxo
+            document.getElementById('step-vagas').textContent = (dados.vagas_ativas || 0) + ' vagas';
+            document.getElementById('step-iniciados').textContent = (dados.candidaturas_andamento || 0) + ' em andamento';
+            document.getElementById('step-avaliados').textContent = (dados.desafios_entregues || 0) + ' avaliados';
+            document.getElementById('step-avancados').textContent = (dados.avanzados_entrevista || 0) + ' avançados';
+
+        } catch (err) {
+            console.error('[DASHBOARD]', err);
+        }
+    }
+
+    // Inicializar
+    carregarDashboard();
+</script>

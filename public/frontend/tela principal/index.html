@@ -178,11 +178,24 @@
                 <!-- Itens de navegação horizontal entre logo e pesquisa -->
                 <div class="flex items-center gap-2">
 
+                    <!-- Botão: Como Funciona -->
+                    <button onclick="loadSection('como-funciona', this)"
+                        class="nav-item nav-item-horizontal flex items-center gap-2">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        <span>Como Funciona</span>
+                    </button>
+
                     <!-- Botão: Vagas (Item ativo por padrão) -->
                     <button onclick="loadSection('recomendacoes', this)"
-                        class="nav-item nav-item-horizontal nav-item-active flex items-center gap-2"
+                        class="nav-item nav-item-horizontal flex items-center gap-2"
                         style="background-color: var(--color-primary);">
-                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
                             <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
                             <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path>
                         </svg>

@@ -1,0 +1,475 @@
+<style>
+    .como-container {
+        animation: fadeIn 0.4s ease;
+    }
+
+    .como-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .como-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 1rem;
+    }
+
+    .como-subtitle {
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.6);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, rgba(233, 30, 99, 0.15), rgba(255, 20, 147, 0.05));
+        border: 1px solid rgba(233, 30, 99, 0.3);
+        border-radius: 20px;
+        padding: 3rem;
+        margin-bottom: 3rem;
+        text-align: center;
+    }
+
+    .hero-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 1rem;
+    }
+
+    .hero-desc {
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.7);
+        max-width: 700px;
+        margin: 0 auto;
+        line-height: 1.7;
+    }
+
+    /* Steps */
+    .steps-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .step-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 2rem;
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .step-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+    }
+
+    .step-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(233, 30, 99, 0.3);
+        background: rgba(233, 30, 99, 0.05);
+    }
+
+    .step-number {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 1.5rem;
+    }
+
+    .step-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 0.8rem;
+    }
+
+    .step-desc {
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.6);
+        line-height: 1.6;
+    }
+
+    /* Benefits */
+    .benefits-section {
+        margin-bottom: 3rem;
+    }
+
+    .benefits-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #fff;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .benefit-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .benefit-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 10px;
+        background: rgba(34, 197, 94, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #22c55e;
+        flex-shrink: 0;
+    }
+
+    .benefit-title {
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 0.4rem;
+    }
+
+    .benefit-desc {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* FAQ */
+    .faq-section {
+        margin-bottom: 3rem;
+    }
+
+    .faq-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #fff;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .faq-item {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        overflow: hidden;
+    }
+
+    .faq-question {
+        padding: 1.2rem 1.5rem;
+        font-weight: 600;
+        color: #fff;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .faq-question:hover {
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .faq-answer {
+        padding: 0 1.5rem 1.2rem;
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.6;
+        display: none;
+    }
+
+    .faq-item.active .faq-answer {
+        display: block;
+    }
+
+    /* CTA */
+    .cta-section {
+        background: linear-gradient(135deg, rgba(233, 30, 99, 0.2), rgba(255, 20, 147, 0.1));
+        border: 1px solid rgba(233, 30, 99, 0.3);
+        border-radius: 20px;
+        padding: 3rem;
+        text-align: center;
+    }
+
+    .cta-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 1rem;
+    }
+
+    .cta-desc {
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 2rem;
+    }
+
+    .cta-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 32px;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(233, 30, 99, 0.4);
+    }
+</style>
+
+<div class="como-container">
+    <div class="como-header">
+        <h1 class="como-title">Como Funciona a Trivio</h1>
+        <p class="como-subtitle">Plataforma de recrutamento técnico que conecta empresas e desenvolvedores através de
+            desafios práticos e avaliação por IA</p>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero-section">
+        <h2 class="hero-title">Avaliação Técnica Real, Não Teórica</h2>
+        <p class="hero-desc">
+            Diferente de processos tradicionais, a Trivio oferece desafios técnicos derivados de problemas reais já
+            resolvidos internamente pelas empresas.
+            Você resolve um desafio prático, recebe uma bolsa técnica garantida independente de contratação, e ainda tem
+            a chance de ser advancemento para entrevistas.
+        </p>
+    </div>
+
+    <!-- Passos para o Candidato -->
+    <h3 style="font-size: 1.5rem; font-weight: 800; color: #fff; text-align: center; margin-bottom: 2rem;">Passo a Passo
+    </h3>
+
+    <div class="steps-container">
+        <div class="step-card">
+            <div class="step-number">1</div>
+            <h4 class="step-title">Crie Seu Perfil</h4>
+            <p class="step-desc">
+                Cadastre-se e preencha seu perfil técnico com GitHub, LinkedIn, skills e experiência.
+                Passamos por uma verificação básica de identidade e histórico público.
+            </p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-number">2</div>
+            <h4 class="step-title">Receba Um Desafio</h4>
+            <p class="step-desc">
+                Para cada vaga, você recebe apenas um desafio técnico. Isso evita exploração
+                e competição em massa, garantindo oportunidade justa para todos.
+            </p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-number">3</div>
+            <h4 class="step-title">Resolva em Tempo Limitado</h4>
+            <p class="step-desc">
+                Você tem tempo limitado para resolver o desafio em ambiente isolado,
+                demonstrando suas competências técnicas no contexto real da vaga.
+            </p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-number">4</div>
+            <h4 class="step-title">Receba a Bolsa Técnica</h4>
+            <p class="step-desc">
+                Após entregar a solução, você recebe a bolsa técnica diretamente,
+                independente de ser contratado ou não.
+            </p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-number">5</div>
+            <h4 class="step-title">Avaliação por IA</h4>
+            <p class="step-desc">
+                Sua solução é pré-avaliada por IA, que analisa abordagem, arquitetura,
+                clareza de raciocínio e riscos técnicos.
+            </p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-number">6</div>
+            <h4 class="step-title">Avance para Entrevista</h4>
+            <p class="step-desc">
+                Se a empresa tiver interesse, você recebe um convite para entrevista
+                através de um canal privado disponibilizado na plataforma.
+            </p>
+        </div>
+    </div>
+
+    <!-- Diferenciais -->
+    <div class="benefits-section">
+        <h3 class="benefits-title">Por Que Participar da Trivio?</h3>
+
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="benefit-title">Bolsa Garantida</div>
+                    <div class="benefit-desc">Receba a bolsa técnica independente de contratação</div>
+                </div>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="benefit-title">Sem Exploração</div>
+                    <div class="benefit-desc">Apenas um desafio por vaga - sem trabalhos gratuitos</div>
+                </div>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                </div>
+                <div>
+                    <div class="benefit-title">Avaliação Justa</div>
+                    <div class="benefit-desc">Avaliação padronizada por IA, sem viés humano inicial</div>
+                </div>
+            </div>
+
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </div>
+                <div>
+                    <div class="benefit-title">Contexto Real</div>
+                    <div class="benefit-desc">Desafios derivados de problemas reais já resolvidos</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="faq-section">
+        <h3 class="faq-title">Perguntas Frequentes</h3>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>Quanto tempo tenho para resolver o desafio?</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </div>
+            <div class="faq-answer">
+                O tempo limite varia conforme o desafio, geralmente entre 2 a 8 horas. O prazo específico é informado
+                junto com o desafio.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>Preciso pagar algo para participar?</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </div>
+            <div class="faq-answer">
+                Não! A participação é totalmente gratuita para desenvolvedores. As empresas que pagam pela vaga e pela
+                bolsa técnica.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>Recebo a bolsa mesmo se não for contratado?</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </div>
+            <div class="faq-answer">
+                Sim! A bolsa técnica é sua independente do resultado do processo seletivo. Você recebe independentemente
+                de ser advancemento ou contratado.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>Como funciona a avaliação por IA?</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </div>
+            <div class="faq-answer">
+                A IA analisa sua solução considerando abordagem técnica, arquitetura, clareza de código, tratamento de
+                erros e riscos técnicos. Você recebe um score e um relatório detalhado.
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+        <h2 class="cta-title">Pronto para Potencializar Sua Carreira?</h2>
+        <p class="cta-desc">Junte-se a milhares de desenvolvedores que estão sendo avaliados de forma justa e sendo
+            pagos por seu trabalho técnico.</p>
+        <button class="cta-button" onclick="irParaVagas()">
+            Ver Vagas Disponíveis
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        </button>
+    </div>
+</div>
+
+<script>
+    function toggleFaq(element) {
+        const faqItem = element.parentElement;
+        faqItem.classList.toggle('active');
+    }
+
+    function irParaVagas() {
+        // Navigate to recommendations/vagas page
+        const vagasButton = document.querySelector("button[onclick*='recomendacoes']");
+        if (vagasButton) {
+            vagasButton.click();
+        } else {
+            // Fallback - try to find and click the main vacancies button
+            window.location.href = '/frontend/tela principal/index.html';
+        }
+    }
+</script>

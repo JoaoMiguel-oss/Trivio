@@ -1,478 +1,635 @@
-<div>
-    <!-- Feed de Usuários Ativos em Tempo Real -->
-    <div class="mb-8 p-6 rounded-lg" style="background: linear-gradient(135deg, rgba(233, 30, 99, 0.1), rgba(255, 20, 147, 0.05)); border: 1px solid rgba(233, 30, 99, 0.2);">
-        <div class="flex items-center gap-3 mb-4">
-            <div class="relative">
-                <!-- Ícone de atividade/pulso -->
-                <svg class="w-6 h-6" style="color: var(--color-primary);" viewBox="0 0 24 24">
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <!-- Indicador de status online -->
-                <span class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2" style="border-color: var(--color-surface);"></span>
-            </div>
-            <h2 class="text-xl font-bold">Usuários resolvendo desafios agora</h2>
-            <span class="text-sm text-gray-400" id="active-count">0</span>
+<style>
+    .desafios-empresa-container {
+        animation: fadeIn 0.4s ease;
+    }
+
+    .stat-card-empresa {
+        background: linear-gradient(135deg, rgba(233, 30, 99, 0.1), rgba(255, 20, 147, 0.05));
+        border: 1px solid rgba(233, 30, 99, 0.2);
+        border-radius: 10px;
+        padding: 18px 20px;
+        transition: all 0.3s;
+    }
+
+    .stat-card-empresa:hover {
+        border-color: rgba(233, 30, 99, 0.4);
+    }
+
+    .desafio-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        padding: 1.5rem;
+        transition: all 0.2s;
+    }
+
+    .desafio-card:hover {
+        border-color: rgba(233, 30, 99, 0.25);
+        background: rgba(233, 30, 99, 0.04);
+    }
+
+    .nivel-badge {
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(4px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .modal-overlay.show {
+        display: flex;
+        opacity: 1;
+    }
+
+    .modal-content {
+        background: #1a1a1a;
+        border: 1px solid rgba(233, 30, 99, 0.3);
+        border-radius: 16px;
+        width: 100%;
+        max-width: 650px;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 2rem;
+        position: relative;
+        transform: translateY(20px);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .modal-overlay.show .modal-content {
+        transform: translateY(0);
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.4);
+        cursor: pointer;
+        font-size: 1.4rem;
+    }
+
+    .modal-close:hover {
+        color: white;
+    }
+
+    .form-group-emp {
+        margin-bottom: 1.1rem;
+    }
+
+    .form-label-emp {
+        display: block;
+        margin-bottom: 0.4rem;
+        color: rgba(255, 255, 255, 0.65);
+        font-size: 0.88rem;
+        font-weight: 500;
+    }
+
+    .form-input-emp {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: white;
+        font-family: inherit;
+        font-size: 0.95rem;
+        transition: border-color 0.2s;
+    }
+
+    .form-input-emp:focus {
+        outline: none;
+        border-color: var(--color-primary);
+    }
+
+    textarea.form-input-emp {
+        min-height: 90px;
+        resize: vertical;
+    }
+
+    .form-row-emp {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .btn-primary-emp {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 11px 20px;
+        transition: opacity 0.2s;
+    }
+
+    .btn-primary-emp:hover {
+        opacity: 0.85;
+    }
+
+    .btn-primary-emp:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .candidatos-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .candidato-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        padding: 1rem;
+    }
+
+    .status-badge-cand {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 700;
+    }
+
+    .status-em-andamento {
+        background: rgba(234, 179, 8, 0.15);
+        color: #eab308;
+        border: 1px solid rgba(234, 179, 8, 0.3);
+    }
+
+    .status-entregue {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .toast-emp {
+        position: fixed;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        padding: 14px 22px;
+        border-radius: 10px;
+        font-weight: 600;
+        color: white;
+        z-index: 2000;
+        transform: translateY(80px);
+        opacity: 0;
+        transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        background: var(--color-primary);
+    }
+
+    .toast-emp.show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+</style>
+
+<div class="desafios-empresa-container">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 style="font-size: 1.8rem; font-weight: 800; color: #fff;">Desafios Técnicos</h1>
+            <p style="color: rgba(255,255,255,0.45); margin-top: 5px; font-size: 0.9rem;">
+                Desafios derivados de problemas reais da sua empresa. Candidatos recebem a bolsa garantida.
+            </p>
         </div>
-        
-        <!-- Container do feed de usuários -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="active-users-feed">
-            <!-- Usuários serão inseridos aqui via JavaScript -->
-            <div class="p-4 rounded-lg text-center text-gray-500 col-span-full" style="background-color: rgba(36, 36, 36, 0.8); border: 1px solid rgba(255,255,255,0.05);">
-                <p>Nenhum usuário ativo no momento.</p>
-            </div>
+        <button class="btn-primary-emp" onclick="abrirModalDesafio()"
+            style="display: flex; align-items: center; gap: 8px; font-size: 0.95rem;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Novo Desafio
+        </button>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="stat-card-empresa">
+            <p style="color:rgba(255,255,255,0.45); font-size:0.82rem; margin-bottom:6px;">Desafios Ativos</p>
+            <h3 style="font-size:1.8rem; font-weight:800;" id="emp-stat-ativos">0</h3>
+            <p style="color:var(--color-accent); font-size:0.72rem; margin-top:6px;">Em andamento</p>
+        </div>
+        <div class="stat-card-empresa">
+            <p style="color:rgba(255,255,255,0.45); font-size:0.82rem; margin-bottom:6px;">Candidatos</p>
+            <h3 style="font-size:1.8rem; font-weight:800;" id="emp-stat-candidatos">0</h3>
+            <p style="color:#22c55e; font-size:0.72rem; margin-top:6px;">Realizando desafios</p>
+        </div>
+        <div class="stat-card-empresa">
+            <p style="color:rgba(255,255,255,0.45); font-size:0.82rem; margin-bottom:6px;">Total Bolsas</p>
+            <h3 style="font-size:1.8rem; font-weight:800;" id="emp-stat-bolsa">R$ 0</h3>
+            <p style="color:#3b82f6; font-size:0.72rem; margin-top:6px;">Valor investido em triagem</p>
+        </div>
+        <div class="stat-card-empresa">
+            <p style="color:rgba(255,255,255,0.45); font-size:0.82rem; margin-bottom:6px;">Taxa de Conversão</p>
+            <h3 style="font-size:1.8rem; font-weight:800;" id="emp-stat-conversao">–</h3>
+            <p style="color:rgba(255,255,255,0.4); font-size:0.72rem; margin-top:6px;">Desafio → Entrevista</p>
         </div>
     </div>
 
-    <!-- Vagas da Empresa -->
-    <div class="mb-8">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-bold">Minhas Vagas Publicadas</h2>
-            <button id="btn-nova-vaga" class="px-4 py-2 rounded-lg font-semibold text-white transition hover:opacity-90" style="background-color: var(--color-primary);">
-                + Nova Vaga
-            </button>
-        </div>
-        
-        <!-- Container de vagas -->
-        <div id="vagas-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Vagas serão inseridas aqui via JavaScript -->
-            <div class="col-span-full text-center text-gray-500 p-8" style="background-color: rgba(36, 36, 36, 0.8); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px;">
-                <p>Carregando vagas...</p>
-            </div>
-        </div>
+    <!-- Info Banner -->
+    <div class="mb-6 p-4 rounded-xl flex items-start gap-3"
+        style="background: rgba(59,130,246,0.07); border: 1px solid rgba(59,130,246,0.2);">
+        <svg class="w-5 h-5 flex-shrink-0 mt-0.5" style="color:#60a5fa;" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" />
+            <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <circle cx="12" cy="16" r="1" fill="currentColor" />
+        </svg>
+        <p class="text-sm" style="color:rgba(255,255,255,0.6); line-height:1.6;">
+            <strong class="text-white">Como funciona:</strong> Publique um desafio derivado de um problema real já
+            resolvido internamente. O candidato recebe a <strong class="text-white">bolsa técnica independentemente de
+                contratação</strong>. Você recebe análise IA + score técnico antes de decidir sobre entrevista.
+        </p>
     </div>
 
-    <!-- Modal de Nova Vaga -->
-    <div id="vaga-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-        <div class="bg-gray-900 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto" style="background-color: var(--color-surface);">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-2xl font-bold" id="modal-title">Nova Vaga</h2>
-                    <button onclick="hideVagaForm()" class="text-gray-400 hover:text-white text-2xl">✕</button>
-                </div>
-                
-                <form id="vaga-form" onsubmit="saveVaga(event)">
-                    <input type="hidden" id="vaga-id">
-                    
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-semibold mb-2">Título da Vaga *</label>
-                            <input type="text" id="vaga-titulo" class="w-full py-3 px-4 rounded-lg bg-gray-900 border border-gray-700 text-white focus:outline-none focus:border-pink-500" placeholder="Ex: Desenvolvedor Frontend" required>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold mb-2">Descrição</label>
-                            <textarea id="vaga-descricao" rows="4" class="w-full py-3 px-4 rounded-lg bg-gray-900 border border-gray-700 text-white focus:outline-none focus:border-pink-500" placeholder="Descreva as responsabilidades da vaga..."></textarea>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold mb-2">Requisitos</label>
-                            <textarea id="vaga-requisitos" rows="3" class="w-full py-3 px-4 rounded-lg bg-gray-900 border border-gray-700 text-white focus:outline-none focus:border-pink-500" placeholder="Liste os requisitos para a vaga..."></textarea>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-semibold mb-2">Remuneração</label>
-                                <input type="text" id="vaga-remuneracao" class="w-full py-3 px-4 rounded-lg bg-gray-900 border border-gray-700 text-white focus:outline-none focus:border-pink-500" placeholder="Ex: R$ 5.000 - R$ 8.000">
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-semibold mb-2">Tipo de Contrato</label>
-                                <select id="vaga-tipo" class="w-full py-3 px-4 rounded-lg bg-gray-900 border border-gray-700 text-white focus:outline-none focus:border-pink-500">
-                                    <option value="CLT">CLT</option>
-                                    <option value="PJ">PJ</option>
-                                    <option value="Estágio">Estágio</option>
-                                    <option value="Temporário">Temporário</option>
-                                    <option value="Freelancer">Freelancer</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold mb-2">Localização</label>
-                            <input type="text" id="vaga-localizacao" class="w-full py-3 px-4 rounded-lg bg-gray-900 border border-gray-700 text-white focus:outline-none focus:border-pink-500" placeholder="Ex: São Paulo, SP (Híbrido)">
-                        </div>
-                    </div>
-                    
-                    <div class="flex gap-3 mt-6">
-                        <button type="submit" class="flex-1 py-3 rounded-lg font-semibold text-white transition hover:opacity-90" style="background-color: var(--color-primary);" id="save-vaga-btn">
-                            Publicar Vaga
-                        </button>
-                        <button type="button" onclick="hideVagaForm()" class="px-6 py-3 rounded-lg font-semibold border-2 transition hover:opacity-90" style="border-color: var(--color-accent); color: var(--color-accent);">
-                            Cancelar
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-4 right-4 px-6 py-3 rounded-lg font-semibold text-white transition-all transform translate-y-20 opacity-0 z-50" style="background-color: var(--color-primary);">
-        <span id="toast-message">Mensagem</span>
+    <!-- Lista de desafios -->
+    <div id="emp-desafios-list" class="grid grid-cols-1 gap-4">
+        <p style="color:rgba(255,255,255,0.35); text-align:center; padding:3rem;">Carregando desafios...</p>
     </div>
 </div>
 
+<!-- MODAL CRIAR/EDITAR DESAFIO -->
+<div class="modal-overlay" id="desafioModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="fecharModalDesafio()">×</button>
+        <h2 style="font-size:1.4rem; font-weight:800; color:#fff; margin-bottom:1.5rem;" id="modal-desafio-title">Novo
+            Desafio Técnico</h2>
+
+        <form id="desafioForm" onsubmit="salvarDesafio(event)">
+            <input type="hidden" id="desafio-id">
+
+            <div class="form-group-emp">
+                <label class="form-label-emp">Título do Desafio *</label>
+                <input type="text" class="form-input-emp" id="desafio-titulo" required
+                    placeholder="Ex: Otimizar query N+1 em API de produtos">
+            </div>
+
+            <div class="form-group-emp">
+                <label class="form-label-emp">Descrição do Problema *</label>
+                <textarea class="form-input-emp" id="desafio-descricao" required
+                    placeholder="Descreva o desafio técnico isolado, derivado de um problema real já resolvido internamente. NÃO inclua código proprietário."></textarea>
+            </div>
+
+            <div class="form-row-emp">
+                <div class="form-group-emp">
+                    <label class="form-label-emp">Stack / Tecnologia *</label>
+                    <input type="text" class="form-input-emp" id="desafio-stack" required
+                        placeholder="Ex: Node.js, PostgreSQL">
+                </div>
+                <div class="form-group-emp">
+                    <label class="form-label-emp">Nível</label>
+                    <select class="form-input-emp" id="desafio-nivel">
+                        <option value="junior">Júnior</option>
+                        <option value="pleno">Pleno</option>
+                        <option value="senior">Sênior</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row-emp">
+                <div class="form-group-emp">
+                    <label class="form-label-emp">Bolsa Técnica (R$) *</label>
+                    <input type="number" class="form-input-emp" id="desafio-bolsa" min="0" step="50"
+                        placeholder="Ex: 300" required>
+                    <p style="color:rgba(255,255,255,0.35); font-size:0.75rem; margin-top:4px;">Paga ao candidato
+                        independente de contratação</p>
+                </div>
+                <div class="form-group-emp">
+                    <label class="form-label-emp">Tempo Limite (horas)</label>
+                    <input type="number" class="form-input-emp" id="desafio-tempo" min="1" max="72" value="4"
+                        placeholder="Ex: 4">
+                </div>
+            </div>
+
+            <div class="form-group-emp">
+                <label class="form-label-emp">Instruções para o Candidato</label>
+                <textarea class="form-input-emp" id="desafio-instrucoes"
+                    placeholder="Como o candidato deve estruturar a solução? O que deve entregar?"></textarea>
+            </div>
+
+            <div class="form-group-emp">
+                <label class="form-label-emp">Critérios de Avaliação</label>
+                <textarea class="form-input-emp" id="desafio-criterios"
+                    placeholder="O que a IA avaliará: arquitetura, clareza de código, performance, tratamento de erros..."></textarea>
+            </div>
+
+            <div class="flex gap-3 mt-6">
+                <button type="submit" class="btn-primary-emp flex-1" id="btn-salvar-desafio"
+                    style="padding:13px; font-size:1rem;">
+                    Publicar Desafio
+                </button>
+                <button type="button" onclick="fecharModalDesafio()"
+                    style="padding:13px 20px; background:transparent; border:1px solid rgba(255,255,255,0.15); border-radius:10px; color:white; cursor:pointer; font-size:0.9rem;">
+                    Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL CANDIDATOS DO DESAFIO -->
+<div class="modal-overlay" id="candidatosModal">
+    <div class="modal-content" style="max-width:750px;">
+        <button class="modal-close" onclick="fecharModalCandidatos()">×</button>
+        <h2 style="font-size:1.3rem; font-weight:800; color:#fff; margin-bottom:0.3rem;" id="modal-candidatos-title">
+            Candidatos</h2>
+        <p style="color:rgba(255,255,255,0.4); font-size:0.85rem; margin-bottom:1.5rem;" id="modal-candidatos-sub"></p>
+        <div class="candidatos-grid" id="candidatos-list">
+            <p style="color:rgba(255,255,255,0.35); grid-column:1/-1; text-align:center; padding:2rem;">Carregando...
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-emp" id="emp-toast"></div>
+
 <script>
-    // ==========================================
-    // FEED DE USUÁRIOS ATIVOS EM TEMPO REAL
-    // ==========================================
-    
-    /**
-     * Dados de usuários ativos - Preencher via API
-     */
-    const activeUsersData = [];
-    
-    /**
-     * Função que formata o tempo decorrido
-     * @param {number} startTime - Timestamp de início em milissegundos
-     * @returns {string} Tempo formatado
-     */
-    function formatElapsedTime(startTime) {
-        if (!startTime) return '0s';
-        
-        const elapsed = Math.floor((Date.now() - startTime) / 1000);
-        
-        if (elapsed < 60) {
-            return `${elapsed}s`;
-        } else if (elapsed < 3600) {
-            const min = Math.floor(elapsed / 60);
-            return `${min} min`;
-        } else {
-            const hours = Math.floor(elapsed / 3600);
-            const min = Math.floor((elapsed % 3600) / 60);
-            return `${hours}h ${min}min`;
-        }
-    }
-    
-    /**
-     * Função que retorna a cor de fundo para o avatar
-     * @param {string} color - Nome da cor
-     * @returns {string} Classe CSS de cor de fundo
-     */
-    function getAvatarColor(color) {
-        const colors = {
-            "blue": "bg-blue-600",
-            "green": "bg-green-600",
-            "red": "bg-red-600",
-            "yellow": "bg-yellow-600",
-            "purple": "bg-purple-600",
-            "cyan": "bg-cyan-600"
-        };
-        return colors[color] || "bg-gray-600";
-    }
-    
-    /**
-     * Função que renderiza o feed de usuários ativos
-     */
-    function renderActiveUsersFeed() {
-        const feedContainer = document.getElementById('active-users-feed');
-        if (!feedContainer) return;
+    let meusDesafios = [];
 
-        if (activeUsersData.length === 0) {
-            feedContainer.innerHTML = `
-                <div class="p-4 rounded-lg text-center text-gray-500 col-span-full" style="background-color: rgba(36, 36, 36, 0.8); border: 1px solid rgba(255,255,255,0.05);">
-                    <p>Nenhum usuário ativo no momento.</p>
-                </div>
-            `;
-            const countElement = document.getElementById('active-count');
-            if (countElement) {
-                countElement.textContent = '0';
-            }
-            return;
-        }
-        
-        // Ordena por tempo (mais antigos primeiro)
-        const sortedUsers = [...activeUsersData].sort((a, b) => a.startTime - b.startTime);
-        
-        let html = '';
-        sortedUsers.forEach(user => {
-            html += `
-                <div class="p-4 rounded-lg transition-all hover:scale-[1.02]" style="background-color: rgba(36, 36, 36, 0.8); border: 1px solid rgba(255,255,255,0.05);">
-                    <div class="flex items-center gap-3">
-                        <!-- Avatar do usuário -->
-                        <div class="w-10 h-10 rounded-full ${getAvatarColor(user.color)} flex items-center justify-center text-white font-bold text-sm">
-                            ${user.avatar || '?'}
-                        </div>
-                        <!-- Informações do usuário -->
-                        <div class="flex-1 min-w-0">
-                            <p class="font-semibold text-white truncate">${user.name || 'Usuário'}</p>
-                            <p class="text-xs text-gray-400 truncate">${user.challenge || 'Desafio'}</p>
-                        </div>
-                        <!-- Tempo decorrido -->
-                        <div class="text-right">
-                            <span class="text-xs font-mono" style="color: var(--color-primary);">${formatElapsedTime(user.startTime)}</span>
-                        </div>
-                    </div>
-                    <!-- Barra de progresso -->
-                    <div class="mt-3 h-1.5 rounded-full bg-gray-700 overflow-hidden">
-                        <div class="h-full rounded-full transition-all duration-1000" style="width: 0%; background: linear-gradient(90deg, var(--color-primary), var(--color-accent));"></div>
-                    </div>
-                </div>
-            `;
-        });
-        
-        feedContainer.innerHTML = html;
-        
-        // Atualiza o contador de usuários ativos
-        const countElement = document.getElementById('active-count');
-        if (countElement) {
-            countElement.textContent = `${activeUsersData.length} online`;
-        }
+    function empToast(msg) {
+        const t = document.getElementById('emp-toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
     }
-    
-    /**
-     * Função que atualiza o feed periodicamente
-     */
-    function updateFeedPeriodically() {
-        // Atualiza o tempo decorrido a cada segundo
-        renderActiveUsersFeed();
-        
-        // Atualiza a cada 10 segundos
-        setInterval(() => {
-            renderActiveUsersFeed();
-        }, 10000);
-    }
-    
-    // Inicializa o feed de usuários ativos
-    renderActiveUsersFeed();
-    updateFeedPeriodically();
 
-    // ==========================================
-    // GESTÃO DE VAGAS
-    // ==========================================
-    
-    const API_URL = 'http://localhost:3001/api/v1/vagas';
-    let vagas = [];
-    
-    /**
-     * Função para carregar vagas do backend
-     */
-    async function loadVagas() {
-        const container = document.getElementById('vagas-container');
-        
+    function formatarBolsaEmp(v) {
+        if (!v || v === 0) return 'A combinar';
+        return `R$ ${parseFloat(v).toLocaleString('pt-BR', { maximumFractionDigits: 0 })}`;
+    }
+
+    function getNivelLabelEmp(nivel) {
+        const l = { junior: 'Júnior', pleno: 'Pleno', senior: 'Sênior' };
+        return l[nivel] || nivel || 'N/D';
+    }
+
+    function getNivelColorEmp(nivel) {
+        const c = { junior: '#3B82F6', pleno: '#F59E0B', senior: '#8B5CF6' };
+        return c[nivel] || '#6B7280';
+    }
+
+    async function carregarDesafiosEmpresa() {
+        const us = JSON.parse(sessionStorage.getItem('usuario') || '{}');
+        const empresaId = us.public_id || '';
+        const listDiv = document.getElementById('emp-desafios-list');
+
         try {
-            const response = await fetch(API_URL);
-            if (!response.ok) throw new Error('Erro ao carregar vagas');
-            
-            vagas = await response.json();
-            renderVagas();
-        } catch (error) {
-            console.error('Erro:', error);
-            container.innerHTML = `
-                <div class="col-span-full text-center text-red-400 p-8" style="background-color: rgba(36, 36, 36, 0.8); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px;">
-                    <p>Erro ao carregar vagas. Tente novamente.</p>
-                </div>
-            `;
+            const url = empresaId ? `/api/v1/desafios?empresa_id=${encodeURIComponent(empresaId)}` : '/api/v1/desafios';
+            const res = await fetch(url);
+            if (!res.ok) throw new Error();
+            meusDesafios = await res.json();
+            atualizarStatsEmpresa();
+            renderizarDesafiosEmpresa();
+        } catch {
+            listDiv.innerHTML = `<p style="color:#ef4444; text-align:center; padding:3rem;">Erro ao carregar desafios.</p>`;
         }
     }
-    
-    /**
-     * Função para renderizar as vagas na tela
-     */
-    function renderVagas() {
-        const container = document.getElementById('vagas-container');
-        
-        if (vagas.length === 0) {
-            container.innerHTML = `
-                <div class="col-span-full text-center text-gray-500 p-8" style="background-color: rgba(36, 36, 36, 0.8); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px;">
-                    <p>Nenhuma vaga publicada ainda.</p>
-                    <p class="text-sm mt-2">Clique em "Nova Vaga" para publicar a primeira!</p>
-                </div>
-            `;
+
+    function atualizarStatsEmpresa() {
+        document.getElementById('emp-stat-ativos').textContent = meusDesafios.length;
+        const totalBolsa = meusDesafios.reduce((s, d) => s + (d.bolsa_tecnica || 0), 0);
+        document.getElementById('emp-stat-bolsa').textContent = totalBolsa > 0 ? `R$ ${totalBolsa.toLocaleString('pt-BR')}` : 'R$ 0';
+    }
+
+    function renderizarDesafiosEmpresa() {
+        const listDiv = document.getElementById('emp-desafios-list');
+
+        if (!meusDesafios.length) {
+            listDiv.innerHTML = `
+                <div style="grid-column:1/-1; text-align:center; padding:4rem; background:rgba(255,255,255,0.02); border-radius:12px; border:1px dashed rgba(255,255,255,0.08);">
+                    <svg class="w-12 h-12 mx-auto mb-3 opacity-20" viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+                    <p style="color:rgba(255,255,255,0.5); font-size:1rem; font-weight:600;">Nenhum desafio publicado ainda.</p>
+                    <p style="color:rgba(255,255,255,0.3); font-size:0.85rem; margin-top:5px;">Clique em "Novo Desafio" para começar.</p>
+                </div>`;
             return;
         }
-        
-        let html = '';
-        vagas.forEach(vaga => {
-            html += `
-                <div class="p-5 rounded-lg transition-all hover:shadow-lg" style="background-color: rgba(36, 36, 36, 0.8); border: 1px solid rgba(255,255,255,0.05);">
+
+        listDiv.innerHTML = meusDesafios.map(d => {
+            const nivelColor = getNivelColorEmp(d.nivel);
+            return `
+                <div class="desafio-card">
                     <div class="flex items-start justify-between mb-3">
-                        <div>
-                            <h3 class="font-bold text-lg text-white">${vaga.titulo}</h3>
-                            <p class="text-sm text-gray-400">${vaga.localizacao || 'Local não especificado'}</p>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-1">
+                                <h3 style="font-size:1.1rem; font-weight:700; color:#fff;">${d.titulo}</h3>
+                                <span class="nivel-badge" style="background:${nivelColor}22; color:${nivelColor}; border:1px solid ${nivelColor}44;">
+                                    ${getNivelLabelEmp(d.nivel)}
+                                </span>
+                            </div>
+                            <p style="color:rgba(255,255,255,0.4); font-size:0.82rem;">
+                                Stack: <strong style="color:rgba(255,255,255,0.7);">${d.stack}</strong>
+                                &nbsp;·&nbsp; ${d.tempo_limite_h || 4}h limite
+                                ${d.vaga_titulo ? `&nbsp;·&nbsp; Vaga: <strong style="color:rgba(255,255,255,0.7);">${d.vaga_titulo}</strong>` : ''}
+                            </p>
                         </div>
-                        <span class="px-3 py-1 rounded-lg text-xs font-semibold" style="background-color: rgba(233, 30, 99, 0.2); color: var(--color-primary);">${vaga.tipo}</span>
+                        <div class="text-right ml-4">
+                            <p style="color:var(--color-accent); font-size:1.3rem; font-weight:800;">${formatarBolsaEmp(d.bolsa_tecnica)}</p>
+                            <p style="color:rgba(255,255,255,0.3); font-size:0.72rem;">bolsa técnica</p>
+                        </div>
                     </div>
-                    
-                    ${vaga.descricao ? `<p class="text-sm text-gray-400 mb-3 line-clamp-2">${vaga.descricao}</p>` : ''}
-                    
-                    ${vaga.remuneracao ? `<p class="text-sm font-semibold mb-3" style="color: var(--color-primary);">${vaga.remuneracao}</p>` : ''}
-                    
+
+                    <p style="color:rgba(255,255,255,0.55); font-size:0.88rem; line-height:1.5; margin-bottom:1rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
+                        ${d.descricao}
+                    </p>
+
                     <div class="flex gap-2">
-                        <button onclick="editVaga(${vaga.id})" class="flex-1 py-2 rounded-lg font-semibold text-white transition hover:opacity-90 text-sm" style="background-color: var(--color-primary);">Editar</button>
-                        <button onclick="deleteVaga(${vaga.id})" class="px-4 py-2 rounded-lg font-semibold border-2 transition hover:opacity-90 text-sm" style="border-color: #ef4444; color: #ef4444;">Excluir</button>
+                        <button onclick="verCandidatos(${d.id})"
+                            style="flex:1; padding:8px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:white; cursor:pointer; font-size:0.85rem; transition:0.2s;"
+                            onmouseenter="this.style.borderColor='rgba(255,255,255,0.3)'"
+                            onmouseleave="this.style.borderColor='rgba(255,255,255,0.1)'">
+                            Ver Candidatos
+                        </button>
+                        <button onclick='editarDesafio(${JSON.stringify(d).replace(/'/g, "&#39;")})'
+                            style="padding:8px 14px; background:rgba(233,30,99,0.1); border:1px solid rgba(233,30,99,0.25); border-radius:8px; color:var(--color-primary); cursor:pointer; font-size:0.85rem; transition:0.2s;"
+                            onmouseenter="this.style.background='rgba(233,30,99,0.2)'"
+                            onmouseleave="this.style.background='rgba(233,30,99,0.1)'">
+                            Editar
+                        </button>
+                        <button onclick="encerrarDesafio(${d.id})"
+                            style="padding:8px 14px; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); border-radius:8px; color:#ef4444; cursor:pointer; font-size:0.85rem; transition:0.2s;"
+                            onmouseenter="this.style.background='rgba(239,68,68,0.18)'"
+                            onmouseleave="this.style.background='rgba(239,68,68,0.08)'">
+                            Encerrar
+                        </button>
                     </div>
                 </div>
             `;
-        });
-        
-        container.innerHTML = html;
+        }).join('');
     }
-    
-    /**
-     * Função para mostrar o modal de nova vaga
-     */
-    function showVagaForm(vagaId = null) {
-        const modal = document.getElementById('vaga-modal');
-        const form = document.getElementById('vaga-form');
-        const title = document.getElementById('modal-title');
-        const saveBtn = document.getElementById('save-vaga-btn');
-        
-        // Reset form
-        form.reset();
-        document.getElementById('vaga-id').value = '';
-        
-        if (vagaId) {
-            const vaga = vagas.find(v => v.id === vagaId);
-            if (vaga) {
-                title.textContent = 'Editar Vaga';
-                saveBtn.textContent = 'Salvar Alterações';
-                document.getElementById('vaga-id').value = vaga.id;
-                document.getElementById('vaga-titulo').value = vaga.titulo || '';
-                document.getElementById('vaga-descricao').value = vaga.descricao || '';
-                document.getElementById('vaga-requisitos').value = vaga.requisitos || '';
-                document.getElementById('vaga-remuneracao').value = vaga.remuneracao || '';
-                document.getElementById('vaga-tipo').value = vaga.tipo || 'CLT';
-                document.getElementById('vaga-localizacao').value = vaga.localizacao || '';
-            }
+
+    function abrirModalDesafio(desafioObj = null) {
+        document.getElementById('desafioForm').reset();
+        document.getElementById('desafio-id').value = '';
+        document.getElementById('desafio-tempo').value = '4';
+
+        if (desafioObj) {
+            document.getElementById('modal-desafio-title').textContent = 'Editar Desafio';
+            document.getElementById('btn-salvar-desafio').textContent = 'Salvar Alterações';
+            document.getElementById('desafio-id').value = desafioObj.id;
+            document.getElementById('desafio-titulo').value = desafioObj.titulo || '';
+            document.getElementById('desafio-descricao').value = desafioObj.descricao || '';
+            document.getElementById('desafio-stack').value = desafioObj.stack || '';
+            document.getElementById('desafio-nivel').value = desafioObj.nivel || 'junior';
+            document.getElementById('desafio-bolsa').value = desafioObj.bolsa_tecnica || '';
+            document.getElementById('desafio-tempo').value = desafioObj.tempo_limite_h || 4;
+            document.getElementById('desafio-instrucoes').value = desafioObj.instrucoes || '';
+            document.getElementById('desafio-criterios').value = desafioObj.criterios || '';
         } else {
-            title.textContent = 'Nova Vaga';
-            saveBtn.textContent = 'Publicar Vaga';
+            document.getElementById('modal-desafio-title').textContent = 'Novo Desafio Técnico';
+            document.getElementById('btn-salvar-desafio').textContent = 'Publicar Desafio';
         }
-        
-        modal.classList.remove('hidden');
+
+        document.getElementById('desafioModal').classList.add('show');
     }
-    
-    /**
-     * Função para ocultar o modal de vaga
-     */
-    function hideVagaForm() {
-        const modal = document.getElementById('vaga-modal');
-        modal.classList.add('hidden');
+
+    function fecharModalDesafio() {
+        document.getElementById('desafioModal').classList.remove('show');
     }
-    
-    /**
-     * Função para salvar uma vaga (criar ou atualizar)
-     */
-    async function saveVaga(event) {
-        event.preventDefault();
-        
-        const vagaId = document.getElementById('vaga-id').value;
-        const vagaData = {
-            titulo: document.getElementById('vaga-titulo').value,
-            descricao: document.getElementById('vaga-descricao').value,
-            requisitos: document.getElementById('vaga-requisitos').value,
-            remuneracao: document.getElementById('vaga-remuneracao').value,
-            tipo: document.getElementById('vaga-tipo').value,
-            localizacao: document.getElementById('vaga-localizacao').value
+
+    function editarDesafio(obj) {
+        abrirModalDesafio(obj);
+    }
+
+    async function salvarDesafio(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btn-salvar-desafio');
+        const origText = btn.textContent;
+        btn.textContent = 'Salvando...';
+        btn.disabled = true;
+
+        const us = JSON.parse(sessionStorage.getItem('usuario') || '{}');
+        const desafioId = document.getElementById('desafio-id').value;
+
+        const payload = {
+            empresa_id: us.public_id || 'emp-demo',
+            titulo: document.getElementById('desafio-titulo').value,
+            descricao: document.getElementById('desafio-descricao').value,
+            stack: document.getElementById('desafio-stack').value,
+            nivel: document.getElementById('desafio-nivel').value,
+            bolsa_tecnica: parseFloat(document.getElementById('desafio-bolsa').value) || 0,
+            tempo_limite_h: parseInt(document.getElementById('desafio-tempo').value) || 4,
+            instrucoes: document.getElementById('desafio-instrucoes').value,
+            criterios: document.getElementById('desafio-criterios').value
         };
-        
-        const saveBtn = document.getElementById('save-vaga-btn');
-        saveBtn.disabled = true;
-        saveBtn.textContent = 'Salvando...';
-        
+
         try {
-            let response;
-            if (vagaId) {
-                // Update existing vaga
-                response = await fetch(`${API_URL}/${vagaId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(vagaData)
-                });
-            } else {
-                // Create new vaga
-                response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(vagaData)
-                });
-            }
-            
-            if (!response.ok) throw new Error('Erro ao salvar vaga');
-            
-            const savedVaga = await response.json();
-            
-            if (vagaId) {
-                // Update in local array
-                const index = vagas.findIndex(v => v.id === parseInt(vagaId));
-                if (index !== -1) {
-                    vagas[index] = savedVaga;
-                }
-                showToast('Vaga atualizada com sucesso!');
-            } else {
-                // Add to local array
-                vagas.unshift(savedVaga);
-                showToast('Vaga publicada com sucesso!');
-            }
-            
-            renderVagas();
-            hideVagaForm();
-        } catch (error) {
-            console.error('Erro:', error);
-            showToast('Erro ao salvar vaga. Tente novamente.');
-        } finally {
-            saveBtn.disabled = false;
-            saveBtn.textContent = vagaId ? 'Salvar Alterações' : 'Publicar Vaga';
-        }
-    }
-    
-    /**
-     * Função para editar uma vaga
-     */
-    function editVaga(vagaId) {
-        showVagaForm(vagaId);
-    }
-    
-    /**
-     * Função para excluir uma vaga
-     */
-    async function deleteVaga(vagaId) {
-        if (!confirm('Tem certeza que deseja excluir esta vaga?')) return;
-        
-        try {
-            const response = await fetch(`${API_URL}/${vagaId}`, {
-                method: 'DELETE'
+            const url = desafioId ? `/api/v1/desafios/${desafioId}` : '/api/v1/desafios';
+            const method = desafioId ? 'PUT' : 'POST';
+            const res = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
             });
-            
-            if (!response.ok) throw new Error('Erro ao excluir vaga');
-            
-            // Remove from local array
-            vagas = vagas.filter(v => v.id !== vagaId);
-            
-            renderVagas();
-            showToast('Vaga excluída com sucesso!');
-        } catch (error) {
-            console.error('Erro:', error);
-            showToast('Erro ao excluir vaga. Tente novamente.');
+
+            if (res.ok) {
+                fecharModalDesafio();
+                empToast(desafioId ? 'Desafio atualizado!' : 'Desafio publicado com sucesso!');
+                carregarDesafiosEmpresa();
+            } else {
+                const d = await res.json();
+                empToast('Erro: ' + (d.erro || 'Falha ao salvar'));
+            }
+        } catch {
+            empToast('Erro de conexão. Tente novamente.');
+        } finally {
+            btn.textContent = origText;
+            btn.disabled = false;
         }
     }
-    
-    /**
-     * Função para mostrar toast de feedback
-     */
-    function showToast(message) {
-        const toast = document.getElementById('toast');
-        const toastMessage = document.getElementById('toast-message');
-        
-        toastMessage.textContent = message;
-        toast.classList.remove('translate-y-20', 'opacity-0');
-        
-        setTimeout(() => {
-            toast.classList.add('translate-y-20', 'opacity-0');
-        }, 3000);
+
+    async function encerrarDesafio(id) {
+        if (!confirm('Deseja encerrar este desafio? Candidatos em andamento continuarão até a entrega.')) return;
+        try {
+            const res = await fetch(`/api/v1/desafios/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                empToast('Desafio encerrado com sucesso.');
+                carregarDesafiosEmpresa();
+            } else {
+                empToast('Erro ao encerrar desafio.');
+            }
+        } catch {
+            empToast('Erro de conexão.');
+        }
     }
-    
-    // Makes functions globally accessible for dynamically loaded HTML
-    window.showVagaForm = showVagaForm;
-    window.hideVagaForm = hideVagaForm;
-    window.saveVaga = saveVaga;
-    window.editVaga = editVaga;
-    window.deleteVaga = deleteVaga;
-    
-    // Add event listener for the Nova Vaga button
-    document.getElementById('btn-nova-vaga').addEventListener('click', showVagaForm);
-    
-    // Carregar vagas ao inicializar a página
-    loadVagas();
+
+    async function verCandidatos(desafioId) {
+        const desafio = meusDesafios.find(d => d.id === desafioId);
+        document.getElementById('modal-candidatos-title').textContent = desafio?.titulo || 'Candidatos';
+        document.getElementById('modal-candidatos-sub').textContent = `Bolsa técnica: ${formatarBolsaEmp(desafio?.bolsa_tecnica)}`;
+        document.getElementById('candidatos-list').innerHTML = `<p style="color:rgba(255,255,255,0.35); grid-column:1/-1; text-align:center; padding:2rem;">Carregando...</p>`;
+        document.getElementById('candidatosModal').classList.add('show');
+
+        try {
+            const res = await fetch(`/api/v1/desafios/${desafioId}/candidaturas`);
+            const candidaturas = await res.json();
+            document.getElementById('emp-stat-candidatos').textContent = candidaturas.length;
+
+            if (!candidaturas.length) {
+                document.getElementById('candidatos-list').innerHTML = `<p style="color:rgba(255,255,255,0.35); grid-column:1/-1; text-align:center; padding:2rem;">Nenhum candidato ainda.</p>`;
+                return;
+            }
+
+            document.getElementById('candidatos-list').innerHTML = candidaturas.map(c => `
+                <div class="candidato-card">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div style="width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--color-primary),var(--color-accent)); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.85rem; color:white; flex-shrink:0;">
+                            ${(c.candidato_nome || 'C').substring(0, 2).toUpperCase()}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p style="font-weight:600; color:white; font-size:0.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${c.candidato_nome || 'Candidato'}</p>
+                            <p style="color:rgba(255,255,255,0.4); font-size:0.78rem;">${c.candidato_email || ''}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="status-badge-cand ${c.status === 'entregue' ? 'status-entregue' : 'status-em-andamento'}">
+                            ${c.status === 'entregue' ? '✓ Entregue' : '⏱ Em andamento'}
+                        </span>
+                        <span style="font-size:0.75rem; color:rgba(255,255,255,0.3);">
+                            ${new Date(c.iniciado_em).toLocaleDateString('pt-BR')}
+                        </span>
+                    </div>
+                    ${c.score_ia ? `<p style="margin-top:8px; font-size:0.8rem; color:var(--color-accent); font-weight:700;">Score IA: ${c.score_ia}/10</p>` : ''}
+                </div>
+            `).join('');
+        } catch {
+            document.getElementById('candidatos-list').innerHTML = `<p style="color:#ef4444; grid-column:1/-1; text-align:center;">Erro ao carregar candidatos.</p>`;
+        }
+    }
+
+    function fecharModalCandidatos() {
+        document.getElementById('candidatosModal').classList.remove('show');
+    }
+
+    // Fechar modais ao clicar fora
+    document.getElementById('desafioModal').addEventListener('click', function (e) {
+        if (e.target === this) fecharModalDesafio();
+    });
+    document.getElementById('candidatosModal').addEventListener('click', function (e) {
+        if (e.target === this) fecharModalCandidatos();
+    });
+
+    // Inicializa
+    carregarDesafiosEmpresa();
 </script>

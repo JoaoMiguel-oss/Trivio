@@ -275,10 +275,23 @@
                 <!-- Itens de navegação horizontal entre logo e pesquisa -->
                 <div class="flex items-center gap-2">
 
+                    <!-- Botão: Dashboard -->
+                    <button onclick="loadSection('dashboard', this)"
+                        class="nav-item nav-item-horizontal flex items-center gap-2">
+                        <!-- Dashboard/Gráficos -->
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        <span>Dashboard</span>
+                    </button>
+
                     <!-- Botão: Desafios (Item ativo por padrão) -->
                     <button onclick="loadSection('bugs', this)"
-                        class="nav-item nav-item-horizontal nav-item-active flex items-center gap-2"
-                        style="background-color: var(--color-primary);">
+                        class="nav-item nav-item-horizontal flex items-center gap-2">
                         <!-- Ícone de troféu/desafio -->
                         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
@@ -486,11 +499,11 @@
          * 3. Carrega automaticamente a seção de bugs como conteúdo inicial
          */
         document.addEventListener('DOMContentLoaded', () => {
-            // Seleciona o botão que contém 'bugs' no atributo onclick
-            const bugsButton = document.querySelector('button[onclick*="bugs"]');
+            // Seleciona o botão de dashboard
+            const dashboardButton = document.querySelector('button[onclick*="dashboard"]');
 
-            // Se o botão existir, carrega a seção de bugs
-            if (bugsButton) loadSection('bugs', bugsButton);
+            // Se o botão existir, carrega a seção de dashboard
+            if (dashboardButton) loadSection('dashboard', dashboardButton);
         });
 
         // ==========================================

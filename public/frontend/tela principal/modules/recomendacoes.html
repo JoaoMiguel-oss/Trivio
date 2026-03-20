@@ -1,5 +1,7 @@
 <style>
-    .recom-container { animation: fadeIn 0.4s ease; }
+    .recom-container {
+        animation: fadeIn 0.4s ease;
+    }
 
     .recom-grid {
         display: grid;
@@ -8,8 +10,8 @@
     }
 
     .recom-card {
-        background: rgba(255,255,255,0.03);
-        border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 12px;
         padding: 1.5rem;
         transition: all 0.2s;
@@ -19,8 +21,8 @@
     }
 
     .recom-card:hover {
-        border-color: rgba(233,30,99,0.4);
-        background: rgba(233,30,99,0.08);
+        border-color: rgba(233, 30, 99, 0.4);
+        background: rgba(233, 30, 99, 0.08);
         transform: translateY(-2px);
     }
 
@@ -48,7 +50,7 @@
     .company-name {
         font-size: 0.9rem;
         font-weight: 600;
-        color: rgba(255,255,255,0.6);
+        color: rgba(255, 255, 255, 0.6);
     }
 
     .recom-job-title {
@@ -63,7 +65,7 @@
         flex-wrap: wrap;
         gap: 0.6rem;
         font-size: 0.82rem;
-        color: rgba(255,255,255,0.5);
+        color: rgba(255, 255, 255, 0.5);
         margin-bottom: 1rem;
     }
 
@@ -71,19 +73,20 @@
         display: flex;
         align-items: center;
         gap: 4px;
-        background: rgba(255,255,255,0.05);
+        background: rgba(255, 255, 255, 0.05);
         padding: 3px 8px;
         border-radius: 6px;
     }
 
     .recom-desc {
         font-size: 0.88rem;
-        color: rgba(255,255,255,0.65);
+        color: rgba(255, 255, 255, 0.65);
         margin-bottom: 1.2rem;
         line-height: 1.5;
         flex: 1;
         display: -webkit-box;
         -webkit-line-clamp: 3;
+        line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
@@ -91,8 +94,8 @@
     .btn-apply {
         width: 100%;
         padding: 10px;
-        background: rgba(233,30,99,0.1);
-        border: 1px solid rgba(233,30,99,0.3);
+        background: rgba(233, 30, 99, 0.1);
+        border: 1px solid rgba(233, 30, 99, 0.3);
         border-radius: 8px;
         color: var(--color-primary);
         font-weight: 600;
@@ -109,16 +112,19 @@
     }
 
     .stat-card {
-        background: linear-gradient(135deg, rgba(233,30,99,0.1), rgba(255,20,147,0.05));
-        border: 1px solid rgba(233,30,99,0.2);
+        background: linear-gradient(135deg, rgba(233, 30, 99, 0.1), rgba(255, 20, 147, 0.05));
+        border: 1px solid rgba(233, 30, 99, 0.2);
         border-radius: 10px;
         padding: 18px 20px;
     }
 
     .modal-overlay {
         position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.8);
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
         backdrop-filter: blur(4px);
         display: none;
         align-items: center;
@@ -128,11 +134,14 @@
         transition: opacity 0.3s;
     }
 
-    .modal-overlay.show { display: flex; opacity: 1; }
+    .modal-overlay.show {
+        display: flex;
+        opacity: 1;
+    }
 
     .modal-content {
         background: #1a1a1a;
-        border: 1px solid rgba(233,30,99,0.3);
+        border: 1px solid rgba(233, 30, 99, 0.3);
         border-radius: 16px;
         width: 100%;
         max-width: 650px;
@@ -141,22 +150,27 @@
         padding: 2.5rem;
         position: relative;
         transform: translateY(20px);
-        transition: transform 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    .modal-overlay.show .modal-content { transform: translateY(0); }
+    .modal-overlay.show .modal-content {
+        transform: translateY(0);
+    }
 
     .modal-close {
         position: absolute;
-        top: 1.5rem; right: 1.5rem;
+        top: 1.5rem;
+        right: 1.5rem;
         background: none;
         border: none;
-        color: rgba(255,255,255,0.5);
+        color: rgba(255, 255, 255, 0.5);
         cursor: pointer;
         font-size: 1.5rem;
     }
 
-    .modal-section { margin-top: 1.5rem; }
+    .modal-section {
+        margin-top: 1.5rem;
+    }
 
     .modal-section-title {
         font-size: 1rem;
@@ -181,14 +195,21 @@
         transition: opacity 0.2s;
     }
 
-    .btn-candidatar:hover { opacity: 0.85; }
-    .btn-candidatar:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-candidatar:hover {
+        opacity: 0.85;
+    }
+
+    .btn-candidatar:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
 </style>
 
 <div class="recom-container">
     <div class="mb-8">
-        <h1 style="font-size:1.8rem; font-weight:800; color:#fff;">Vagas Disponíveis</h1>
-        <p style="color:rgba(255,255,255,0.5); margin-top:5px;">Oportunidades abertas por empresas parceiras na plataforma.</p>
+        <h1 style="font-size:1.8rem; font-weight:800; color:#fff;">Vagas com Desafio Técnico</h1>
+        <p style="color:rgba(255,255,255,0.5); margin-top:5px;">Vagas com avaliação prática e bolsa técnica garantida,
+            independente de contratação.</p>
     </div>
 
     <!-- Stats -->
@@ -196,17 +217,18 @@
         <div class="stat-card">
             <p style="color:rgba(255,255,255,0.5); font-size:0.82rem; margin-bottom:6px;">Total de Vagas</p>
             <h3 style="font-size:1.8rem; font-weight:800;" id="stat-total">0</h3>
-            <p style="color:var(--color-accent); font-size:0.72rem; margin-top:6px;" id="stat-total-label">Carregando...</p>
+            <p style="color:var(--color-accent); font-size:0.72rem; margin-top:6px;" id="stat-total-label">Carregando...
+            </p>
         </div>
         <div class="stat-card">
-            <p style="color:rgba(255,255,255,0.5); font-size:0.82rem; margin-bottom:6px;">Vagas CLT</p>
+            <p style="color:rgba(255,255,255,0.5); font-size:0.82rem; margin-bottom:6px;">Com Bolsa Técnica</p>
             <h3 style="font-size:1.8rem; font-weight:800;" id="stat-clt">0</h3>
-            <p style="color:#22c55e; font-size:0.72rem; margin-top:6px;">Contrato formal</p>
+            <p style="color:#22c55e; font-size:0.72rem; margin-top:6px;">Remuneração garantida</p>
         </div>
         <div class="stat-card">
-            <p style="color:rgba(255,255,255,0.5); font-size:0.82rem; margin-bottom:6px;">Vagas PJ</p>
-            <h3 style="font-size:1.8rem; font-weight:800;" id="stat-pj">0</h3>
-            <p style="color:var(--color-primary); font-size:0.72rem; margin-top:6px;">Pessoa jurídica</p>
+            <p style="color:rgba(255,255,255,0.5); font-size:0.82rem; margin-bottom:6px;">Maior Bolsa</p>
+            <h3 style="font-size:1.8rem; font-weight:800;" id="stat-pj">R$ 0</h3>
+            <p style="color:var(--color-primary); font-size:0.72rem; margin-top:6px;">Valor máximo</p>
         </div>
         <div class="stat-card">
             <p style="color:rgba(255,255,255,0.5); font-size:0.82rem; margin-bottom:6px;">Candidaturas</p>
@@ -256,14 +278,23 @@
         <h2 id="detail-title" style="font-size:1.8rem; font-weight:800; color:#fff; margin-top:0.3rem;"></h2>
 
         <div style="display:flex; gap:8px; margin-top:1rem; flex-wrap:wrap;">
-            <span id="detail-tipo" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:4px 10px; border-radius:20px; font-size:0.82rem;"></span>
-            <span id="detail-loc" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:4px 10px; border-radius:20px; font-size:0.82rem;"></span>
-            <span id="detail-remun" style="background:rgba(233,30,99,0.15); border:1px solid rgba(233,30,99,0.3); color:var(--color-primary); padding:4px 10px; border-radius:20px; font-size:0.82rem;"></span>
+            <span id="detail-tipo"
+                style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:4px 10px; border-radius:20px; font-size:0.82rem;"></span>
+            <span id="detail-loc"
+                style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:4px 10px; border-radius:20px; font-size:0.82rem;"></span>
+            <span id="detail-remun"
+                style="background:rgba(233,30,99,0.15); border:1px solid rgba(233,30,99,0.3); color:var(--color-primary); padding:4px 10px; border-radius:20px; font-size:0.82rem;"></span>
+            <span id="detail-bolsa"
+                style="background:rgba(233,30,99,0.2); border:1px solid rgba(233,30,99,0.4); color:var(--color-accent); padding:4px 10px; border-radius:20px; font-size:0.82rem; font-weight:700; display:none;"></span>
         </div>
 
         <div class="modal-section">
             <h3 class="modal-section-title">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
                 Sobre a Vaga
             </h3>
             <p id="detail-desc" style="color:rgba(255,255,255,0.7); line-height:1.6;"></p>
@@ -271,16 +302,20 @@
 
         <div class="modal-section">
             <h3 class="modal-section-title">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z"></path></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z"></path>
+                </svg>
                 Requisitos
             </h3>
-            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); padding:1.2rem; border-radius:10px;">
+            <div
+                style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); padding:1.2rem; border-radius:10px;">
                 <p id="detail-reqs" style="color:rgba(255,255,255,0.8); line-height:1.6; white-space:pre-wrap;"></p>
             </div>
         </div>
 
         <div style="margin-top:2rem; display:flex; gap:12px;">
-            <button class="btn-candidatar" id="btn-candidatar-modal" onclick="candidatarVaga()">Candidatar-se</button>
+            <button class="btn-candidatar" id="btn-candidatar-modal" onclick="candidatarVaga()">Candidatar-se ao
+                Desafio</button>
             <button onclick="closeModal()"
                 style="background:transparent; border:1px solid rgba(255,255,255,0.2); color:white; border-radius:10px; padding:0 20px; cursor:pointer; font-size:0.95rem;">
                 Voltar
@@ -313,8 +348,9 @@
 
             document.getElementById('stat-total').textContent = todasVagas.length;
             document.getElementById('stat-total-label').textContent = todasVagas.length > 0 ? `${todasVagas.length} disponíveis` : 'Nenhuma no momento';
-            document.getElementById('stat-clt').textContent = todasVagas.filter(v => (v.tipo||'').toUpperCase() === 'CLT').length;
-            document.getElementById('stat-pj').textContent = todasVagas.filter(v => (v.tipo||'').toUpperCase() === 'PJ').length;
+            document.getElementById('stat-clt').textContent = todasVagas.filter(v => v.bolsa_tecnica > 0).length;
+            const maiorBolsa = todasVagas.reduce((max, v) => Math.max(max, v.bolsa_tecnica || 0), 0);
+            document.getElementById('stat-pj').textContent = maiorBolsa > 0 ? `R$ ${maiorBolsa.toLocaleString('pt-BR')}` : 'R$ 0';
             atualizarContadorCandidaturas();
 
             renderizarVagas(todasVagas);
@@ -329,9 +365,9 @@
         const local = document.getElementById('recom-filter-local')?.value || '';
 
         const filtradas = todasVagas.filter(v => {
-            const ok1 = !busca || [v.titulo, v.descricao, v.empresa_nome, v.requisitos].some(s => (s||'').toLowerCase().includes(busca));
-            const ok2 = !tipo || (v.tipo||'').toLowerCase() === tipo.toLowerCase();
-            const ok3 = !local || (v.localizacao||'').toLowerCase().includes(local.toLowerCase());
+            const ok1 = !busca || [v.titulo, v.descricao, v.empresa_nome, v.requisitos].some(s => (s || '').toLowerCase().includes(busca));
+            const ok2 = !tipo || (v.tipo || '').toLowerCase() === tipo.toLowerCase();
+            const ok3 = !local || (v.localizacao || '').toLowerCase().includes(local.toLowerCase());
             return ok1 && ok2 && ok3;
         });
 
@@ -355,7 +391,7 @@
         const jaCandidatou = v => candidaturas.includes(v.id);
 
         listDiv.innerHTML = vagas.map(v => `
-            <div class="recom-card" onclick='abrirModal(${JSON.stringify(v).replace(/'/g,"&#39;")})'>
+            <div class="recom-card" onclick='abrirModal(${JSON.stringify(v).replace(/'/g, "&#39;")})'>
                 <div class="recom-company">
                     <div class="company-avatar">${ini(nome(v))}</div>
                     <span class="company-name">${nome(v)}</span>
@@ -363,12 +399,13 @@
                 </div>
                 <h3 class="recom-job-title">${v.titulo}</h3>
                 <div class="recom-meta">
-                    <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ${v.tipo||'N/D'}</span>
-                    <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ${v.localizacao||'N/D'}</span>
+                    <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ${v.tipo || 'N/D'}</span>
+                    <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ${v.localizacao || 'N/D'}</span>
                     ${v.remuneracao ? `<span>R$ ${v.remuneracao}</span>` : ''}
+                    ${v.bolsa_tecnica ? `<span style="background:rgba(233,30,99,0.15); border:1px solid rgba(233,30,99,0.25); color:var(--color-accent); font-weight:700;">Bolsa: R$ ${parseFloat(v.bolsa_tecnica).toLocaleString('pt-BR')}</span>` : ''}
                 </div>
-                <div class="recom-desc">${v.descricao||'Sem descrição.'}</div>
-                <div class="btn-apply">${jaCandidatou(v) ? 'Ver Detalhes' : 'Ver Vaga'}</div>
+                <div class="recom-desc">${v.descricao || 'Sem descrição.'}</div>
+                <div class="btn-apply">${jaCandidatou(v) ? 'Ver Detalhes' : 'Ver Vaga + Desafio'}</div>
             </div>
         `).join('');
     }
@@ -383,13 +420,22 @@
         document.getElementById('detail-desc').innerText = vaga.descricao || 'Sem descrição.';
         document.getElementById('detail-reqs').innerText = vaga.requisitos || 'Sem requisitos cadastrados.';
 
+        // Bolsa técnica
+        const bolsaEl = document.getElementById('detail-bolsa');
+        if (vaga.bolsa_tecnica && vaga.bolsa_tecnica > 0) {
+            bolsaEl.textContent = `💰 Bolsa técnica: R$ ${parseFloat(vaga.bolsa_tecnica).toLocaleString('pt-BR')}`;
+            bolsaEl.style.display = 'inline-block';
+        } else {
+            bolsaEl.style.display = 'none';
+        }
+
         const btn = document.getElementById('btn-candidatar-modal');
         if (candidaturas.includes(vaga.id)) {
             btn.textContent = 'Já candidatado';
             btn.disabled = true;
             btn.style.opacity = '0.5';
         } else {
-            btn.textContent = 'Candidatar-se';
+            btn.textContent = 'Candidatar-se ao Desafio';
             btn.disabled = false;
             btn.style.opacity = '1';
         }
@@ -421,9 +467,9 @@
                 const busca = (document.getElementById('recom-search')?.value || '').toLowerCase();
                 const tipo = document.getElementById('recom-filter-tipo')?.value || '';
                 const local = document.getElementById('recom-filter-local')?.value || '';
-                const ok1 = !busca || [v.titulo, v.descricao, v.empresa_nome, v.requisitos].some(s => (s||'').toLowerCase().includes(busca));
-                const ok2 = !tipo || (v.tipo||'').toLowerCase() === tipo.toLowerCase();
-                const ok3 = !local || (v.localizacao||'').toLowerCase().includes(local.toLowerCase());
+                const ok1 = !busca || [v.titulo, v.descricao, v.empresa_nome, v.requisitos].some(s => (s || '').toLowerCase().includes(busca));
+                const ok2 = !tipo || (v.tipo || '').toLowerCase() === tipo.toLowerCase();
+                const ok3 = !local || (v.localizacao || '').toLowerCase().includes(local.toLowerCase());
                 return ok1 && ok2 && ok3;
             }));
 

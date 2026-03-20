@@ -1,8 +1,12 @@
 // Database setup - Initializes tables
 const db = require('../banco/conexao');
 
+function migrar(sql) {
+  try { db.exec(sql); } catch (_) { /* coluna já existe */ }
+}
+
 function inicializarTabelas() {
-  // Create vagas table if it doesn't exist
+  // Tabela de vagas
   db.exec(`
     CREATE TABLE IF NOT EXISTS vagas (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -14,6 +18,7 @@ function inicializarTabelas() {
       localizacao TEXT,
       tipo TEXT DEFAULT 'CLT',
       status TEXT DEFAULT 'ativa',
+      bolsa_tecnica REAL DEFAULT 0,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
@@ -21,20 +26,23 @@ function inicializarTabelas() {
 
   console.log('Database tables initialized');
 
-  // Adicionar coluna de configurações se não existir
-  try {
-    db.exec(`ALTER TABLE candidatos ADD COLUMN configuracoes TEXT DEFAULT '{}'`);
-    console.log('Coluna configuracoes alterada em candidatos');
-  } catch (err) {
-    // a coluna já existe
-  }
+  // ── Migrações seguras ──────────────────────────────────────────────────────
+  migrar(`ALTER TABLE candidatos ADD COLUMN configuracoes TEXT DEFAULT '{}'`);
+  migrar(`ALTER TABLE empresas   ADD COLUMN configuracoes TEXT DEFAULT '{}'`);
+  migrar(`ALTER TABLE vagas      ADD COLUMN bolsa_tecnica REAL DEFAULT 0`);
 
-  try {
-    db.exec(`ALTER TABLE empresas ADD COLUMN configuracoes TEXT DEFAULT '{}'`);
-    console.log('Coluna configuracoes alterada em empresas');
-  } catch (err) {
-    // a coluna já existe
-  }
+  // Perfil técnico do candidato
+  migrar(`ALTER TABLE candidatos ADD COLUMN github_url TEXT`);
+  migrar(`ALTER TABLE candidatos ADD COLUMN linkedin_url TEXT`);
+  migrar(`ALTER TABLE candidatos ADD COLUMN skills TEXT`);
+  migrar(`ALTER TABLE candidatos ADD COLUMN anos_experiencia INTEGER DEFAULT 0`);
+  migrar(`ALTER TABLE candidatos ADD COLUMN bio TEXT`);
+  migrar(`ALTER TABLE candidatos ADD COLUMN verificado INTEGER DEFAULT 0`);
+
+  // Entrega de solução e canal privado
+  migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN solucao_url TEXT`);
+  migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN solucao_descricao TEXT`);
+  migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN canal_liberado INTEGER DEFAULT 0`);
 }
 
 module.exports = inicializarTabelas;

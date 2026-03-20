@@ -13,6 +13,8 @@ const morgan = require('morgan');
 
 const userRoutes = require('./userRoutes');
 const authRoutes = require('./rotas/auth');
+const desafiosRoutes = require('./rotas/desafios');
+const pagamentosRoutes = require('./rotas/pagamentos');
 const inicializarTabelas = require('./database/setup');
 
 const app = express();
@@ -49,7 +51,9 @@ inicializarTabelas();
 
 // Rotas da API (Prefixo /api/v1 para versionamento)
 app.use('/api/v1', userRoutes);
-app.use('/api/v1/auth', authRoutes); // POST /api/v1/auth/cadastro | POST /api/v1/auth/login
+app.use('/api/v1/auth', authRoutes);       // POST /api/v1/auth/cadastro | POST /api/v1/auth/login
+app.use('/api/v1/desafios', desafiosRoutes); // GET|POST|PUT|DELETE /api/v1/desafios
+app.use('/api/v1/pagamentos', pagamentosRoutes); // GET|POST /api/v1/pagamentos
 
 // Middleware para tratar rota não encontrada (404)
 app.use((req, res, next) => {

@@ -1,4 +1,5 @@
 const db = require('../banco/conexao');
+const pagamentoController = require('./pagamentoController');
 
 const listarVagas = async (req, res) => {
   try {
@@ -29,17 +30,17 @@ const listarVagas = async (req, res) => {
 
 const criarVaga = async (req, res) => {
   try {
-    const { empresa_id, titulo, descricao, requisitos, remuneracao, localizacao, tipo } = req.body;
+    const { empresa_id, titulo, descricao, requisitos, remuneracao, localizacao, tipo, bolsa_tecnica } = req.body;
 
     if (!titulo) {
       return res.status(400).json({ erro: 'Título é obrigatório' });
     }
 
     const stmt = db.prepare(`
-      INSERT INTO vagas (empresa_id, titulo, descricao, requisitos, remuneracao, localizacao, tipo)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO vagas (empresa_id, titulo, descricao, requisitos, remuneracao, localizacao, tipo, bolsa_tecnica)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `);
-    
+
     const result = stmt.run(
       empresa_id || null,
       titulo,
@@ -47,10 +48,16 @@ const criarVaga = async (req, res) => {
       requisitos || '',
       remuneracao || '',
       localizacao || '',
-      tipo || 'CLT'
+      tipo || 'CLT',
+      bolsa_tecnica || 0
     );
 
     const novaVaga = db.prepare('SELECT * FROM vagas WHERE id = ?').get(result.lastInsertRowid);
+
+    // Criar cobrança da taxa de plataforma
+    if (empresa_id) {
+      pagamentoController.criarTaxaPlataforma(empresa_id, novaVaga.id, titulo);
+    }
 
     res.status(201).json(novaVaga);
   } catch (erro) {
@@ -62,7 +69,7 @@ const criarVaga = async (req, res) => {
 const atualizarVaga = async (req, res) => {
   try {
     const { id } = req.params;
-    const { titulo, descricao, requisitos, remuneracao, localizacao, tipo, status } = req.body;
+    const { titulo, descricao, requisitos, remuneracao, localizacao, tipo, status, bolsa_tecnica } = req.body;
 
     const vaga = db.prepare('SELECT * FROM vagas WHERE id = ?').get(id);
     if (!vaga) {
@@ -72,10 +79,10 @@ const atualizarVaga = async (req, res) => {
     const stmt = db.prepare(`
       UPDATE vagas 
       SET titulo = ?, descricao = ?, requisitos = ?, remuneracao = ?, 
-          localizacao = ?, tipo = ?, status = ?, updated_at = CURRENT_TIMESTAMP
+          localizacao = ?, tipo = ?, status = ?, bolsa_tecnica = ?, updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
     `);
-    
+
     stmt.run(
       titulo || vaga.titulo,
       descricao ?? vaga.descricao,
@@ -84,6 +91,7 @@ const atualizarVaga = async (req, res) => {
       localizacao ?? vaga.localizacao,
       tipo || vaga.tipo,
       status || vaga.status,
+      bolsa_tecnica ?? vaga.bolsa_tecnica ?? 0,
       id
     );
 

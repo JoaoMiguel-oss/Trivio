@@ -290,6 +290,13 @@
             </div>
 
             <div class="form-group">
+                <label class="form-label">Bolsa Técnica do Desafio (R$)</label>
+                <input type="number" class="form-input" id="vaga-bolsa-tecnica" min="0" step="50" placeholder="Ex: 300">
+                <p style="color:rgba(255,255,255,0.35); font-size:0.75rem; margin-top:4px;">Valor pago ao candidato por
+                    realizar o desafio técnico, independente de contratação.</p>
+            </div>
+
+            <div class="form-group">
                 <label class="form-label">Descrição Geral da Vaga</label>
                 <textarea class="form-input" id="vaga-descricao" required
                     placeholder="O que a pessoa irá fazer? Qual o contexto da área?"></textarea>
@@ -350,6 +357,8 @@
                         ${v.descricao.slice(0, 100)}${v.descricao.length > 100 ? '...' : ''}
                     </div>
                     
+                    ${v.bolsa_tecnica ? `<div style="margin-bottom:0.8rem; padding:6px 10px; border-radius:8px; background:rgba(233,30,99,0.1); border:1px solid rgba(233,30,99,0.2); display:flex; align-items:center; gap:6px;"><span style="color:rgba(255,255,255,0.5); font-size:0.78rem;">Bolsa t\u00e9cnica:</span><span style="color:var(--color-accent); font-weight:700; font-size:0.88rem;">R$ ${parseFloat(v.bolsa_tecnica).toLocaleString('pt-BR')}</span></div>` : ''}
+                    
                     <div class="vaga-actions">
                         <button class="btn-edit" onclick='editarVaga(${JSON.stringify(v).replace(/'/g, "&#39;")})'>Editar Detahes</button>
                         <button class="btn-delete" onclick="apagarVaga(${v.id})" title="Remover Vaga">
@@ -383,6 +392,7 @@
         document.getElementById('vaga-localizacao').value = vagaObj.localizacao || '';
         document.getElementById('vaga-descricao').value = vagaObj.descricao || '';
         document.getElementById('vaga-requisitos').value = vagaObj.requisitos || '';
+        document.getElementById('vaga-bolsa-tecnica').value = vagaObj.bolsa_tecnica || '';
 
         document.getElementById('modalVagaTitle').innerText = 'Editar Vaga';
         document.getElementById('vagaModal').classList.add('show');
@@ -421,6 +431,7 @@
             localizacao: document.getElementById('vaga-localizacao').value,
             descricao: document.getElementById('vaga-descricao').value,
             requisitos: document.getElementById('vaga-requisitos').value,
+            bolsa_tecnica: parseFloat(document.getElementById('vaga-bolsa-tecnica').value) || 0,
             empresa_id: us.public_id || 'emp-demo'
         };
 
