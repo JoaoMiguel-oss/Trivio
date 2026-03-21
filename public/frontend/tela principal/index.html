@@ -190,16 +190,19 @@
                         <span>Como Funciona</span>
                     </button>
 
-                    <!-- Botão: Vagas (Item ativo por padrão) -->
-                    <button onclick="loadSection('recomendacoes', this)"
+                    <!-- Botão: Desafios -->
+                    <button onclick="loadSection('desafios', this)"
                         class="nav-item nav-item-horizontal flex items-center gap-2"
                         style="background-color: var(--color-primary);">
                         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                            <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path>
+                            <polyline points="14.5 17 14.5 22 9.5 22 9.5 17" />
+                            <path d="M6.5 8H3a1 1 0 0 0-1 1v1a4 4 0 0 0 4 4h.5" />
+                            <path d="M17.5 8H21a1 1 0 0 1 1 1v1a4 4 0 0 1-4 4h-.5" />
+                            <path d="M6 2h12v10a6 6 0 0 1-6 6 6 6 0 0 1-6-6V2Z" />
+                            <line x1="9.5" y1="22" x2="14.5" y2="22" />
                         </svg>
-                        <span>Vagas</span>
+                        <span>Desafios</span>
                     </button>
 
                     <!-- Botão: Pagamentos -->
@@ -338,8 +341,8 @@
          * 3. Carrega automaticamente a seção de bugs como conteúdo inicial
          */
         document.addEventListener('DOMContentLoaded', () => {
-            const vagasButton = document.querySelector('button[onclick*="recomendacoes"]');
-            if (vagasButton) loadSection('recomendacoes', vagasButton);
+            const desafiosButton = document.querySelector('button[onclick*="desafios"]');
+            if (desafiosButton) loadSection('desafios', desafiosButton);
         });
 
         // ==========================================

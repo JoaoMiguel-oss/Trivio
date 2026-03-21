@@ -182,7 +182,7 @@
                 <div class="flex items-center gap-2">
 
                     <!-- Botão: Desafios -->
-                    <button onclick="loadSection('recomendacoes')"
+                    <button onclick="loadSection('desafios')"
                         class="nav-item nav-item-horizontal nav-item-active flex items-center gap-2">
                         <!-- Ícone de troféu/desafio -->
                         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -364,7 +364,7 @@
          */
         document.addEventListener('DOMContentLoaded', async () => {
             await fetchUserConfig();
-            loadSection('recomendacoes');
+            loadSection('desafios');
         });
 
         function populateModuleFields(sectionName) {
