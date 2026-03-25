@@ -15,6 +15,7 @@ const userRoutes = require('./userRoutes');
 const authRoutes = require('./rotas/auth');
 const desafiosRoutes = require('./rotas/desafios');
 const pagamentosRoutes = require('./rotas/pagamentos');
+const vagasRoutes = require('./rotas/vagas');
 const inicializarTabelas = require('./database/setup');
 
 const app = express();
@@ -54,6 +55,7 @@ app.use('/api/v1', userRoutes);
 app.use('/api/v1/auth', authRoutes);       // POST /api/v1/auth/cadastro | POST /api/v1/auth/login
 app.use('/api/v1/desafios', desafiosRoutes); // GET|POST|PUT|DELETE /api/v1/desafios
 app.use('/api/v1/pagamentos', pagamentosRoutes); // GET|POST /api/v1/pagamentos
+app.use('/api/v1/vagas', vagasRoutes);
 
 // Middleware para tratar rota não encontrada (404)
 app.use((req, res, next) => {

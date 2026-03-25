@@ -246,12 +246,20 @@
 
                 </div>
 
-                <!-- ===== ÍCONE DE PESQUISA (CANTO DIREITO) ===== -->
-                <!-- Botão circular com ícone de lupa para pesquisa -->
-                <button class="search-button flex items-center justify-center" aria-label="Pesquisar">
-                    <!-- Ícone de pesquisa da biblioteca Lucide -->
-                    <i class="icon-search" style="font-size: 20px; color: var(--color-primary);"></i>
-                </button>
+                <!-- ===== ÍCONES DE AÇÃO (CANTO DIREITO) ===== -->
+                <div class="flex items-center gap-3">
+                    <!-- Botão de Notificações -->
+                    <button class="search-button flex items-center justify-center btn-hover" aria-label="Notificações"
+                        onclick="alert('Nenhuma nova notificação no momento!')">
+                        <i class="icon-bell" style="font-size: 20px; color: var(--color-primary);"></i>
+                    </button>
+
+                    <!-- Botão circular com ícone de lupa para pesquisa -->
+                    <button class="search-button flex items-center justify-center btn-hover" aria-label="Pesquisar">
+                        <!-- Ícone de pesquisa da biblioteca Lucide -->
+                        <i class="icon-search" style="font-size: 20px; color: var(--color-primary);"></i>
+                    </button>
+                </div>
 
             </div>
         </nav>
@@ -290,7 +298,18 @@
                 const html = await response.text();
 
                 // Injeta o HTML no elemento principal da página
-                document.getElementById('main-content').innerHTML = html;
+                const mainContent = document.getElementById('main-content');
+                mainContent.innerHTML = html;
+
+                // ===== EXECUTA SCRIPTS DO MÓDULO INJETADO =====
+                // Como innerHTML não executa as tags <script>, precisamos recriá-las e adicioná-las manualmente
+                const scripts = mainContent.querySelectorAll('script');
+                scripts.forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
 
                 // ===== ATUALIZAÇÃO DO ESTADO VISUAL DOS BOTÕES DE NAVEGAÇÃO =====
 

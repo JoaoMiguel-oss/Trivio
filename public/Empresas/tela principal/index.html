@@ -182,7 +182,8 @@
                     <button onclick="loadSection('vagas', this)"
                         class="nav-item nav-item-horizontal nav-item-active flex items-center gap-2"
                         style="background-color: var(--color-primary);">
-                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
                             <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
                             <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path>
                         </svg>
@@ -230,12 +231,20 @@
 
                 </div>
 
-                <!-- ===== ÍCONE DE PESQUISA (CANTO DIREITO) ===== -->
-                <!-- Botão circular com ícone de lupa para pesquisa -->
-                <button class="search-button flex items-center justify-center" aria-label="Pesquisar">
-                    <!-- Ícone de pesquisa da biblioteca Lucide -->
-                    <i class="icon-search" style="font-size: 20px; color: var(--color-primary);"></i>
-                </button>
+                <!-- ===== ÍCONES DE AÇÃO (CANTO DIREITO) ===== -->
+                <div class="flex items-center gap-3">
+                    <!-- Botão de Notificações -->
+                    <button class="search-button flex items-center justify-center btn-hover" aria-label="Notificações"
+                        onclick="alert('Nenhuma nova notificação no momento!')">
+                        <i class="icon-bell" style="font-size: 20px; color: var(--color-primary);"></i>
+                    </button>
+
+                    <!-- Botão circular com ícone de lupa para pesquisa -->
+                    <button class="search-button flex items-center justify-center btn-hover" aria-label="Pesquisar">
+                        <!-- Ícone de pesquisa da biblioteca Lucide -->
+                        <i class="icon-search" style="font-size: 20px; color: var(--color-primary);"></i>
+                    </button>
+                </div>
 
             </div>
         </nav>
@@ -274,7 +283,18 @@
                 const html = await response.text();
 
                 // Injeta o HTML no elemento principal da página
-                document.getElementById('main-content').innerHTML = html;
+                const mainContent = document.getElementById('main-content');
+                mainContent.innerHTML = html;
+
+                // ===== EXECUTA SCRIPTS DO MÓDULO INJETADO =====
+                // Como innerHTML não executa as tags <script>, precisamos recriá-las e adicioná-las manualmente
+                const scripts = mainContent.querySelectorAll('script');
+                scripts.forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
 
                 // ===== ATUALIZAÇÃO DO ESTADO VISUAL DOS BOTÕES DE NAVEGAÇÃO =====
 
