@@ -370,9 +370,13 @@
         }
 
         try {
+            const tokenHeader = sessionStorage.getItem('token');
+            const headers = { 'Content-Type': 'application/json' };
+            if (tokenHeader) headers.Authorization = `Bearer ${tokenHeader}`;
+
             const res = await fetch(`/api/v1/desafios/${desafioAtual.id}/candidatar`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers,
                 body: JSON.stringify({ candidato_id })
             });
 

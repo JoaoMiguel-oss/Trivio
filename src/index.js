@@ -10,6 +10,12 @@ import './styles/global.css';
 import { initApp, loadSection } from './components/component2.js';
 import config from './config/config.js';
 
+// Register config globally for legacy static pages (use à vontade) if disponível.
+if (typeof window !== 'undefined') {
+    window.Trivio = window.Trivio || {};
+    window.Trivio.config = config;
+}
+
 // Initialize application when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     console.log(`Iniciando ${config.app.name} v${config.app.version}`);

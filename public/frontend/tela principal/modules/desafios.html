@@ -368,7 +368,12 @@
         listDiv.innerHTML = '<p style="color:rgba(255,255,255,0.4); grid-column:1/-1; text-align:center; padding:3rem;">Buscando desafios...</p>';
 
         try {
-            const res = await fetch('/api/v1/vagas');
+            const res = await fetch('/api/v1/desafios', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(sessionStorage.getItem('token') ? { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` } : {})
+                }
+            });
             if (!res.ok) throw new Error();
             todosDesafios = await res.json();
 
@@ -473,14 +478,42 @@
         document.getElementById('desafioDetailsModal').classList.remove('show');
     }
 
-    function aceitarDesafio() {
+    async function aceitarDesafio() {
         if (!currentDesafio || minhasCandidaturas.includes(currentDesafio.id)) return;
 
         const btn = document.getElementById('btn-aceitar-modal');
         btn.textContent = 'Enviando...';
         btn.disabled = true;
 
-        setTimeout(() => {
+        const usuario = JSON.parse(sessionStorage.getItem('usuario') || '{}');
+        const candidato_id = usuario.public_id;
+
+        if (!candidato_id) {
+            alert('Faça login para aceitar desafios.');
+            btn.textContent = 'Aceitar Desafio';
+            btn.disabled = false;
+            return;
+        }
+
+        try {
+            const token = sessionStorage.getItem('token');
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) headers.Authorization = `Bearer ${token}`;
+
+            const res = await fetch(`/api/v1/desafios/${currentDesafio.id}/candidatar`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ candidato_id })
+            });
+
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                alert(data.erro || 'Erro ao aceitar desafio');
+                btn.textContent = 'Aceitar Desafio';
+                btn.disabled = false;
+                return;
+            }
+
             minhasCandidaturas.push(currentDesafio.id);
             salvarCandidaturas();
             atualizarContadorMeusDesafios();
@@ -502,7 +535,12 @@
             if (typeof showToast === 'function') {
                 showToast(`Desafio "${currentDesafio.titulo}" aceito! Boa sorte!`);
             }
-        }, 1200);
+        } catch (err) {
+            console.error(err);
+            alert('Erro de conexão. Tente novamente.');
+            btn.textContent = 'Aceitar Desafio';
+            btn.disabled = false;
+        }
     }
 
     // Inicializar

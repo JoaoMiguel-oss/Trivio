@@ -342,18 +342,36 @@
         const listDiv = document.getElementById('recom-list');
         listDiv.innerHTML = '<p style="color:rgba(255,255,255,0.4); grid-column:1/-1; text-align:center; padding:3rem;">Buscando vagas...</p>';
         try {
-            const res = await fetch('/api/v1/vagas');
+            const tokenHeader = sessionStorage.getItem('token');
+            const headers = { 'Content-Type': 'application/json' };
+            if (tokenHeader) headers.Authorization = `Bearer ${tokenHeader}`;
+
+            const res = await fetch('/api/v1/vagas', { headers });
             if (!res.ok) throw new Error();
             todasVagas = await res.json();
 
-            document.getElementById('stat-total').textContent = todasVagas.length;
-            document.getElementById('stat-total-label').textContent = todasVagas.length > 0 ? `${todasVagas.length} disponíveis` : 'Nenhuma no momento';
-            document.getElementById('stat-clt').textContent = todasVagas.filter(v => v.bolsa_tecnica > 0).length;
-            const maiorBolsa = todasVagas.reduce((max, v) => Math.max(max, v.bolsa_tecnica || 0), 0);
+            const usuario = JSON.parse(sessionStorage.getItem('usuario') || '{}');
+            const userSkillsRaw = (window.userConfig?.skills || window.userBasicData?.skills || usuario.skills || '');
+            const userSkills = Array.isArray(userSkillsRaw)
+                ? userSkillsRaw.map(s => (s || '').toLowerCase())
+                : String(userSkillsRaw).split(/[,;\s]+/).filter(Boolean).map(s => s.toLowerCase());
+
+            const vagasRecomendadas = userSkills.length
+                ? todasVagas.filter(v => {
+                    const text = [(v.titulo || ''), (v.descricao || ''), (v.requisitos || ''), (v.tipo || ''), (v.empresa_nome || '')]
+                        .join(' ').toLowerCase();
+                    return userSkills.some(skill => text.includes(skill));
+                })
+                : todasVagas;
+
+            document.getElementById('stat-total').textContent = vagasRecomendadas.length;
+            document.getElementById('stat-total-label').textContent = vagasRecomendadas.length > 0 ? `${vagasRecomendadas.length} disponíveis` : 'Nenhuma no momento';
+            document.getElementById('stat-clt').textContent = vagasRecomendadas.filter(v => v.bolsa_tecnica > 0).length;
+            const maiorBolsa = vagasRecomendadas.reduce((max, v) => Math.max(max, v.bolsa_tecnica || 0), 0);
             document.getElementById('stat-pj').textContent = maiorBolsa > 0 ? `R$ ${maiorBolsa.toLocaleString('pt-BR')}` : 'R$ 0';
             atualizarContadorCandidaturas();
 
-            renderizarVagas(todasVagas);
+            renderizarVagas(vagasRecomendadas);
         } catch {
             listDiv.innerHTML = '<p style="color:#ef4444; text-align:center; grid-column:1/-1;">Erro ao carregar vagas.</p>';
         }

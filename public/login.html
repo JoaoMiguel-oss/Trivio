@@ -574,14 +574,18 @@
 
                 // Salva dados do usuário na sessão
                 sessionStorage.setItem('usuario', JSON.stringify(dados.usuario));
+                const token = dados.token || dados.usuario?.token;
+                if (token) {
+                    sessionStorage.setItem('token', token);
+                }
 
                 showToast('Login realizado com sucesso! Redirecionando...', false);
 
                 setTimeout(() => {
                     if (selectedUserType === 'candidato') {
-                        window.location.href = 'frontend/tela principal/index.html';
+                        window.location.href = '/frontend/tela-principal/index.html';
                     } else {
-                        window.location.href = 'Empresas/tela principal/index.html';
+                        window.location.href = '/Empresas/tela-principal/index.html';
                     }
                 }, 1200);
 
