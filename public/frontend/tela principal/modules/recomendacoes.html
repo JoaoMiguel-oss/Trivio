@@ -346,7 +346,7 @@
             const headers = { 'Content-Type': 'application/json' };
             if (tokenHeader) headers.Authorization = `Bearer ${tokenHeader}`;
 
-            const res = await fetch('/api/v1/vagas', { headers });
+            const res = await fetch('https://trivio-production.up.railway.app/api/v1/vagas', { headers });
             if (!res.ok) throw new Error();
             todasVagas = await res.json();
 

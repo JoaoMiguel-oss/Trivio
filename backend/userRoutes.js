@@ -67,15 +67,15 @@ const upload = multer({ storage: storage });
 //    - Útil para testar o sistema de uploads
 //    - Exemplo: POST /api/v1/upload
 //
-// PUT /users/:id/foto
+// PUT /user/:tipo/:id/foto
 //    - Atualiza a foto de perfil de um usuário específico
-//    - O :id é o identificador do usuário
-//    - Exemplo: PUT /api/v1/users/123/foto
+//    - O :tipo é "candidato" ou "empresa", e :id é o identificador
+//    - Exemplo: PUT /api/v1/user/candidato/123/foto
 // ============================================================
 
 router.post('/users', upload.single('imagem'), userController.criarUsuario);
 router.post('/upload', upload.single('arquivo'), userController.uploadImagemAvulsa);
-router.put('/users/:id/foto', upload.single('imagem'), userController.atualizarFotoPerfil);
+router.put('/user/:tipo/:id/foto', upload.single('imagem'), userController.atualizarFotoPerfil);
 
 
 // ============================================================

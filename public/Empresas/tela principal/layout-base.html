@@ -272,7 +272,7 @@
                 const usuario = JSON.parse(sessionStorage.getItem('usuario'));
                 if (!usuario || !usuario.public_id) return;
 
-                const response = await fetch(`/api/v1/user/${usuario.tipo}/${usuario.public_id}/configuracoes`);
+                const response = await fetch(`https://trivio-production.up.railway.app/api/v1/user/${usuario.tipo}/${usuario.public_id}/configuracoes`);
                 if (response.ok) {
                     const data = await response.json();
                     window.userConfig = data.configuracoes || {};
@@ -297,7 +297,7 @@
                 window.userConfig = { ...window.userConfig, ...configUpdate };
                 window.userBasicData = { ...window.userBasicData, ...basicDataUpdate };
 
-                const response = await fetch(`/api/v1/user/${usuario.tipo}/${usuario.public_id}/configuracoes`, {
+                const response = await fetch(`https://trivio-production.up.railway.app/api/v1/user/${usuario.tipo}/${usuario.public_id}/configuracoes`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ configuracoes: window.userConfig, dadosBasicos: window.userBasicData })

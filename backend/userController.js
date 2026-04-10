@@ -44,6 +44,34 @@ const bcrypt = require('bcrypt');           // Biblioteca para criptografar senh
 
 const gerarIdUnico = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
 
+// ============================================================
+// CONFIGURAÇÃO DO CLOUDINARY
+// ============================================================
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({ 
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+  api_key: process.env.CLOUDINARY_API_KEY, 
+  api_secret: process.env.CLOUDINARY_API_SECRET 
+});
+
+const uploadParaCloudinary = (fileBuffer) => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { folder: 'trivio' },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result.secure_url);
+      }
+    );
+    if (fileBuffer) {
+        uploadStream.end(fileBuffer);
+    } else {
+        reject(new Error('Buffer vazio'));
+    }
+  });
+};
+
 
 // ============================================================
 // CRIAR USUÁRIO
@@ -186,16 +214,24 @@ const uploadImagemAvulsa = async (req, res) => {
 
 const atualizarFotoPerfil = async (req, res) => {
   try {
-    const { id } = req.params;     // ID do usuário
+    const { tipo, id } = req.params;     // Tipo e ID do usuário
     const arquivo = req.file;       // Nova foto
+
+    // Valida o tipo
+    if (!['candidato', 'empresa'].includes(tipo)) {
+      return res.status(400).json({ erro: 'Tipo inválido' });
+    }
 
     // Verifica se enviou imagem
     if (!arquivo) {
       return res.status(400).json({ erro: 'Nenhuma imagem enviada' });
     }
 
+    const tabela = tipo === 'candidato' ? 'candidatos' : 'empresas';
+    const campo_foto = tipo === 'candidato' ? 'foto_url' : 'logo_url';
+
     // Verifica se usuário existe
-    const usuario = db.prepare('SELECT id FROM users WHERE public_id = ?').get(id);
+    const usuario = db.prepare(`SELECT id FROM ${tabela} WHERE public_id = ?`).get(id);
     if (!usuario) {
       return res.status(404).json({ erro: 'Usuário não encontrado' });
     }
@@ -204,7 +240,7 @@ const atualizarFotoPerfil = async (req, res) => {
     const photo_url = await uploadParaCloudinary(arquivo.buffer);
 
     // Atualiza no banco
-    const stmt = db.prepare('UPDATE users SET photo_url = ? WHERE public_id = ?');
+    const stmt = db.prepare(`UPDATE ${tabela} SET ${campo_foto} = ? WHERE public_id = ?`);
     stmt.run(photo_url, id);
 
     res.status(200).json({ photo_url });

@@ -185,6 +185,18 @@ const login = async (req, res) => {
         }
 
         // ============================================================
+        // BUSCAR CONFIGURAÇÕES PARA O FRONTEND
+        // ============================================================
+        let configuracoes = {};
+        if (usuario.configuracoes) {
+            try {
+                configuracoes = JSON.parse(usuario.configuracoes);
+            } catch (e) {
+                configuracoes = {};
+            }
+        }
+
+        // ============================================================
         // LOGIN COM SUCESSO!
         // ============================================================
         // Retorna os dados do usuário (NUNCA retorna a senha!)
@@ -195,7 +207,8 @@ const login = async (req, res) => {
                 nome: usuario.nome,
                 email: usuario.email,
                 foto_url: usuario.foto_url || usuario.logo_url || null,
-                tipo
+                tipo,
+                configuracoes
             }
         });
 

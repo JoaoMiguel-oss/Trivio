@@ -1087,11 +1087,174 @@
     }
 
     // Seletor de cores do tema
-    function selectColor(el, color) {
+    async function selectColor(el, color) {
         document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
         el.classList.add('selected');
         // Aplica a cor em toda a plataforma como preview
         document.documentElement.style.setProperty('--color-primary', color);
-        showToast('Cor de tema atualizada!');
+        
+        const usuarioStr = sessionStorage.getItem('usuario');
+        if (!usuarioStr) return;
+        const usuario = JSON.parse(usuarioStr);
+        const novasConfig = { ...(usuario.configuracoes || {}), themeColor: color };
+
+        try {
+            await fetch(`https://trivio-production.up.railway.app/api/v1/user/${usuario.tipo}/${usuario.public_id}/configuracoes`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ configuracoes: novasConfig })
+            });
+            usuario.configuracoes = novasConfig;
+            sessionStorage.setItem('usuario', JSON.stringify(usuario));
+            showToast('Cor de tema atualizada!');
+        } catch (e) {
+            console.error(e);
+        }
     }
+
+    function logout() {
+        sessionStorage.clear();
+        window.location.href = '/login.html';
+    }
+
+    function carregarDadosPerfil() {
+        const usuarioStr = sessionStorage.getItem('usuario');
+        if (usuarioStr) {
+            try {
+                const usuario = JSON.parse(usuarioStr);
+                const nomeSplit = usuario.nome ? usuario.nome.split(' ') : [''];
+                const nome = nomeSplit[0] || '';
+                const sobrenome = nomeSplit.slice(1).join(' ') || '';
+
+                const nomeInput = document.getElementById('perfil-nome');
+                if (nomeInput) nomeInput.value = nome;
+
+                const sobrenomeInput = document.getElementById('perfil-sobrenome');
+                if (sobrenomeInput) sobrenomeInput.value = sobrenome;
+
+                const usernameInput = document.getElementById('perfil-username');
+                if (usernameInput) usernameInput.value = usuario.nome;
+
+                const emailInput = document.getElementById('perfil-email');
+                if (emailInput) emailInput.value = usuario.email || '';
+                
+                const bioInput = document.getElementById('perfil-bio');
+                if (bioInput && usuario.configuracoes && usuario.configuracoes.bio) {
+                    bioInput.value = usuario.configuracoes.bio;
+                }
+
+                const sidebarName = document.querySelector('.sidebar-username');
+                if (sidebarName) sidebarName.textContent = usuario.nome || 'Usuário';
+
+                document.querySelectorAll('.avatar-preview-lg, .sidebar-avatar, .nav-avatar').forEach(el => {
+                    if (usuario.foto_url) {
+                        el.style.backgroundImage = `url(${usuario.foto_url})`;
+                        el.style.backgroundSize = 'cover';
+                        el.style.backgroundPosition = 'center';
+                        if (el.childNodes.length > 0 && el.childNodes[0].nodeType === 3) {
+                            el.childNodes[0].textContent = '';
+                        }
+                    } else if (el.childNodes.length > 0 && el.childNodes[0].nodeType === 3) {
+                        el.style.backgroundImage = 'none';
+                        el.childNodes[0].textContent = nome.substring(0, 2).toUpperCase() || 'U';
+                    }
+                });
+
+                if (usuario.configuracoes && usuario.configuracoes.themeColor) {
+                    document.documentElement.style.setProperty('--color-primary', usuario.configuracoes.themeColor);
+                }
+            } catch (e) {
+                console.error('Erro ao carregar dados do usuário:', e);
+            }
+        }
+    }
+
+    async function saveProfileData() {
+        const usuarioStr = sessionStorage.getItem('usuario');
+        if (!usuarioStr) return;
+        const usuario = JSON.parse(usuarioStr);
+        const btn = document.getElementById('btn-save-profile');
+        if (btn) btn.textContent = 'Salvando...';
+
+        const nomeInput = document.getElementById('perfil-nome');
+        const sobrenomeInput = document.getElementById('perfil-sobrenome');
+        const bioInput = document.getElementById('perfil-bio');
+        const emailInput = document.getElementById('perfil-email');
+
+        const novasConfiguracoes = {
+             ...(usuario.configuracoes || {}),
+             bio: bioInput ? bioInput.value : ''
+        };
+        const nomeFinal = (nomeInput.value + ' ' + sobrenomeInput.value).trim();
+        
+        try {
+            const res = await fetch(`https://trivio-production.up.railway.app/api/v1/user/${usuario.tipo}/${usuario.public_id}/configuracoes`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    dadosBasicos: {
+                        nome: nomeFinal,
+                        email: emailInput ? emailInput.value : usuario.email
+                    },
+                    configuracoes: novasConfiguracoes
+                })
+            });
+
+            if (res.ok) {
+                usuario.nome = nomeFinal;
+                if(emailInput) usuario.email = emailInput.value;
+                usuario.configuracoes = novasConfiguracoes;
+                sessionStorage.setItem('usuario', JSON.stringify(usuario));
+                showToast('Perfil salvo com sucesso!');
+                carregarDadosPerfil();
+            } else {
+                showToast('Erro ao salvar o perfil');
+            }
+        } catch(e) {
+            console.error('Erro:', e);
+            showToast('Erro na conexão com servidor');
+        }
+        if (btn) btn.textContent = 'Salvar alterações';
+    }
+
+    async function uploadAvatar(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const usuarioStr = sessionStorage.getItem('usuario');
+        if (!usuarioStr) return;
+        const usuario = JSON.parse(usuarioStr);
+
+        const formData = new FormData();
+        formData.append('imagem', file);
+
+        try {
+            showToast('Fazendo upload da imagem...');
+            const res = await fetch(`https://trivio-production.up.railway.app/api/v1/user/${usuario.tipo}/${usuario.public_id}/foto`, {
+                method: 'PUT',
+                body: formData
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                usuario.foto_url = data.photo_url;
+                sessionStorage.setItem('usuario', JSON.stringify(usuario));
+                carregarDadosPerfil();
+                showToast('Foto atualizada com sucesso!');
+            } else {
+                showToast('Erro ao fazer upload da foto');
+            }
+        } catch(e) {
+            console.error(e);
+            showToast('Erro na conexao com servidor');
+        }
+    }
+
+    const avatarInput = document.getElementById('avatarInput');
+    if (avatarInput) {
+        avatarInput.addEventListener('change', uploadAvatar);
+    }
+
+    // Executa ao carregar o módulo
+    carregarDadosPerfil();
 </script>

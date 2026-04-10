@@ -491,7 +491,7 @@
 
         try {
             // Carregar métricas
-            const res = await fetch(`/api/v1/pagamentos/metricas?empresa_id=${encodeURIComponent(empresaId)}`);
+            const res = await fetch(`https://trivio-production.up.railway.app/api/v1/pagamentos/metricas?empresa_id=${encodeURIComponent(empresaId)}`);
             if (!res.ok) throw new Error('Falha ao carregar métricas');
 
             const dados = await res.json();

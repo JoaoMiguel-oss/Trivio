@@ -326,7 +326,7 @@
         try {
             const us = JSON.parse(sessionStorage.getItem('usuario') || '{}');
             const empresaId = us.public_id || '';
-            const url = empresaId ? `/api/v1/vagas?empresa_id=${encodeURIComponent(empresaId)}` : '/api/v1/vagas';
+            const url = empresaId ? `https://trivio-production.up.railway.app/api/v1/vagas?empresa_id=${encodeURIComponent(empresaId)}` : 'https://trivio-production.up.railway.app/api/v1/vagas';
             const response = await fetch(url);
             if (!response.ok) throw new Error('Falha ao buscar vagas');
 
@@ -402,7 +402,7 @@
         if (!confirm('Deseja realmente apagar/inativar esta vaga?')) return;
 
         try {
-            const res = await fetch(`/api/v1/vagas/${id}`, { method: 'DELETE' });
+            const res = await fetch(`https://trivio-production.up.railway.app/api/v1/vagas/${id}`, { method: 'DELETE' });
             if (res.ok) {
                 if (typeof showToast === 'function') showToast('Vaga removida com sucesso!');
                 carregarVagas();
@@ -436,7 +436,7 @@
         };
 
         try {
-            const url = isEdicao ? `/api/v1/vagas/${isEdicao}` : '/api/v1/vagas';
+            const url = isEdicao ? `https://trivio-production.up.railway.app/api/v1/vagas/${isEdicao}` : 'https://trivio-production.up.railway.app/api/v1/vagas';
             const method = isEdicao ? 'PUT' : 'POST';
 
             const response = await fetch(url, {
