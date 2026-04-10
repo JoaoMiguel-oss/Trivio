@@ -368,7 +368,7 @@
         listDiv.innerHTML = '<p style="color:rgba(255,255,255,0.4); grid-column:1/-1; text-align:center; padding:3rem;">Buscando desafios...</p>';
 
         try {
-            const res = await fetch('https://trivio-production.up.railway.app/api/v1/desafios', {
+            const res = await fetch('https://trivio.up.railway.app/api/v1/desafios', {
                 headers: {
                     'Content-Type': 'application/json',
                     ...(sessionStorage.getItem('token') ? { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` } : {})
@@ -500,7 +500,7 @@
             const headers = { 'Content-Type': 'application/json' };
             if (token) headers.Authorization = `Bearer ${token}`;
 
-            const res = await fetch(`https://trivio-production.up.railway.app/api/v1/desafios/${currentDesafio.id}/candidatar`, {
+            const res = await fetch(`https://trivio.up.railway.app/api/v1/desafios/${currentDesafio.id}/candidatar`, {
                 method: 'POST',
                 headers,
                 body: JSON.stringify({ candidato_id })

@@ -1099,7 +1099,7 @@
         const novasConfig = { ...(usuario.configuracoes || {}), themeColor: color };
 
         try {
-            await fetch(`https://trivio-production.up.railway.app/api/v1/user/${usuario.tipo}/${usuario.public_id}/configuracoes`, {
+            await fetch(`https://trivio.up.railway.app/api/v1/user/${usuario.tipo}/${usuario.public_id}/configuracoes`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ configuracoes: novasConfig })
@@ -1188,7 +1188,7 @@
         const nomeFinal = (nomeInput.value + ' ' + sobrenomeInput.value).trim();
         
         try {
-            const res = await fetch(`https://trivio-production.up.railway.app/api/v1/user/${usuario.tipo}/${usuario.public_id}/configuracoes`, {
+            const res = await fetch(`https://trivio.up.railway.app/api/v1/user/${usuario.tipo}/${usuario.public_id}/configuracoes`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -1230,7 +1230,7 @@
 
         try {
             showToast('Fazendo upload da imagem...');
-            const res = await fetch(`https://trivio-production.up.railway.app/api/v1/user/${usuario.tipo}/${usuario.public_id}/foto`, {
+            const res = await fetch(`https://trivio.up.railway.app/api/v1/user/${usuario.tipo}/${usuario.public_id}/foto`, {
                 method: 'PUT',
                 body: formData
             });

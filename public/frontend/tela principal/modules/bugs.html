@@ -181,7 +181,7 @@
     async function carregarDesafios() {
         const container = document.getElementById('desafios-container');
         try {
-            const res = await fetch('https://trivio-production.up.railway.app/api/v1/desafios');
+            const res = await fetch('https://trivio.up.railway.app/api/v1/desafios');
             if (!res.ok) throw new Error('Erro ao buscar desafios');
             todosDesafios = await res.json();
             atualizarEstatisticas();
@@ -374,7 +374,7 @@
             const headers = { 'Content-Type': 'application/json' };
             if (tokenHeader) headers.Authorization = `Bearer ${tokenHeader}`;
 
-            const res = await fetch(`https://trivio-production.up.railway.app/api/v1/desafios/${desafioAtual.id}/candidatar`, {
+            const res = await fetch(`https://trivio.up.railway.app/api/v1/desafios/${desafioAtual.id}/candidatar`, {
                 method: 'POST',
                 headers,
                 body: JSON.stringify({ candidato_id })

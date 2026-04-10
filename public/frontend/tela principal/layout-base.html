@@ -311,7 +311,7 @@
                 const usuario = JSON.parse(sessionStorage.getItem('usuario') || 'null');
                 if (!usuario || !usuario.public_id) return;
 
-                const response = await fetch(`https://trivio-production.up.railway.app/api/v1/user/${usuario.tipo}/${usuario.public_id}/configuracoes`, {
+                const response = await fetch(`https://trivio.up.railway.app/api/v1/user/${usuario.tipo}/${usuario.public_id}/configuracoes`, {
                     headers: {
                         'Content-Type': 'application/json',
                         ...(getAuthToken() && { 'Authorization': `Bearer ${getAuthToken()}` })
@@ -339,7 +339,7 @@
                 window.userConfig = { ...window.userConfig, ...configUpdate };
                 window.userBasicData = { ...window.userBasicData, ...basicDataUpdate };
 
-                const response = await fetch(`https://trivio-production.up.railway.app/api/v1/user/${usuario.tipo}/${usuario.public_id}/configuracoes`, {
+                const response = await fetch(`https://trivio.up.railway.app/api/v1/user/${usuario.tipo}/${usuario.public_id}/configuracoes`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
