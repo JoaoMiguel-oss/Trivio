@@ -6,7 +6,7 @@
 const config = {
     // API Configuration
     api: {
-        baseUrl: process.env.API_URL || 'http://localhost:3000',
+        baseUrl: 'https://trivio.up.railway.app',
         version: 'v1',
         endpoints: {
             users: '/api/v1/users',
