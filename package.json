@@ -20,6 +20,7 @@
   "dependencies": {
     "cloudinary": "^2.9.0",
     "cors": "^2.8.5",
+    "dotenv": "^17.4.1",
     "express": "^4.19.2",
     "multer": "^2.0.2",
     "streamifier": "^0.1.1"
