@@ -5,6 +5,9 @@ const rotasAutenticacao = require('./rotas/autenticacao');
 const rotasUsuario = require('./rotas/usuario');
 const rotasTelas = require('./rotas/telas');
 
+// Importa a função que cria as tabelas do banco de dados
+const inicializarTabelas = require('./database/setup');
+
 const app = express();
 const porta = 3000;
 
@@ -14,6 +17,9 @@ app.use(express.json());
 app.use('/api/autenticacao', rotasAutenticacao);
 app.use('/api/usuario', rotasUsuario);
 app.use('/api/telas', rotasTelas);
+
+// Inicializar tabelas do banco
+inicializarTabelas();
 
 app.listen(porta, () => {
   console.log(`Servidor rodando em http://localhost:${porta}`);
