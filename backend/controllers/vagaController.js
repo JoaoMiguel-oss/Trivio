@@ -41,11 +41,10 @@ const pagamentoController = require('./pagamentoController');
 
 const listarVagas = async (req, res) => {
   try {
-    // Pega o parâmetro empresa_id da URL (se existir)
-    const { empresa_id } = req.query;
+    // Pega parâmetros de filtro da URL
+    const { empresa_id, remoto, linguagem, tipo, titulo, localizacao, page = 1, limit = 10 } = req.query;
 
     // Começa a construir a query (consulta SQL)
-    // LEFT JOIN traz o nome da empresa mesmo se a vaga for_anônima
     let query = `
       SELECT v.*, COALESCE(e.nome, 'Empresa Parceira') as empresa_nome
       FROM vagas v
@@ -54,18 +53,73 @@ const listarVagas = async (req, res) => {
     `;
     const params = [];
 
-    // Se filtrou por empresa, adiciona essa condição
+    // Filtro por empresa
     if (empresa_id) {
       query += ` AND v.empresa_id = ?`;
       params.push(empresa_id);
     }
 
+    // Filtro por remoto (1=sim, 0=não)
+    if (remoto !== undefined && remoto !== null && remoto !== '') {
+      query += ` AND v.remoto = ?`;
+      params.push(remoto === 'true' || remoto === '1' ? 1 : 0);
+    }
+
+    // Filtro por linguagem (busca dentro da string/JSON)
+    if (linguagem) {
+      query += ` AND v.linguagens LIKE ?`;
+      params.push(`%${linguagem}%`);
+    }
+
+    // Filtro por tipo de contrato (CLT, PJ, Estágio, Freelancer)
+    if (tipo) {
+      query += ` AND v.tipo = ?`;
+      params.push(tipo);
+    }
+
+    // Filtro por título (busca parcial)
+    if (titulo) {
+      query += ` AND v.titulo LIKE ?`;
+      params.push(`%${titulo}%`);
+    }
+
+    // Filtro por localização (busca parcial)
+    if (localizacao) {
+      query += ` AND v.localizacao LIKE ?`;
+      params.push(`%${localizacao}%`);
+    }
+
     // Ordena do mais recente para o mais antigo
     query += ` ORDER BY v.created_at DESC`;
 
+    // Paginação
+    const pageNum = Math.max(1, parseInt(page) || 1);
+    const limitNum = Math.min(100, Math.max(1, parseInt(limit) || 10));
+    const offset = (pageNum - 1) * limitNum;
+    query += ` LIMIT ? OFFSET ?`;
+    params.push(limitNum, offset);
+
     // Executa a query e retorna as vagas
     const vagas = db.prepare(query).all(...params);
-    res.status(200).json(vagas);
+    
+    // Conta total de vagas (sem paginação) para informar ao cliente
+    let countQuery = `SELECT COUNT(*) as total FROM vagas v WHERE v.status = 'ativa'`;
+    const countParams = [];
+    if (empresa_id) { countQuery += ` AND v.empresa_id = ?`; countParams.push(empresa_id); }
+    if (remoto !== undefined && remoto !== null && remoto !== '') { countQuery += ` AND v.remoto = ?`; countParams.push(remoto === 'true' || remoto === '1' ? 1 : 0); }
+    if (linguagem) { countQuery += ` AND v.linguagens LIKE ?`; countParams.push(`%${linguagem}%`); }
+    if (tipo) { countQuery += ` AND v.tipo = ?`; countParams.push(tipo); }
+    if (titulo) { countQuery += ` AND v.titulo LIKE ?`; countParams.push(`%${titulo}%`); }
+    if (localizacao) { countQuery += ` AND v.localizacao LIKE ?`; countParams.push(`%${localizacao}%`); }
+    const { total } = db.prepare(countQuery).get(...countParams);
+
+    res.status(200).json({
+      total,
+      page: pageNum,
+      limit: limitNum,
+      totalPages: Math.ceil(total / limitNum),
+      vagas
+    });
   } catch (erro) {
     console.error(erro);
     res.status(500).json({ erro: 'Erro ao listar vagas' });
@@ -96,7 +150,7 @@ const listarVagas = async (req, res) => {
 const criarVaga = async (req, res) => {
   try {
     // Pega os dados do corpo da requisição
-    const { empresa_id, titulo, descricao, requisitos, remuneracao, localizacao, tipo, bolsa_tecnica } = req.body;
+    const { empresa_id, titulo, descricao, requisitos, remuneracao, localizacao, tipo, bolsa_tecnica, remoto, linguagens } = req.body;
 
     // Validação: título é obrigatório
     if (!titulo) {
@@ -107,8 +161,8 @@ const criarVaga = async (req, res) => {
     // INSERIR NO BANCO
     // ============================================================
     const stmt = db.prepare(`
-      INSERT INTO vagas (empresa_id, titulo, descricao, requisitos, remuneracao, localizacao, tipo, bolsa_tecnica)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO vagas (empresa_id, titulo, descricao, requisitos, remuneracao, localizacao, tipo, bolsa_tecnica, remoto, linguagens)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     const result = stmt.run(
@@ -119,7 +173,9 @@ const criarVaga = async (req, res) => {
       remuneracao || '',
       localizacao || '',
       tipo || 'CLT',           // padrão é CLT
-      bolsa_tecnica || 0       // padrão é zero
+      bolsa_tecnica || 0,      // padrão é zero
+      remoto !== undefined ? (remoto ? 1 : 0) : null,  // 1=sim, 0=não, null=ambos
+      linguagens || null       // ex: "JavaScript,Node.js,Express" ou JSON array
     );
 
     // Busca a vaga que acabou de ser criada
@@ -158,7 +214,7 @@ const criarVaga = async (req, res) => {
 const atualizarVaga = async (req, res) => {
   try {
     const { id } = req.params;  // ID da vaga na URL
-    const { titulo, descricao, requisitos, remuneracao, localizacao, tipo, status, bolsa_tecnica } = req.body;
+    const { titulo, descricao, requisitos, remuneracao, localizacao, tipo, status, bolsa_tecnica, remoto, linguagens } = req.body;
 
     // Primeiro, verifica se a vaga existe
     const vaga = db.prepare('SELECT * FROM vagas WHERE id = ?').get(id);
@@ -174,7 +230,7 @@ const atualizarVaga = async (req, res) => {
     const stmt = db.prepare(`
       UPDATE vagas 
       SET titulo = ?, descricao = ?, requisitos = ?, remuneracao = ?, 
-          localizacao = ?, tipo = ?, status = ?, bolsa_tecnica = ?, updated_at = CURRENT_TIMESTAMP
+          localizacao = ?, tipo = ?, status = ?, bolsa_tecnica = ?, remoto = ?, linguagens = ?, updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
     `);
 
@@ -187,6 +243,8 @@ const atualizarVaga = async (req, res) => {
       tipo || vaga.tipo,
       status || vaga.status,
       bolsa_tecnica ?? vaga.bolsa_tecnica ?? 0,
+      remoto !== undefined ? (remoto ? 1 : 0) : vaga.remoto,
+      linguagens ?? vaga.linguagens,
       id
     );
 

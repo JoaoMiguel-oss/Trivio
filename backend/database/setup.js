@@ -43,6 +43,16 @@ function inicializarTabelas() {
   migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN solucao_url TEXT`);
   migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN solucao_descricao TEXT`);
   migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN canal_liberado INTEGER DEFAULT 0`);
+
+  // ── Filtros de vagas ───────────────────────────────────────────────────────
+  // Remoto: 1 = sim, 0 = não (presencial), NULL = ambos
+  migrar(`ALTER TABLE vagas ADD COLUMN remoto INTEGER`);
+  
+  // Linguagens/tecnologias usadas (JSON array ou string separada por vírgula)
+  migrar(`ALTER TABLE vagas ADD COLUMN linguagens TEXT`);
+  
+  // Tipo de vaga já existe (CLT, PJ, Estágio, Freelancer)
+  // CLT/Estágio = vaga permanente, PJ/Freelancer = trabalho à parte
 }
 
 module.exports = inicializarTabelas;
