@@ -1,51 +1,14 @@
-// ============================================================
-// TRIVIO - CONTROLADOR DE USUÁRIOS
-// ============================================================
-// Este arquivo contém todas as funções que lidam com usuários.
-// É como o "departamento de RH" do sistema.
-//
-// O que cada função faz:
-// - criarUsuario: Cadastra um novo usuário
-// - uploadImagemAvulsa: Faz upload de imagem avulsa
-// - atualizarFotoPerfil: Troca a foto do perfil
-// - getConfiguracoes: Busca configurações do usuário
-// - atualizarConfiguracoes: Salva novas configurações
-// ============================================================
 
-
-// ============================================================
-// IMPORTAÇÕES
-// ============================================================
-// Precisamos de duas bibliotecas principais:
-//
-// - db (conexão): É o banco de dados. Todas as operações
-//                de leitura e escrita passam por aqui.
-//
-// - bcrypt: É o "cofre" que guarda senhas de forma segura.
-//           Ele transforma senhas em códigos impossíveis
-//           de reverter. Segurança em primeiro lugar!
-// ============================================================
 
 const db = require('./banco/conexao');       // Conexão com o banco de dados
 const bcrypt = require('bcrypt');           // Biblioteca para criptografar senhas
 
 
-// ============================================================
-// FUNÇÃO AUXILIAR: Gerador de ID único
-// ============================================================
-// Cria um ID único para cada usuário. É como um "CPF" único
-// que identifica cada pessoa no sistema.
-//
-// Como funciona:
-// - Date.now(): Pega a data atual em milissegundos
-// - Math.random(): Gera um número aleatório
-// - Juntamos os dois para ter um ID único
-// ============================================================
+
 
 const gerarIdUnico = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
 
 
-// ============================================================
 // CRIAR USUÁRIO
 // ============================================================
 // Esta função é chamada quando alguém quer se cadastrar.
@@ -65,36 +28,25 @@ const criarUsuario = async (req, res) => {
   try {
     // Pega os dados que vieram do formulário
     const { nome, email, senha } = req.body;
-    const arquivo = req.file;  // Foto enviada (se houver)
+    const arquivo = req.file;  
 
-    // ============================================================
     // VALIDAÇÃO BÁSICA
-    // ============================================================
     // Verifica se todos os campos obrigatórios estão preenchidos.
     // Se não estiverem, retorna erro 400 (requisição inválida).
-    // ============================================================
     if (!nome || !email || !senha) {
       return res.status(400).json({ erro: 'Nome, email e senha são obrigatórios' });
     }
 
-    // ============================================================
     // VERIFICAR SE EMAIL JÁ EXISTE
-    // ============================================================
-    // Antes de criar, verifica se esse email já está cadastrado.
-    // Se estiver, retorna erro 409 (conflito).
-    // ============================================================
     const existe = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
     if (existe) {
       return res.status(409).json({ erro: 'Email já cadastrado' });
     }
 
-    // ============================================================
     // UPLOAD DA FOTO (Opcional)
-    // ============================================================
     // Se o usuário enviou uma foto, mandamos para o Cloud.
     // O Cloudinary é como um "álbum online" para fotos.
     // Se der errado, informamos o erro.
-    // ============================================================
     let photo_url = null;
     if (arquivo) {
       try {
@@ -105,20 +57,14 @@ const criarUsuario = async (req, res) => {
       }
     }
 
-    // ============================================================
     // PREPARAR DADOS PARA SALVAR
-    // ============================================================
     // - public_id: ID único do usuário
-    // - password_hash: Senha criptografada (nunca a senha pura!)
-    // ============================================================
+    // - password_hash: Senha criptografada
     const public_id = gerarIdUnico();
     const password_hash = await bcrypt.hash(senha, 10);  // Criptografa a senha
 
-    // ============================================================
     // SALVAR NO BANCO DE DADOS
-    // ============================================================
     // Insert é o comando para criar um novo registro.
-    // ============================================================
     const stmt = db.prepare(`
       INSERT INTO users (public_id, name, email, password_hash, photo_url)
       VALUES (?, ?, ?, ?, ?)
@@ -126,12 +72,9 @@ const criarUsuario = async (req, res) => {
 
     stmt.run(public_id, nome, email, password_hash, photo_url);
 
-    // ============================================================
     // RETORNO (Sucesso!)
-    // ============================================================
     // Retorna 201 (criado) com os dados do novo usuário.
     // A senha NÃO é retornada por segurança.
-    // ============================================================
     res.status(201).json({
       public_id,
       nome,
@@ -146,12 +89,8 @@ const criarUsuario = async (req, res) => {
 };
 
 
-// ============================================================
 // UPLOAD DE IMAGEM AVULSA
-// ============================================================
-// Esta função permite fazer upload de uma imagem isolada.
-// Útil para testar ou enviar imagens em outros contextos.
-// ============================================================
+
 
 const uploadImagemAvulsa = async (req, res) => {
   try {
@@ -171,18 +110,7 @@ const uploadImagemAvulsa = async (req, res) => {
 };
 
 
-// ============================================================
 // ATUALIZAR FOTO DE PERFIL
-// ============================================================
-// Quando o usuário quer mudar sua foto de perfil.
-// É como trocar a foto na carteirinha de identidade.
-//
-// Passo a passo:
-// 1. Verifica se enviou alguma imagem
-// 2. Verifica se o usuário existe
-// 3. Faz upload da nova foto
-// 4. Atualiza no banco de dados
-// ============================================================
 
 const atualizarFotoPerfil = async (req, res) => {
   try {
@@ -215,15 +143,8 @@ const atualizarFotoPerfil = async (req, res) => {
 };
 
 
-// ============================================================
 // BUSCAR CONFIGURAÇÕES
-// ============================================================
-// Cada usuário (candidato ou empresa) tem suas configurações.
-// Esta função busca essas configurações.
-//
-// O parâmetro :tipo pode ser "candidato" ou "empresa".
-// O parâmetro :id é o identificador do usuário.
-// ============================================================
+
 
 const getConfiguracoes = async (req, res) => {
   try {
@@ -244,7 +165,6 @@ const getConfiguracoes = async (req, res) => {
     }
 
     // As configurações são guardadas como JSON (texto).
-    // Precisamos transformar de volta para objeto.
     let configuracoes = {};
     if (usuario.configuracoes) {
       try {
@@ -254,7 +174,6 @@ const getConfiguracoes = async (req, res) => {
       }
     }
 
-    // Retorna as configurações e dados básicos
     res.status(200).json({
       configuracoes,
       dadosBasicos: {
@@ -270,12 +189,9 @@ const getConfiguracoes = async (req, res) => {
 };
 
 
-// ============================================================
 // ATUALIZAR CONFIGURAÇÕES
-// ============================================================
-// Salva as novas configurações do usuário.
-// Pode atualizar tanto as configurações quanto dados básicos (nome, email).
-// ============================================================
+
+
 
 const atualizarConfiguracoes = async (req, res) => {
   try {
@@ -297,22 +213,14 @@ const atualizarConfiguracoes = async (req, res) => {
       return res.status(404).json({ erro: 'Usuário não encontrado' });
     }
 
-    // ============================================================
-    // ATUALIZAR CONFIGURAÇÕES (JSON)
-    // ============================================================
-    // Se o usuário enviou novas configurações, salvamos.
-    // Primeiro transformamos o objeto em texto (stringify).
-    // ============================================================
+  
     if (configuracoes) {
       const configStr = JSON.stringify(configuracoes);
       db.prepare(`UPDATE ${tabela} SET configuracoes = ? WHERE public_id = ?`).run(configStr, id);
     }
 
-    // ============================================================
-    // ATUALIZAR DADOS BÁSICOS
-    // ============================================================
-    // Se o usuário enviou nome ou email, atualizamos também.
-    // ============================================================
+    // ATUALIZAR DADOS 
+
     if (dadosBasicos) {
       if (dadosBasicos.nome) {
         db.prepare(`UPDATE ${tabela} SET nome = ? WHERE public_id = ?`).run(dadosBasicos.nome, id);
@@ -330,12 +238,7 @@ const atualizarConfiguracoes = async (req, res) => {
 };
 
 
-// ============================================================
-// EXPORTAÇÃO DAS FUNÇÕES
-// ============================================================
-// Precisamos exportar todas as funções para que other arquivos
-// possam usá-las. É como colocar num cardápio para ser pedido.
-// ============================================================
+
 
 module.exports = {
   criarUsuario,
