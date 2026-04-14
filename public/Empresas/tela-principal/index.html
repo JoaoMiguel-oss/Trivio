@@ -294,7 +294,7 @@
         async function loadSection(sectionName, buttonElement) {
             try {
                 // Faz requisição HTTP para buscar o arquivo HTML do módulo
-                const response = await fetch(`/Empresas/tela%20principal/modules/${sectionName}.html?v=${Date.now()}`);
+                const response = await fetch(`/Empresas/tela-principal/modules/${sectionName}.html?v=${Date.now()}`);
 
                 // Verifica se a requisição foi bem-sucedida (status 200)
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);

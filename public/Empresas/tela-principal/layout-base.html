@@ -325,7 +325,7 @@
         async function loadSection(sectionName) {
             try {
                 // Faz requisição HTTP para buscar o arquivo HTML do módulo
-                const response = await fetch(`/Empresas/tela%20principal/modules/${sectionName}.html?v=${Date.now()}`);
+                const response = await fetch(`/Empresas/tela-principal/modules/${sectionName}.html?v=${Date.now()}`);
 
                 // Extrai o conteúdo HTML da resposta
                 const html = await response.text();
