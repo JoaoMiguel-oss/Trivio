@@ -598,6 +598,15 @@
                 Dados Pessoais
             </div>
 
+            <div class="cfg-nav-item" id="cfg-nav-aparencia" onclick="cfgShowPanel('aparencia')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                    <path d="M2 12h20" />
+                </svg>
+                Aparência & Tema
+            </div>
+
             <div class="cfg-nav-item" id="cfg-nav-seguranca" onclick="cfgShowPanel('seguranca')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
@@ -654,23 +663,20 @@
         <div class="cfg-panel active" id="cfg-panel-perfil">
             <div class="cfg-section-header">
                 <h2>Perfil</h2>
-                <p>Gerencie suas informações de perfil público</p>
+                <p>Gerencie suas informações de perfil e empresa</p>
             </div>
             <div class="cfg-body">
                 <!-- Avatar upload -->
-                <div class="cfg-card" style="display:flex;align-items:center;gap:1.5rem;cursor:pointer;"
+                <div class="cfg-card" style="display:flex;align-items:center;gap:1.5rem;cursor:pointer;border-style:dashed;border-color:rgba(233,30,99,0.25);"
                     onclick="document.getElementById('cfg-avatar-input').click()">
-                    <div
+                    <div id="cfg-avatar-preview"
                         style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--color-primary),var(--color-accent));display:flex;align-items:center;justify-content:center;font-size:1.7rem;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 4px 16px rgba(233,30,99,0.3)">
                         AD</div>
                     <div>
-                        <p style="font-size:0.875rem;font-weight:700;color:rgba(255,255,255,0.8);margin-bottom:4px;">
-                            Alterar Foto de Perfil</p>
-                        <p style="font-size:0.75rem;color:rgba(255,255,255,0.32);">PNG, JPG ou GIF · Máx 5MB · Clique
-                            para selecionar</p>
+                        <p style="font-size:0.875rem;font-weight:700;color:rgba(255,255,255,0.8);margin-bottom:4px;">Foto de Perfil</p>
+                        <p style="font-size:0.75rem;color:rgba(255,255,255,0.32);">PNG, JPG ou GIF · Máx 5MB · Clique para selecionar</p>
                     </div>
-                    <input type="file" id="cfg-avatar-input" accept="image/*" style="display:none"
-                        onchange="cfgPreviewAvatar(event)">
+                    <input type="file" id="cfg-avatar-input" accept="image/*" style="display:none" onchange="cfgUploadAvatar(event)">
                 </div>
 
                 <div class="cfg-card">
@@ -680,27 +686,88 @@
                     <div class="cfg-grid2">
                         <div class="cfg-form-group">
                             <label class="cfg-label">Nome</label>
-                            <input type="text" class="cfg-input" value="Admin" id="cfg-nome">
+                            <input type="text" class="cfg-input" id="cfg-nome" placeholder="Nome da empresa">
                         </div>
                         <div class="cfg-form-group">
-                            <label class="cfg-label">Sobrenome</label>
-                            <input type="text" class="cfg-input" value="User" id="cfg-sobrenome">
+                            <label class="cfg-label">Sobrenome / Razão Social</label>
+                            <input type="text" class="cfg-input" id="cfg-sobrenome" placeholder="Complemento">
                         </div>
                     </div>
                     <div class="cfg-form-group">
-                        <label class="cfg-label">Nome de usuário</label>
-                        <input type="text" class="cfg-input" value="adminuser" id="cfg-username">
+                        <label class="cfg-label">Nome de exibição</label>
+                        <input type="text" class="cfg-input" id="cfg-username" placeholder="Como quer ser chamado">
+                    </div>
+                    <div class="cfg-form-group" style="margin-bottom:0">
+                        <label class="cfg-label">Bio / Sobre a empresa</label>
+                        <textarea class="cfg-input cfg-textarea" id="cfg-bio" placeholder="Descreva sua empresa..."></textarea>
+                    </div>
+                </div>
+
+                <div class="cfg-card">
+                    <div class="cfg-card-title">
+                        <div class="cfg-dot"></div>Contato
                     </div>
                     <div class="cfg-form-group">
-                        <label class="cfg-label">Bio</label>
-                        <textarea class="cfg-input cfg-textarea"
-                            id="cfg-bio">Administrador da plataforma Trivio, responsável por gerenciar desafios técnicos e recrutar talentos.</textarea>
+                        <label class="cfg-label">E-mail</label>
+                        <input type="email" class="cfg-input" id="cfg-email" placeholder="contato@empresa.com">
+                    </div>
+                    <div class="cfg-grid2">
+                        <div class="cfg-form-group" style="margin-bottom:0">
+                            <label class="cfg-label">Telefone</label>
+                            <input type="tel" class="cfg-input" id="cfg-telefone" placeholder="(11) 00000-0000">
+                        </div>
+                        <div class="cfg-form-group" style="margin-bottom:0">
+                            <label class="cfg-label">LinkedIn</label>
+                            <input type="url" class="cfg-input" id="cfg-linkedin" placeholder="linkedin.com/company/">
+                        </div>
                     </div>
                 </div>
 
                 <div class="cfg-actions">
-                    <button class="btn-cfg-primary" onclick="cfgSave('perfil', this)">Salvar Alterações</button>
+                    <button class="btn-cfg-primary" id="cfg-btn-save-profile" onclick="cfgSaveProfileData()">Salvar Alterações</button>
                     <button class="btn-cfg-secondary" onclick="cfgCancel('perfil')">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== PAINEL: APARÊNCIA & TEMA ========== -->
+        <div class="cfg-panel" id="cfg-panel-aparencia">
+            <div class="cfg-section-header">
+                <h2>Aparência & Tema</h2>
+                <p>Personalize as cores e o visual da sua conta</p>
+            </div>
+            <div class="cfg-body">
+                <div class="cfg-card">
+                    <div class="cfg-card-title">
+                        <div class="cfg-dot"></div>Cor de Destaque
+                    </div>
+                    <p style="font-size:0.8rem; color: rgba(255,255,255,0.35); margin-bottom:1rem;">Escolha a cor principal da interface</p>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center">
+                        <div class="color-option" style="width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid white;box-shadow:0 0 0 2px rgba(255,255,255,0.3);background: linear-gradient(135deg, #E91E63, #FF1493);" title="Rosa (padrão)" onclick="cfgSelectColor(this, '#E91E63')"></div>
+                        <div class="color-option" style="width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid transparent;background: linear-gradient(135deg, #6C63FF, #8B5CF6);" title="Roxo" onclick="cfgSelectColor(this, '#6C63FF')"></div>
+                        <div class="color-option" style="width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid transparent;background: linear-gradient(135deg, #14B8A6, #06B6D4);" title="Ciano" onclick="cfgSelectColor(this, '#14B8A6')"></div>
+                        <div class="color-option" style="width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid transparent;background: linear-gradient(135deg, #F97316, #EF4444);" title="Laranja" onclick="cfgSelectColor(this, '#F97316')"></div>
+                        <div class="color-option" style="width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid transparent;background: linear-gradient(135deg, #22C55E, #10B981);" title="Verde" onclick="cfgSelectColor(this, '#22C55E')"></div>
+                        <div class="color-option" style="width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid transparent;background: linear-gradient(135deg, #3B82F6, #6366F1);" title="Azul" onclick="cfgSelectColor(this, '#3B82F6')"></div>
+                        <div class="color-option" style="width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid transparent;background: linear-gradient(135deg, #F59E0B, #FBBF24);" title="Âmbar" onclick="cfgSelectColor(this, '#F59E0B')"></div>
+                    </div>
+                </div>
+                <div class="cfg-card">
+                    <div class="cfg-card-title"><div class="cfg-dot"></div>Idioma & Região</div>
+                    <div class="cfg-grid2">
+                        <div class="cfg-form-group" style="margin-bottom:0">
+                            <label class="cfg-label">Idioma</label>
+                            <select class="cfg-input" style="cursor:pointer"><option selected>Português (BR)</option><option>English (US)</option><option>Español</option></select>
+                        </div>
+                        <div class="cfg-form-group" style="margin-bottom:0">
+                            <label class="cfg-label">Fuso Horário</label>
+                            <select class="cfg-input" style="cursor:pointer"><option selected>América/São Paulo (GMT-3)</option><option>América/Manaus (GMT-4)</option><option>UTC</option></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="cfg-actions">
+                    <button class="btn-cfg-primary" onclick="cfgToast('Preferências de aparência salvas!')">Salvar preferências</button>
+                    <button class="btn-cfg-secondary" onclick="cfgRestoreDefaults()">Restaurar padrão</button>
                 </div>
             </div>
         </div>
@@ -1287,10 +1354,121 @@
         input.value = v;
     }
 
-    /* ===== PREVIEW DE AVATAR ===== */
-    function cfgPreviewAvatar(event) {
+    /* ===== SELETOR DE COR DE TEMA ===== */
+    async function cfgSelectColor(el, color) {
+        document.querySelectorAll('.color-option').forEach(opt => {
+            opt.style.border = '3px solid transparent';
+            opt.style.boxShadow = 'none';
+        });
+        el.style.border = '3px solid white';
+        el.style.boxShadow = '0 0 0 2px rgba(255,255,255,0.3)';
+        document.documentElement.style.setProperty('--color-primary', color);
+        const usuarioStr = sessionStorage.getItem('usuario');
+        if (!usuarioStr) return;
+        const usuario = JSON.parse(usuarioStr);
+        const novasConfig = { ...(usuario.configuracoes || {}), themeColor: color };
+        try {
+            await fetch(`https://trivio-production.up.railway.app/api/v1/user/${usuario.tipo}/${usuario.public_id}/configuracoes`, {
+                method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ configuracoes: novasConfig })
+            });
+            usuario.configuracoes = novasConfig;
+            sessionStorage.setItem('usuario', JSON.stringify(usuario));
+            cfgToast('Cor de tema atualizada!');
+        } catch(e) { console.error(e); }
+    }
+
+    /* ===== CARREGAR DADOS DO PERFIL ===== */
+    function cfgLoadProfileData() {
+        const usuarioStr = sessionStorage.getItem('usuario');
+        if (!usuarioStr) return;
+        try {
+            const usuario = JSON.parse(usuarioStr);
+            const nomeSplit = usuario.nome ? usuario.nome.split(' ') : [''];
+            const nome = nomeSplit[0] || '';
+            const sobrenome = nomeSplit.slice(1).join(' ') || '';
+            const nomeEl = document.getElementById('cfg-nome');
+            const sobrenomeEl = document.getElementById('cfg-sobrenome');
+            const usernameEl = document.getElementById('cfg-username');
+            const emailEl = document.getElementById('cfg-email');
+            const bioEl = document.getElementById('cfg-bio');
+            if (nomeEl) nomeEl.value = nome;
+            if (sobrenomeEl) sobrenomeEl.value = sobrenome;
+            if (usernameEl) usernameEl.value = usuario.nome || '';
+            if (emailEl) emailEl.value = usuario.email || '';
+            if (bioEl && usuario.configuracoes && usuario.configuracoes.bio) bioEl.value = usuario.configuracoes.bio;
+            const avatarEl = document.getElementById('cfg-avatar-preview');
+            if (avatarEl) {
+                if (usuario.foto_url) {
+                    avatarEl.style.backgroundImage = `url(${usuario.foto_url})`;
+                    avatarEl.style.backgroundSize = 'cover';
+                    avatarEl.style.backgroundPosition = 'center';
+                    avatarEl.textContent = '';
+                } else {
+                    avatarEl.style.backgroundImage = 'none';
+                    avatarEl.textContent = nome.substring(0, 2).toUpperCase() || 'E';
+                }
+            }
+            if (usuario.configuracoes && usuario.configuracoes.themeColor) {
+                document.documentElement.style.setProperty('--color-primary', usuario.configuracoes.themeColor);
+            }
+        } catch(e) { console.error(e); }
+    }
+
+    /* ===== SALVAR DADOS DO PERFIL ===== */
+    async function cfgSaveProfileData() {
+        const usuarioStr = sessionStorage.getItem('usuario');
+        if (!usuarioStr) return;
+        const usuario = JSON.parse(usuarioStr);
+        const btn = document.getElementById('cfg-btn-save-profile');
+        if (btn) { btn.textContent = 'Salvando...'; btn.disabled = true; }
+        const nomeEl = document.getElementById('cfg-nome');
+        const sobrenomeEl = document.getElementById('cfg-sobrenome');
+        const bioEl = document.getElementById('cfg-bio');
+        const emailEl = document.getElementById('cfg-email');
+        const nomeFinal = ((nomeEl ? nomeEl.value : '') + ' ' + (sobrenomeEl ? sobrenomeEl.value : '')).trim();
+        const novasConfig = { ...(usuario.configuracoes || {}), bio: bioEl ? bioEl.value : '' };
+        try {
+            const res = await fetch(`https://trivio-production.up.railway.app/api/v1/user/${usuario.tipo}/${usuario.public_id}/configuracoes`, {
+                method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ dadosBasicos: { nome: nomeFinal, email: emailEl ? emailEl.value : usuario.email }, configuracoes: novasConfig })
+            });
+            if (res.ok) {
+                usuario.nome = nomeFinal;
+                if (emailEl) usuario.email = emailEl.value;
+                usuario.configuracoes = novasConfig;
+                sessionStorage.setItem('usuario', JSON.stringify(usuario));
+                cfgToast('Perfil salvo com sucesso!');
+                cfgLoadProfileData();
+            } else { cfgToast('Erro ao salvar perfil', true); }
+        } catch(e) { console.error(e); cfgToast('Erro na conexão', true); }
+        if (btn) { btn.textContent = 'Salvar Alterações'; btn.disabled = false; }
+    }
+
+    /* ===== UPLOAD DE AVATAR ===== */
+    async function cfgUploadAvatar(event) {
         const file = event.target.files[0];
         if (!file) return;
-        cfgToast('Foto selecionada: ' + file.name);
+        const usuarioStr = sessionStorage.getItem('usuario');
+        if (!usuarioStr) return;
+        const usuario = JSON.parse(usuarioStr);
+        const formData = new FormData();
+        formData.append('imagem', file);
+        try {
+            cfgToast('Fazendo upload...');
+            const res = await fetch(`https://trivio-production.up.railway.app/api/v1/user/${usuario.tipo}/${usuario.public_id}/foto`, {
+                method: 'PUT', body: formData
+            });
+            if (res.ok) {
+                const data = await res.json();
+                usuario.foto_url = data.photo_url;
+                sessionStorage.setItem('usuario', JSON.stringify(usuario));
+                cfgLoadProfileData();
+                cfgToast('Foto atualizada com sucesso!');
+            } else { cfgToast('Erro ao fazer upload', true); }
+        } catch(e) { console.error(e); cfgToast('Erro na conexão', true); }
     }
+
+    // Carrega dados do perfil ao abrir o módulo
+    cfgLoadProfileData();
 </script>
