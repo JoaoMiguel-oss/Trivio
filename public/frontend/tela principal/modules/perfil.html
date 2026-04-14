@@ -1,10 +1,709 @@
 <!-- ===== PAINEL DE PERFIL ===== -->
-<!-- Este módulo está livre para implementação futura. -->
-<!-- O conteúdo de perfil foi integrado à aba de Configurações. -->
-<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:1rem;animation:fadeIn 0.4s ease;">
-    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.5" stroke-linecap="round" opacity="0.5">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-        <circle cx="12" cy="7" r="4" />
-    </svg>
-    <p style="color:rgba(255,255,255,0.4);font-size:0.9rem;">Acesse suas informações de perfil em <strong style="color:var(--color-primary)">Configurações → Perfil</strong></p>
+<style>
+    /* ===== PERFIL STYLES ===== */
+    .perfil-container {
+        animation: fadeIn 0.5s ease;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .perfil-header {
+        background: linear-gradient(135deg, rgba(233, 30, 99, 0.1), rgba(255, 20, 147, 0.05));
+        border: 1px solid rgba(233, 30, 99, 0.2);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .perfil-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--color-primary), var(--color-accent), transparent);
+    }
+
+    .perfil-avatar-section {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .perfil-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: white;
+        box-shadow: 0 8px 32px rgba(233, 30, 99, 0.3);
+        position: relative;
+    }
+
+    .perfil-avatar::after {
+        content: '';
+        position: absolute;
+        inset: -3px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+        z-index: -1;
+        opacity: 0.3;
+    }
+
+    .perfil-info h1 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .perfil-info p {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .perfil-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .perfil-stat {
+        text-align: center;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .perfil-stat-value {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--color-primary);
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+
+    .perfil-stat-label {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.6);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* ===== VAGAS RESOLVIDAS ===== */
+    .vagas-section {
+        margin-top: 3rem;
+    }
+
+    .vagas-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+    }
+
+    .vagas-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: white;
+        margin: 0;
+    }
+
+    .vagas-subtitle {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.95rem;
+        margin: 0.5rem 0 0 0;
+    }
+
+    .vagas-controls {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .vagas-select {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: white;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        cursor: pointer;
+        min-width: 140px;
+    }
+
+    .vagas-select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+    }
+
+    .vagas-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .vaga-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .vaga-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .vaga-card:hover {
+        border-color: rgba(233, 30, 99, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(233, 30, 99, 0.15);
+    }
+
+    .vaga-card:hover::before {
+        opacity: 1;
+    }
+
+    .vaga-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    .vaga-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: white;
+        margin: 0;
+        line-height: 1.4;
+        flex: 1;
+    }
+
+    .vaga-score {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-align: center;
+        min-width: 60px;
+        box-shadow: 0 2px 8px rgba(233, 30, 99, 0.3);
+    }
+
+    .vaga-company {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .vaga-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .vaga-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .vaga-meta-item svg {
+        width: 14px;
+        height: 14px;
+        color: var(--color-primary);
+    }
+
+    .vaga-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .vaga-status.entregue {
+        background: rgba(59, 130, 246, 0.15);
+        color: #3b82f6;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .vaga-status.avancou {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22c55e;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .vaga-status.andamento {
+        background: rgba(156, 163, 175, 0.15);
+        color: #9ca3af;
+        border: 1px solid rgba(156, 163, 175, 0.3);
+    }
+
+    .vaga-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .vaga-date {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .vaga-bolsa {
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.2);
+        color: #22c55e;
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    /* Empty state */
+    .vagas-empty {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+    .vagas-empty svg {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        opacity: 0.3;
+    }
+
+    .vagas-empty h3 {
+        font-size: 1.4rem;
+        margin-bottom: 0.5rem;
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .vagas-empty p {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .vagas-empty .btn {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .vagas-empty .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+    }
+
+    /* Loading */
+    .vagas-loading {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+
+    .vagas-loading svg {
+        width: 48px;
+        height: 48px;
+        margin: 0 auto 1rem;
+        color: var(--color-primary);
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .perfil-avatar-section {
+            flex-direction: column;
+            text-align: center;
+            gap: 1.5rem;
+        }
+
+        .perfil-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .vagas-header {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: stretch;
+        }
+
+        .vagas-controls {
+            justify-content: center;
+        }
+
+        .vagas-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .vaga-footer {
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: stretch;
+        }
+    }
+</style>
+
+<div class="perfil-container">
+    <!-- ===== HEADER DO PERFIL ===== -->
+    <div class="perfil-header">
+        <div class="perfil-avatar-section">
+            <div class="perfil-avatar" id="perfil-avatar">
+                <!-- Avatar será carregado dinamicamente -->
+            </div>
+            <div class="perfil-info">
+                <h1 id="perfil-nome">Carregando...</h1>
+                <p id="perfil-email">carregando@email.com</p>
+                <p id="perfil-bio">Desenvolvedor apaixonado por tecnologia</p>
+            </div>
+        </div>
+
+        <div class="perfil-stats">
+            <div class="perfil-stat">
+                <span class="perfil-stat-value" id="stat-desafios">0</span>
+                <span class="perfil-stat-label">Desafios</span>
+            </div>
+            <div class="perfil-stat">
+                <span class="perfil-stat-value" id="stat-entregues">0</span>
+                <span class="perfil-stat-label">Entregues</span>
+            </div>
+            <div class="perfil-stat">
+                <span class="perfil-stat-value" id="stat-avancaram">0</span>
+                <span class="perfil-stat-label">Avançaram</span>
+            </div>
+            <div class="perfil-stat">
+                <span class="perfil-stat-value" id="stat-score-medio">0.0</span>
+                <span class="perfil-stat-label">Score Médio</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== VAGAS RESOLVIDAS ===== -->
+    <div class="vagas-section">
+        <div class="vagas-header">
+            <div>
+                <h2 class="vagas-title">🎯 Vagas Resolvidas</h2>
+                <p class="vagas-subtitle">Seu histórico de desafios técnicos e conquistas</p>
+            </div>
+            <div class="vagas-controls">
+                <select class="vagas-select" id="vagas-sort-select" onchange="ordenarVagasPerfil()">
+                    <option value="data-desc">📅 Mais recentes</option>
+                    <option value="data-asc">📅 Mais antigas</option>
+                    <option value="score-desc">⭐ Maior score</option>
+                    <option value="score-asc">⭐ Menor score</option>
+                    <option value="status">🏆 Por status</option>
+                </select>
+                <select class="vagas-select" id="vagas-filter-select" onchange="filtrarVagasPerfil()">
+                    <option value="todas">🔍 Todas</option>
+                    <option value="entregue">✅ Entregues</option>
+                    <option value="avancou">🚀 Avançaram</option>
+                    <option value="avaliadas">🤖 Avaliadas</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="vagas-container" class="vagas-grid">
+            <!-- Conteúdo será carregado dinamicamente -->
+        </div>
+    </div>
 </div>
+
+<script>
+    // Variável global para armazenar as vagas
+    let vagasPerfil = [];
+
+    // Carrega dados do perfil quando o módulo é carregado
+    document.addEventListener('DOMContentLoaded', function() {
+        carregarPerfil();
+    });
+
+    // Carrega informações do perfil do usuário
+    async function carregarPerfil() {
+        const usuario = JSON.parse(sessionStorage.getItem('usuario') || '{}');
+        if (!usuario.public_id) {
+            mostrarErroPerfil();
+            return;
+        }
+
+        // Carrega informações básicas do perfil
+        carregarInfoPerfil(usuario);
+
+        // Carrega vagas resolvidas
+        await carregarVagasPerfil(usuario.public_id);
+    }
+
+    function carregarInfoPerfil(usuario) {
+        // Avatar
+        const avatarEl = document.getElementById('perfil-avatar');
+        const iniciais = (usuario.nome || 'Usuario').split(' ').map(n => n[0]).join('').toUpperCase();
+        avatarEl.textContent = iniciais;
+
+        // Informações
+        document.getElementById('perfil-nome').textContent = usuario.nome || 'Nome não informado';
+        document.getElementById('perfil-email').textContent = usuario.email || 'email@exemplo.com';
+
+        // Bio (se existir)
+        const bio = usuario.bio || 'Desenvolvedor apaixonado por tecnologia';
+        document.getElementById('perfil-bio').textContent = bio;
+    }
+
+    async function carregarVagasPerfil(candidatoId) {
+        const container = document.getElementById('vagas-container');
+        if (!container) return;
+
+        // Mostra loading
+        container.innerHTML = `
+            <div class="vagas-loading">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" stroke-dasharray="31.4" stroke-dashoffset="31.4">
+                        <animate attributeName="stroke-dashoffset" values="31.4;0" dur="1s" repeatCount="indefinite"/>
+                    </circle>
+                </svg>
+                <p>Carregando seu histórico...</p>
+            </div>
+        `;
+
+        try {
+            // Busca as vagas
+            const response = await fetch(`/api/v1/desafios/meus/${candidatoId}`);
+            if (!response.ok) throw new Error('Erro ao carregar vagas');
+
+            vagasPerfil = await response.json();
+
+            // Atualiza estatísticas
+            atualizarEstatisticasPerfil(vagasPerfil);
+
+            // Renderiza vagas
+            renderizarVagasPerfil(vagasPerfil);
+
+        } catch (error) {
+            console.error('Erro ao carregar vagas:', error);
+            container.innerHTML = `
+                <div class="vagas-empty">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M12 9v3m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                    </svg>
+                    <h3>Erro ao carregar</h3>
+                    <p>Não foi possível carregar suas vagas resolvidas.</p>
+                </div>
+            `;
+        }
+    }
+
+    function atualizarEstatisticasPerfil(vagas) {
+        const totalDesafios = vagas.length;
+        const entregues = vagas.filter(v => v.status === 'entregue').length;
+        const avancaram = vagas.filter(v => v.avancou_entrevista).length;
+        const avaliadas = vagas.filter(v => v.score_ia);
+        const scoreMedio = avaliadas.length > 0
+            ? (avaliadas.reduce((sum, v) => sum + (v.score_ia || 0), 0) / avaliadas.length).toFixed(1)
+            : '0.0';
+
+        document.getElementById('stat-desafios').textContent = totalDesafios;
+        document.getElementById('stat-entregues').textContent = entregues;
+        document.getElementById('stat-avancaram').textContent = avancaram;
+        document.getElementById('stat-score-medio').textContent = scoreMedio;
+    }
+
+    function renderizarVagasPerfil(vagas) {
+        const container = document.getElementById('vagas-container');
+
+        if (vagas.length === 0) {
+            container.innerHTML = `
+                <div class="vagas-empty">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <h3>Ainda não há desafios resolvidos</h3>
+                    <p>Quando você resolver desafios técnicos, eles aparecerão aqui com seu histórico completo.</p>
+                    <button class="btn" onclick="window.location.href='#desafios'">Explorar Desafios</button>
+                </div>
+            `;
+            return;
+        }
+
+        const vagasHTML = vagas.map(vaga => {
+            const statusClass = vaga.avancou_entrevista ? 'avancou' :
+                              vaga.status === 'entregue' ? 'entregue' : 'andamento';
+            const statusText = vaga.avancou_entrevista ? 'Avançou' :
+                             vaga.status === 'entregue' ? 'Entregue' : 'Em andamento';
+
+            const scoreDisplay = vaga.score_ia ? `
+                <div class="vaga-score">
+                    ${vaga.score_ia}/10
+                </div>
+            ` : '';
+
+            return `
+                <div class="vaga-card">
+                    <div class="vaga-header">
+                        <h3 class="vaga-title">${vaga.titulo}</h3>
+                        ${scoreDisplay}
+                    </div>
+
+                    <div class="vaga-company">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                        ${vaga.empresa_nome}
+                    </div>
+
+                    <div class="vaga-meta">
+                        <div class="vaga-meta-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                            </svg>
+                            ${vaga.stack}
+                        </div>
+                        <div class="vaga-meta-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="12,6 12,12 16,14"/>
+                            </svg>
+                            ${vaga.tempo_limite_h}h
+                        </div>
+                    </div>
+
+                    <div class="vaga-footer">
+                        <span class="vaga-status ${statusClass}">${statusText}</span>
+                        <div style="text-align: right;">
+                            <div class="vaga-date">${formatarData(vaga.iniciado_em)}</div>
+                            ${vaga.bolsa_tecnica > 0 ? `
+                                <div class="vaga-bolsa">R$ ${vaga.bolsa_tecnica.toLocaleString('pt-BR')}</div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        container.innerHTML = vagasHTML;
+    }
+
+    function formatarData(dataString) {
+        const data = new Date(dataString);
+        return data.toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        });
+    }
+
+    function ordenarVagasPerfil() {
+        aplicarFiltrosPerfil();
+    }
+
+    function filtrarVagasPerfil() {
+        aplicarFiltrosPerfil();
+    }
+
+    function aplicarFiltrosPerfil() {
+        let vagasFiltradas = [...vagasPerfil];
+
+        // Aplica filtro
+        const filtroSelecionado = document.getElementById('vagas-filter-select')?.value || 'todas';
+        if (filtroSelecionado !== 'todas') {
+            switch (filtroSelecionado) {
+                case 'entregue':
+                    vagasFiltradas = vagasFiltradas.filter(v => v.status === 'entregue');
+                    break;
+                case 'avancou':
+                    vagasFiltradas = vagasFiltradas.filter(v => v.avancou_entrevista);
+                    break;
+                case 'avaliadas':
+                    vagasFiltradas = vagasFiltradas.filter(v => v.score_ia);
+                    break;
+            }
+        }
+
+        // Aplica ordenação
+        const ordenacaoSelecionada = document.getElementById('vagas-sort-select')?.value || 'data-desc';
+        vagasFiltradas.sort((a, b) => {
+            switch (ordenacaoSelecionada) {
+                case 'data-desc':
+                    return new Date(b.iniciado_em) - new Date(a.iniciado_em);
+                case 'data-asc':
+                    return new Date(a.iniciado_em) - new Date(b.iniciado_em);
+                case 'score-desc':
+                    return (b.score_ia || 0) - (a.score_ia || 0);
+                case 'score-asc':
+                    return (a.score_ia || 0) - (b.score_ia || 0);
+                case 'status':
+                    const statusA = a.avancou_entrevista ? 3 : a.status === 'entregue' ? 2 : 1;
+                    const statusB = b.avancou_entrevista ? 3 : b.status === 'entregue' ? 2 : 1;
+                    return statusB - statusA;
+                default:
+                    return 0;
+            }
+        });
+
+        renderizarVagasPerfil(vagasFiltradas);
+    }
+
+    function mostrarErroPerfil() {
+        document.getElementById('perfil-nome').textContent = 'Erro ao carregar';
+        document.getElementById('perfil-email').textContent = 'Faça login novamente';
+        document.getElementById('vagas-container').innerHTML = `
+            <div class="vagas-empty">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M12 9v3m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                </svg>
+                <h3>Sessão expirada</h3>
+                <p>Faça login novamente para ver seu perfil.</p>
+            </div>
+        `;
+    }
+</script>

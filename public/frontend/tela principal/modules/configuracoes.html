@@ -727,12 +727,53 @@
                     </div>
                 </div>
 
-                <div class="cfg-actions">
-                    <button class="btn-cfg-primary" id="cfg-btn-save-profile" onclick="cfgSaveProfileData()">Salvar Alterações</button>
-                    <button class="cfg-btn-secondary" onclick="cfgCancel('perfil')">Cancelar</button>
-                </div>
-            </div>
-        </div>
+                 <div class="cfg-actions">
+                     <button class="btn-cfg-primary" id="cfg-btn-save-profile" onclick="cfgSaveProfileData()">Salvar Alterações</button>
+                     <button class="cfg-btn-secondary" onclick="cfgCancel('perfil')">Cancelar</button>
+                 </div>
+             </div>
+         </div>
+
+
+             <div class="cfg-body">
+                 <!-- Filtros e Ordenação -->
+                 <div class="bg-gray-800 rounded-lg p-4 border border-gray-700 mb-6">
+                     <div class="flex flex-wrap items-center gap-4">
+                         <div class="flex items-center gap-2">
+                             <label class="text-sm font-medium text-gray-300">Ordenar por:</label>
+                             <select id="vagas-sort-select" class="bg-gray-700 border border-gray-600 rounded-md px-3 py-1.5 text-sm text-white focus:border-blue-500 focus:outline-none" onchange="ordenarVagasResolvidas()">
+                                 <option value="data-desc">Mais recentes</option>
+                                 <option value="data-asc">Mais antigas</option>
+                                 <option value="score-desc">Maior score</option>
+                                 <option value="score-asc">Menor score</option>
+                                 <option value="status">Status</option>
+                             </select>
+                         </div>
+                         <div class="flex items-center gap-2">
+                             <label class="text-sm font-medium text-gray-300">Filtrar:</label>
+                             <select id="vagas-filter-select" class="bg-gray-700 border border-gray-600 rounded-md px-3 py-1.5 text-sm text-white focus:border-blue-500 focus:outline-none" onchange="filtrarVagasResolvidas()">
+                                 <option value="todas">Todas</option>
+                                 <option value="entregue">Entregues</option>
+                                 <option value="avancou">Avançaram</option>
+                                 <option value="avaliadas">Avaliadas por IA</option>
+                             </select>
+                         </div>
+                     </div>
+                 </div>
+                 <div id="vagas-resolvidas-container" class="space-y-4">
+                     <!-- Conteúdo será carregado dinamicamente -->
+                     <div class="text-center py-12">
+                         <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-700 flex items-center justify-center">
+                             <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                             </svg>
+                         </div>
+                         <h3 class="text-lg font-medium text-gray-300 mb-2">Carregando vagas resolvidas...</h3>
+                         <p class="text-gray-500">Aguarde enquanto buscamos seu histórico.</p>
+                     </div>
+                 </div>
+             </div>
+         </div>
 
         <!-- ========== PAINEL: DADOS PESSOAIS ========== -->
         <div class="cfg-panel" id="cfg-panel-dados">
