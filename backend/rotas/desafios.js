@@ -24,4 +24,7 @@ router.post('/:id/candidatar', desafioController.candidatarDesafio);
 // GET  /api/v1/desafios/:id/candidaturas - Empresa vê candidatos realizando o desafio
 router.get('/:id/candidaturas', desafioController.listarCandidaturas);
 
+// GET  /api/v1/desafios/meus/:candidato_id - Candidato vê seus desafios realizados
+router.get('/meus/:candidato_id', desafioController.meusDesafios);
+
 module.exports = router;

@@ -557,7 +557,7 @@
             loginBtn.textContent = 'Entrando...';
 
             try {
-                const resposta = await fetch('https://trivio.up.railway.app/api/v1/auth/login', {
+                const resposta = await fetch('/api/v1/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ tipo: selectedUserType, email, senha: password })
