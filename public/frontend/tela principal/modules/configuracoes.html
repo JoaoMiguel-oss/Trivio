@@ -567,6 +567,43 @@
         transition: width 0.3s, background 0.3s;
         width: 0;
     }
+
+    /* ===== HEADER PERFIL (CONFIG) ===== */
+    .cfg-header-banner {
+        padding: 2rem 2.25rem;
+        background: linear-gradient(90deg, #181818 0%, #121212 100%);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .cfg-header-avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #fff;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        border: 2px solid rgba(255,255,255,0.05);
+    }
+
+    .cfg-header-info h1 {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 2px;
+    }
+
+    .cfg-header-info p {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.4);
+    }
 </style>
 
 <!-- ===== LAYOUT PRINCIPAL ===== -->
@@ -658,6 +695,15 @@
 
     <!-- ===== CONTEÚDO ===== -->
     <main style="flex:1; background:#141414; overflow-y:auto;">
+        
+        <!-- Header de Identificação -->
+        <div class="cfg-header-banner">
+            <div class="cfg-header-avatar" id="cfg-hdr-avatar">--</div>
+            <div class="cfg-header-info">
+                <h1 id="cfg-hdr-name">Dashboard de Configuração</h1>
+                <p id="cfg-hdr-email">Gerencie sua conta e preferências do sistema</p>
+            </div>
+        </div>
 
         <!-- ========== PAINEL: PERFIL ========== -->
         <div class="cfg-panel active" id="cfg-panel-perfil">
@@ -733,48 +779,6 @@
                  </div>
              </div>
          </div>
-
-
-             <div class="cfg-body">
-                 <!-- Filtros e Ordenação -->
-                 <div class="bg-gray-800 rounded-lg p-4 border border-gray-700 mb-6">
-                     <div class="flex flex-wrap items-center gap-4">
-                         <div class="flex items-center gap-2">
-                             <label class="text-sm font-medium text-gray-300">Ordenar por:</label>
-                             <select id="vagas-sort-select" class="bg-gray-700 border border-gray-600 rounded-md px-3 py-1.5 text-sm text-white focus:border-blue-500 focus:outline-none" onchange="ordenarVagasResolvidas()">
-                                 <option value="data-desc">Mais recentes</option>
-                                 <option value="data-asc">Mais antigas</option>
-                                 <option value="score-desc">Maior score</option>
-                                 <option value="score-asc">Menor score</option>
-                                 <option value="status">Status</option>
-                             </select>
-                         </div>
-                         <div class="flex items-center gap-2">
-                             <label class="text-sm font-medium text-gray-300">Filtrar:</label>
-                             <select id="vagas-filter-select" class="bg-gray-700 border border-gray-600 rounded-md px-3 py-1.5 text-sm text-white focus:border-blue-500 focus:outline-none" onchange="filtrarVagasResolvidas()">
-                                 <option value="todas">Todas</option>
-                                 <option value="entregue">Entregues</option>
-                                 <option value="avancou">Avançaram</option>
-                                 <option value="avaliadas">Avaliadas por IA</option>
-                             </select>
-                         </div>
-                     </div>
-                 </div>
-                 <div id="vagas-resolvidas-container" class="space-y-4">
-                     <!-- Conteúdo será carregado dinamicamente -->
-                     <div class="text-center py-12">
-                         <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-700 flex items-center justify-center">
-                             <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                             </svg>
-                         </div>
-                         <h3 class="text-lg font-medium text-gray-300 mb-2">Carregando vagas resolvidas...</h3>
-                         <p class="text-gray-500">Aguarde enquanto buscamos seu histórico.</p>
-                     </div>
-                 </div>
-             </div>
-         </div>
-
         <!-- ========== PAINEL: DADOS PESSOAIS ========== -->
         <div class="cfg-panel" id="cfg-panel-dados">
             <div class="cfg-section-header">
@@ -1454,15 +1458,31 @@
             if (emailEl) emailEl.value = usuario.email || '';
             if (bioEl && usuario.configuracoes && usuario.configuracoes.bio) bioEl.value = usuario.configuracoes.bio;
             const avatarEl = document.getElementById('cfg-avatar-preview');
+            const hdrAvatar = document.getElementById('cfg-hdr-avatar');
+            const hdrName = document.getElementById('cfg-hdr-name');
+            const hdrEmail = document.getElementById('cfg-hdr-email');
+
+            if (hdrName) hdrName.textContent = usuario.nome || 'Seu Perfil';
+            if (hdrEmail) hdrEmail.textContent = usuario.email || 'Configurações de conta';
+
             if (avatarEl) {
                 if (usuario.foto_url) {
                     avatarEl.style.backgroundImage = `url(${usuario.foto_url})`;
                     avatarEl.style.backgroundSize = 'cover';
                     avatarEl.style.backgroundPosition = 'center';
                     avatarEl.textContent = '';
+                    if (hdrAvatar) {
+                        hdrAvatar.style.backgroundImage = `url(${usuario.foto_url})`;
+                        hdrAvatar.style.backgroundSize = 'cover';
+                        hdrAvatar.textContent = '';
+                    }
                 } else {
                     avatarEl.style.backgroundImage = 'none';
                     avatarEl.textContent = nome.substring(0, 2).toUpperCase() || 'U';
+                    if (hdrAvatar) {
+                        hdrAvatar.style.backgroundImage = 'none';
+                        hdrAvatar.textContent = nome.substring(0, 2).toUpperCase() || 'U';
+                    }
                 }
             }
             if (usuario.configuracoes && usuario.configuracoes.themeColor) {
