@@ -1,0 +1,14 @@
+{
+  "name": "trivio-evaluator",
+  "version": "1.0.0",
+  "description": "Microserviço de avaliação de código para o Trivio",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "isolated-vm": "^5.0.1"
+  }
+}
