@@ -1,11 +1,4 @@
-/**
- * evaluator.js
- *
- * Executa código de candidatos em ambientes isolados.
- *
- * JavaScript → isolated-vm (V8 Isolate separado, zero acesso ao Node host)
- * Python     → child_process com restrições de timeout + sem acesso de rede/fs via flags
- */
+
 
 const ivm = require('isolated-vm');
 const { spawn } = require('child_process');
@@ -16,16 +9,7 @@ const crypto = require('crypto');
 
 const TIMEOUT_MS = 2000; // 2 segundos por caso de teste
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Utilitários
-// ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * Normaliza uma string de saída:
- * - Remove espaços/tabs/newlines no início e fim
- * - Normaliza quebras de linha para \n
- * - Remove trailing whitespace em cada linha
- */
 function normalizeOutput(str) {
   if (typeof str !== 'string') return String(str);
   return str
@@ -36,16 +20,7 @@ function normalizeOutput(str) {
     .trim();
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Sandbox JavaScript (isolated-vm)
-// ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * Envolve o código do candidato para capturar saídas de console.log e simular
- * readline/input() via leitura de uma variável injetada.
- *
- * O isolate recebe '__INPUT__' como string global e expõe '__OUTPUT__' de volta.
- */
 function buildJSWrapper(candidateCode) {
   return `
 (function() {
@@ -112,17 +87,8 @@ async function runJavaScript(code, inputStr) {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Sandbox Python (subprocess)
-// ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * Executa Python em um processo filho com:
- * - timeout de 2 segundos (SIGKILL após isso)
- * - stdin alimentado com o input do teste
- * - sem acesso de rede (não há como bloquear no nível do SO sem Docker/seccomp
- *   aqui, mas bloqueamos imports perigosos via wrapper)
- */
+ 
 function buildPythonWrapper(candidateCode) {
   // Bloqueia módulos de rede, SO e sistema de arquivos
   const BLOCKED_MODULES = [
@@ -233,14 +199,7 @@ function runPython(code, inputStr) {
   });
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Orquestrador principal
-// ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * Avalia o código em todos os casos de teste sequencialmente.
- * Retorna array de resultados no formato esperado pelo spec da API.
- */
 async function evaluateCode(language, code, tests) {
   const results = [];
 
