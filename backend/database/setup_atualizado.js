@@ -43,6 +43,18 @@ function inicializarTabelas() {
   migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN solucao_url TEXT`);
   migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN solucao_descricao TEXT`);
   migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN canal_liberado INTEGER DEFAULT 0`);
+
+  // ── Submissão de código (sistema de submissões v1) ────────────────────────
+  // codigo: código-fonte enviado pelo candidato
+  // linguagem: linguagem de programação usada
+  // mensagem_candidato: mensagem opcional junto à submissão
+  // feedback_empresa: comentário da empresa após revisar
+  migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN codigo TEXT`);
+  migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN linguagem TEXT`);
+  migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN mensagem_candidato TEXT`);
+  migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN feedback_empresa TEXT`);
+
+  console.log('Migrations de submissões aplicadas');
 }
 
 module.exports = inicializarTabelas;
