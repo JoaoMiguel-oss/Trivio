@@ -1,10 +1,547 @@
-<!-- ===== PAINEL DE PERFIL ===== -->
-<!-- Este módulo está livre para implementação futura. -->
-<!-- O conteúdo de perfil foi integrado à aba de Configurações. -->
-<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:1rem;animation:fadeIn 0.4s ease;">
-    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.5" stroke-linecap="round" opacity="0.5">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-        <circle cx="12" cy="7" r="4" />
-    </svg>
-    <p style="color:rgba(255,255,255,0.4);font-size:0.9rem;">Acesse suas informações de perfil em <strong style="color:var(--color-primary)">Configurações → Perfil</strong></p>
+<!-- ===== PAINEL DE PERFIL DA EMPRESA (LAYOUT FUTURISTA) ===== -->
+<style>
+    :root {
+        --glass-bg: rgba(255, 255, 255, 0.03);
+        --glass-border: rgba(255, 255, 255, 0.08);
+        --accent-glow: rgba(173, 20, 87, 0.3); /* Baseado no --color-primary da empresa */
+    }
+
+    .dashboard-wrapper {
+        animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        max-width: 1300px;
+        margin: 0 auto;
+        padding: 1rem;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    /* --- Top Performance Section --- */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .hero-card {
+        background: linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(10, 10, 10, 0.9));
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 2.5rem;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .hero-card::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+        opacity: 0.4;
+        pointer-events: none;
+    }
+
+    .hero-profile {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        z-index: 1;
+    }
+
+    .hero-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 24px;
+        background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: white;
+        box-shadow: 0 10px 30px rgba(173, 20, 87, 0.4);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-details h1 {
+        font-size: 2.4rem;
+        font-weight: 800;
+        margin: 0;
+        letter-spacing: -1px;
+        background: linear-gradient(to right, #fff, #aaa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero-details p {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 1.1rem;
+        margin: 0.5rem 0 0;
+    }
+
+    /* --- Financial Card --- */
+    .balance-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.3s ease;
+    }
+
+    .balance-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(173, 20, 87, 0.3);
+    }
+
+    .balance-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .balance-label {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-weight: 700;
+    }
+
+    .balance-amount {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: white;
+        margin: 0.5rem 0;
+    }
+
+    .balance-footer {
+        margin-top: auto;
+    }
+
+    .btn-add-credits {
+        width: 100%;
+        padding: 1rem;
+        border-radius: 12px;
+        background: white;
+        color: black;
+        border: none;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-add-credits:hover {
+        background: var(--color-primary);
+        color: white;
+        box-shadow: 0 10px 20px rgba(173, 20, 87, 0.3);
+    }
+
+    /* --- Stats Bar --- */
+    .stats-bar {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .stat-box {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        padding: 1.5rem;
+        border-radius: 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .stat-box:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .stat-val {
+        display: block;
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--color-primary);
+        margin-bottom: 0.2rem;
+    }
+
+    .stat-lbl {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        font-weight: 600;
+    }
+
+    /* --- Vacancies Section --- */
+    .history-section {
+        margin-top: 4rem;
+    }
+
+    .history-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .history-title-group h2 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: white;
+        margin: 0;
+    }
+
+    .history-title-group p {
+        color: rgba(255, 255, 255, 0.4);
+        margin-top: 0.3rem;
+    }
+
+    .history-filters {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .filter-select {
+        background: #111;
+        border: 1px solid var(--glass-border);
+        color: #ddd;
+        padding: 0.6rem 1.2rem;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        outline: none;
+    }
+
+    .filter-select:focus {
+        border-color: var(--color-primary);
+    }
+
+    .challenges-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .challenge-card {
+        background: rgba(20, 20, 20, 0.6);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 1.8rem;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+    }
+
+    .challenge-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(173, 20, 87, 0.4);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        background: rgba(25, 25, 25, 0.8);
+    }
+
+    .card-top {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    .card-badge {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding: 0.3rem 0.8rem;
+        border-radius: 8px;
+        letter-spacing: 0.5px;
+    }
+
+    .badge-active { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+    .badge-closed { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+    .badge-draft { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+
+    .card-count {
+        font-weight: 900;
+        color: var(--color-primary);
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .card-content h3 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: white;
+        margin: 0.5rem 0;
+    }
+
+    .card-location {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .card-footer {
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card-meta {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.3);
+    }
+
+    .card-reward {
+        font-weight: 700;
+        color: #22c55e;
+        font-size: 0.95rem;
+    }
+
+    /* --- Utilities --- */
+    .empty-state {
+        grid-column: 1 / -1;
+        padding: 5rem;
+        text-align: center;
+        background: var(--glass-bg);
+        border-radius: 24px;
+        border: 1px dashed var(--glass-border);
+    }
+
+    .empty-state svg {
+        width: 64px;
+        height: 64px;
+        color: rgba(255, 255, 255, 0.1);
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-action {
+        background: var(--color-primary);
+        color: white;
+        padding: 0.8rem 2rem;
+        border-radius: 12px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 1rem;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 900px) {
+        .dashboard-grid { grid-template-columns: 1fr; }
+        .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+</style>
+
+<div class="dashboard-wrapper">
+    <!-- --- Performance Hero --- -->
+    <div class="dashboard-grid">
+        <div class="hero-card">
+            <div class="hero-profile">
+                <div class="hero-avatar" id="comp-avatar">--</div>
+                <div class="hero-details">
+                    <h1 id="comp-name">Empresa</h1>
+                    <p id="comp-email">Conta corporativa verificada</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="balance-card">
+            <div class="balance-header">
+                <span class="balance-label">Investimento Total</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div class="balance-amount" id="comp-investment">R$ 0,00</div>
+            <div class="balance-footer">
+                <button class="btn-add-credits" onclick="alert('Funcionalidade de recarga em breve!')">Adicionar Créditos</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- Quick Stats --- -->
+    <div class="stats-bar">
+        <div class="stat-box">
+            <span class="stat-val" id="stat-active-vagas">0</span>
+            <span class="stat-lbl">Vagas Ativas</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-val" id="stat-total-candidatos">0</span>
+            <span class="stat-lbl">Candidatos</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-val" id="stat-hired">0</span>
+            <span class="stat-lbl">Selecionados</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-val" id="stat-avg-score">0.0</span>
+            <span class="stat-lbl">Score Médio</span>
+        </div>
+    </div>
+
+    <!-- --- Active Vacancies --- -->
+    <div class="history-section">
+        <div class="history-header">
+            <div class="history-title-group">
+                <h2>Suas Vagas Ativas</h2>
+                <p>Acompanhe o desempenho das suas publicações</p>
+            </div>
+            <div class="history-filters">
+                <select class="filter-select" id="vacancy-filter-status" onchange="applyFilters()">
+                    <option value="all">Todos os Status</option>
+                    <option value="ativa">Ativas</option>
+                    <option value="encerrada">Encerradas</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="challenges-grid" id="vacancies-container">
+            <!-- Shimmer / Loading State -->
+            <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                <p>Carregando suas vagas e métricas...</p>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+    let myVacancies = [];
+
+    async function initCompanyProfile() {
+        const us = JSON.parse(sessionStorage.getItem('usuario') || '{}');
+        if (!us.public_id) {
+            window.location.hash = '#login';
+            return;
+        }
+
+        // Setup Header
+        document.getElementById('comp-name').textContent = us.nome || 'Sua Empresa';
+        document.getElementById('comp-email').textContent = us.email || 'Conta corporativa';
+        
+        const avatar = document.getElementById('comp-avatar');
+        if (us.foto_url) {
+            avatar.style.backgroundImage = `url(${us.foto_url})`;
+            avatar.style.backgroundSize = 'cover';
+            avatar.style.backgroundPosition = 'center';
+            avatar.textContent = '';
+        } else {
+            avatar.textContent = (us.nome || 'E').charAt(0).toUpperCase();
+        }
+
+        await fetchCompanyData(us.public_id);
+    }
+
+    async function fetchCompanyData(empresaId) {
+        try {
+            // Fetch Metrics
+            const resMetrics = await fetch(`/api/v1/pagamentos/metricas?empresa_id=${encodeURIComponent(empresaId)}`);
+            const metrics = resMetrics.ok ? await resMetrics.json() : {};
+
+            // Update Stats
+            document.getElementById('stat-active-vagas').textContent = metrics.vagas_ativas || 0;
+            document.getElementById('stat-total-candidatos').textContent = metrics.candidaturas_total || 0;
+            document.getElementById('stat-hired').textContent = metrics.avanzados_entrevista || 0;
+            document.getElementById('stat-avg-score').textContent = (metrics.score_medio || 0).toFixed(1);
+            
+            // Financial display
+            const totalInvest = (metrics.total_investido || 0);
+            document.getElementById('comp-investment').textContent = 'R$ ' + totalInvest.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+
+            // Fetch Vacancies
+            const resVagas = await fetch(`/api/v1/vagas?empresa_id=${encodeURIComponent(empresaId)}`);
+            if (resVagas.ok) {
+                myVacancies = await resVagas.json();
+                renderVacancies(myVacancies);
+            } else {
+                throw new Error('Erro ao buscar vagas');
+            }
+
+        } catch (e) {
+            console.error('Error fetching company profile data:', e);
+            document.getElementById('vacancies-container').innerHTML = `
+                <div class="empty-state">
+                    <p>Não conseguimos carregar suas vagas no momento.</p>
+                </div>
+            `;
+        }
+    }
+
+    function renderVacancies(list) {
+        const container = document.getElementById('vacancies-container');
+        if (list.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <p>Você ainda não publicou nenhuma vaga técnica.</p>
+                    <button class="btn-action" onclick="window.location.hash='#vagas'">Publicar Vaga</button>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = list.map(v => {
+            const statusLabel = v.status === 'ativa' ? 'Ativa' : (v.status === 'aberta' ? 'Ativa' : 'Encerrada');
+            const statusClass = (v.status === 'ativa' || v.status === 'aberta') ? 'badge-active' : 'badge-closed';
+            const dateStr = v.created_at || v.criado_em || new Date().toISOString();
+            const date = new Date(dateStr).toLocaleDateString('pt-BR');
+
+            return `
+                <div class="challenge-card" onclick="window.location.hash='#vagas'">
+                    <div class="card-top">
+                        <span class="card-badge ${statusClass}">${statusLabel}</span>
+                        <div class="card-count">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            ${v.candidaturas_count || 0}
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3>${v.titulo}</h3>
+                        <div class="card-location">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            ${v.localizacao || 'Remoto'}
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-meta">Publicada em ${date}</span>
+                        <span class="card-reward">Bol: R$ ${(v.bolsa_tecnica || 0).toLocaleString('pt-BR')}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function applyFilters() {
+        const status = document.getElementById('vacancy-filter-status').value;
+        let filtered = [...myVacancies];
+
+        if (status === 'ativa') filtered = filtered.filter(v => v.status === 'ativa' || v.status === 'aberta');
+        if (status === 'encerrada') filtered = filtered.filter(v => v.status !== 'ativa' && v.status !== 'aberta');
+
+        renderVacancies(filtered);
+    }
+
+    // Run on load
+    initCompanyProfile();
+</script>
