@@ -25,6 +25,7 @@
     "dotenv": "^17.4.1",
     "express": "^4.19.2",
     "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "streamifier": "^0.1.1"
