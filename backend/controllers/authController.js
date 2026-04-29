@@ -7,9 +7,7 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
 
 const gerarIdUnico = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
 
-// ─────────────────────────────────────────────────────────────────────────────
 // CADASTRO
-// ─────────────────────────────────────────────────────────────────────────────
 const cadastrar = async (req, res) => {
     try {
         const { tipo, nome, email, senha, cnpj } = req.body;
@@ -69,9 +67,7 @@ const cadastrar = async (req, res) => {
     }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
 // LOGIN
-// ─────────────────────────────────────────────────────────────────────────────
 const login = async (req, res) => {
     try {
         const { tipo, email, senha } = req.body;

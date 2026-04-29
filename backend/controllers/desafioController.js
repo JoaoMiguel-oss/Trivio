@@ -1,8 +1,6 @@
 const db = require('../banco/conexao');
 
-// ─────────────────────────────────────────────────────────────────────────────
 // DESAFIOS TÉCNICOS
-// ─────────────────────────────────────────────────────────────────────────────
 
 const listarDesafios = async (req, res) => {
     try {
@@ -93,9 +91,7 @@ const excluirDesafio = async (req, res) => {
     }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
 // CANDIDATURA — Candidato aceita o desafio (1 por vaga, anti-exploração)
-// ─────────────────────────────────────────────────────────────────────────────
 const candidatarDesafio = async (req, res) => {
     try {
         const { id } = req.params;
@@ -128,10 +124,8 @@ const candidatarDesafio = async (req, res) => {
     }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
 // ENTREGA — Candidato submete a solução
 // Body: { candidato_id, solucao_url, solucao_descricao }
-// ─────────────────────────────────────────────────────────────────────────────
 const entregarSolucao = async (req, res) => {
     try {
         const { id } = req.params;
@@ -159,10 +153,8 @@ const entregarSolucao = async (req, res) => {
     }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
 // AVALIAÇÃO IA — Análise estruturada da solução entregue
 // (simulada para MVP — pode ser substituída por call real à API de IA)
-// ─────────────────────────────────────────────────────────────────────────────
 function avaliarComIA(desafioId, candidatoId) {
     setTimeout(() => {
         try {
@@ -233,10 +225,8 @@ const listarCandidaturas = async (req, res) => {
     }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
 // AVANÇAR PARA ENTREVISTA — Empresa libera canal privado com candidato
 // Body: { empresa_id }
-// ─────────────────────────────────────────────────────────────────────────────
 const avancarParaEntrevista = async (req, res) => {
     try {
         const { id, candidato_id } = req.params;
@@ -261,9 +251,7 @@ const avancarParaEntrevista = async (req, res) => {
     }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
 // CANAL PRIVADO — Mensagens entre empresa e candidato
-// ─────────────────────────────────────────────────────────────────────────────
 const listarMensagens = async (req, res) => {
     try {
         const { desafio_id, candidato_id } = req.params;
@@ -298,9 +286,7 @@ const enviarMensagem = async (req, res) => {
     }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
 // PERFIL TÉCNICO — Candidato atualiza seu perfil
-// ─────────────────────────────────────────────────────────────────────────────
 const atualizarPerfilTecnico = async (req, res) => {
     try {
         const { candidato_id } = req.params;
@@ -334,9 +320,7 @@ const obterPerfilTecnico = async (req, res) => {
     }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
 // MEUS DESAFIOS — Candidato vê seus desafios ativos/entregues
-// ─────────────────────────────────────────────────────────────────────────────
 const meusDesafios = async (req, res) => {
     try {
         const { candidato_id } = req.params;

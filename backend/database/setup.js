@@ -26,7 +26,7 @@ function inicializarTabelas() {
 
   console.log('Database tables initialized');
 
-  // ── Migrações seguras ──────────────────────────────────────────────────────
+  // Migrações seguras
   migrar(`ALTER TABLE candidatos ADD COLUMN configuracoes TEXT DEFAULT '{}'`);
   migrar(`ALTER TABLE empresas   ADD COLUMN configuracoes TEXT DEFAULT '{}'`);
   migrar(`ALTER TABLE vagas      ADD COLUMN bolsa_tecnica REAL DEFAULT 0`);
@@ -44,7 +44,7 @@ function inicializarTabelas() {
   migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN solucao_descricao TEXT`);
   migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN canal_liberado INTEGER DEFAULT 0`);
 
-  // ── Submissão de código (sistema de submissões v1) ────────────────────────
+  // Submissão de código (sistema de submissões v1)
   // codigo: código-fonte enviado pelo candidato
   // linguagem: linguagem de programação usada
   // mensagem_candidato: mensagem opcional junto à submissão

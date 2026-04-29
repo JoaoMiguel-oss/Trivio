@@ -1,14 +1,10 @@
-// ============================================================
 // MIGRAÇÃO: Adicionar colunas do Pagar.me na tabela pagamentos
-// ============================================================
 // Execute este script UMA VEZ antes de subir o servidor:
-//   node backend/banco/migrar_pagamentos.js
-//
+// node backend/banco/migrar_pagamentos.js
 // O que ele faz:
-//   - Adiciona pagarme_order_id (ID da ordem no Pagar.me)
-//   - Adiciona checkout_url (link de pagamento gerado)
-//   - Adiciona coluna 'falhou' como status possível
-// ============================================================
+// - Adiciona pagarme_order_id (ID da ordem no Pagar.me)
+// - Adiciona checkout_url (link de pagamento gerado)
+// - Adiciona coluna 'falhou' como status possível
 
 const Database = require('better-sqlite3');
 const path     = require('path');

@@ -1,26 +1,19 @@
-// ============================================================
 // TRIVIO - CONTROLLER DE SUBMISSÕES DE CÓDIGO
-// ============================================================
 // Gerencia o envio e avaliação de soluções dos candidatos.
-//
 // DECISÃO DE ARQUITETURA:
 // A tabela candidaturas_desafio já existe e tem campos para
 // solucao_url e solucao_descricao. Este controller ESTENDE
 // essa tabela com novos campos (code, language, mensagem)
 // via migration no database/setup.js — sem quebrar nada.
-//
 // Fluxo:
-//   1. Candidato aceita desafio → candidaturas_desafio criada
-//   2. Candidato submete solução → preenche campos de submissão
-//   3. Empresa revisa → aprova ou rejeita (status)
-// ============================================================
+// 1. Candidato aceita desafio → candidaturas_desafio criada
+// 2. Candidato submete solução → preenche campos de submissão
+// 3. Empresa revisa → aprova ou rejeita (status)
 
 const db = require('../banco/conexao');
 
-// ─────────────────────────────────────────────────────────────────────────────
 // POST /api/v1/submissoes
 // Candidato envia a solução de um desafio
-// ─────────────────────────────────────────────────────────────────────────────
 const criarSubmissao = (req, res) => {
     try {
         const { desafio_id, candidato_id, codigo, linguagem, mensagem, solucao_url } = req.body;
@@ -101,10 +94,8 @@ const criarSubmissao = (req, res) => {
     }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
 // GET /api/v1/submissoes/usuario?candidato_id=xxx
 // Candidato lista suas próprias submissões
-// ─────────────────────────────────────────────────────────────────────────────
 const listarSubmissoesUsuario = (req, res) => {
     try {
         // ID do candidato pode vir do header (auth) ou query param
@@ -144,10 +135,8 @@ const listarSubmissoesUsuario = (req, res) => {
     }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
 // GET /api/v1/submissoes/:id
 // Detalhe completo de uma submissão (candidato vê a própria, empresa vê as do desafio dela)
-// ─────────────────────────────────────────────────────────────────────────────
 const obterSubmissao = (req, res) => {
     try {
         const { id } = req.params;
@@ -196,11 +185,9 @@ const obterSubmissao = (req, res) => {
     }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
 // PATCH /api/v1/submissoes/:id/status
 // Empresa aprova ou rejeita uma submissão
 // Apenas empresas podem usar este endpoint (validado pela presença do empresa_id nos headers)
-// ─────────────────────────────────────────────────────────────────────────────
 const atualizarStatus = (req, res) => {
     try {
         const { id } = req.params;
@@ -272,10 +259,8 @@ const atualizarStatus = (req, res) => {
     }
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
 // GET /api/v1/submissoes/desafio/:desafio_id
 // Empresa lista todas as submissões de um desafio seu
-// ─────────────────────────────────────────────────────────────────────────────
 const listarSubmissoesDesafio = (req, res) => {
     try {
         const { desafio_id } = req.params;

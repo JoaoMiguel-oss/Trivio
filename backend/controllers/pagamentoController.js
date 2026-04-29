@@ -1,35 +1,26 @@
-// ============================================================
 // TRIVIO - CONTROLLER DE PAGAMENTOS (Pagar.me)
-// ============================================================
 // Integração real com a API do Pagar.me v5.
-//
 // Fluxo:
 // 1. Empresa cria uma vaga → backend chama criarOrdemPagarme()
-//    que gera um link de checkout no Pagar.me.
+// que gera um link de checkout no Pagar.me.
 // 2. Empresa acessa o link e paga (cartão, boleto ou Pix).
 // 3. Pagar.me chama o nosso webhook automaticamente.
 // 4. O webhook verifica a assinatura e atualiza o banco.
-//
 // Variáveis de ambiente necessárias (.env):
-//   PAGARME_SECRET_KEY  → sk_test_XXXXXXXX  (sandbox)
-//   PAGARME_PUBLIC_KEY  → pk_test_XXXXXXXX  (sandbox)
-//   PAGARME_WEBHOOK_SECRET → string aleatória gerada por você
-//   BASE_URL            → http://localhost:3001 (ou domínio em produção)
-// ============================================================
+// PAGARME_SECRET_KEY  → sk_test_XXXXXXXX  (sandbox)
+// PAGARME_PUBLIC_KEY  → pk_test_XXXXXXXX  (sandbox)
+// PAGARME_WEBHOOK_SECRET → string aleatória gerada por você
+// BASE_URL            → http://localhost:3001 (ou domínio em produção)
 
 const db     = require('../banco/conexao');
 const crypto = require('crypto');
 
-// ──────────────────────────────────────────────────────────────
 // CONSTANTES
-// ──────────────────────────────────────────────────────────────
 
 const TAXA_PLATAFORMA = 150.00; // R$ 150 por vaga publicada
 const PAGARME_API     = 'https://api.pagar.me/core/v5';
 
-// ──────────────────────────────────────────────────────────────
 // HELPER: Chamada autenticada na API do Pagar.me
-// ──────────────────────────────────────────────────────────────
 
 async function pagarmeRequest(method, endpoint, body = null) {
   const secretKey = process.env.PAGARME_SECRET_KEY;
@@ -63,9 +54,7 @@ async function pagarmeRequest(method, endpoint, body = null) {
   return data;
 }
 
-// ──────────────────────────────────────────────────────────────
 // HELPER: Verificar assinatura do webhook
-// ──────────────────────────────────────────────────────────────
 // O Pagar.me assina cada webhook com HMAC-SHA256 usando o
 // PAGARME_WEBHOOK_SECRET que você configura no dashboard.
 // NUNCA processe webhooks sem verificar esta assinatura.
@@ -90,9 +79,7 @@ function verificarAssinaturaWebhook(payload, assinaturaRecebida) {
   );
 }
 
-// ──────────────────────────────────────────────────────────────
 // CRIAR ORDEM NO PAGAR.ME E LINK DE CHECKOUT
-// ──────────────────────────────────────────────────────────────
 // Chama a API do Pagar.me, cria um pedido com os 3 métodos
 // de pagamento habilitados e devolve o link de checkout.
 
@@ -151,9 +138,7 @@ async function criarOrdemPagarme({ valor, descricao, empresa_id, vaga_id, tipo }
   return ordem;
 }
 
-// ──────────────────────────────────────────────────────────────
 // CRIAR TAXA DE PLATAFORMA (chamada ao criar uma vaga)
-// ──────────────────────────────────────────────────────────────
 
 const criarTaxaPlataforma = async (empresa_id, vaga_id, titulo_vaga) => {
   try {
@@ -201,9 +186,7 @@ const criarTaxaPlataforma = async (empresa_id, vaga_id, titulo_vaga) => {
   }
 };
 
-// ──────────────────────────────────────────────────────────────
 // CRIAR COBRANÇA DE BOLSA TÉCNICA
-// ──────────────────────────────────────────────────────────────
 
 const criarCobrancaBolsa = async (empresa_id, vaga_id, valor_bolsa, candidato_id) => {
   try {
@@ -240,16 +223,13 @@ const criarCobrancaBolsa = async (empresa_id, vaga_id, valor_bolsa, candidato_id
   }
 };
 
-// ──────────────────────────────────────────────────────────────
 // WEBHOOK — Recebe confirmações automáticas do Pagar.me
-// ──────────────────────────────────────────────────────────────
 // Configure este endpoint no dashboard do Pagar.me:
-//   POST https://seu-dominio.com/api/v1/pagamentos/webhook
-//
+// POST https://seu-dominio.com/api/v1/pagamentos/webhook
 // Eventos tratados:
-//   order.paid       → pagamento aprovado (cartão ou Pix)
-//   order.payment_failed → pagamento recusado
-//   charge.paid      → boleto compensado
+// order.paid       → pagamento aprovado (cartão ou Pix)
+// order.payment_failed → pagamento recusado
+// charge.paid      → boleto compensado
 
 const receberWebhook = async (req, res) => {
   try {
@@ -309,9 +289,7 @@ const receberWebhook = async (req, res) => {
   }
 };
 
-// ──────────────────────────────────────────────────────────────
 // LISTAR PAGAMENTOS DA EMPRESA
-// ──────────────────────────────────────────────────────────────
 
 const listarPagamentos = async (req, res) => {
   try {
@@ -333,9 +311,7 @@ const listarPagamentos = async (req, res) => {
   }
 };
 
-// ──────────────────────────────────────────────────────────────
 // OBTER LINK DE CHECKOUT DE UM PAGAMENTO PENDENTE
-// ──────────────────────────────────────────────────────────────
 // Útil para reexibir o link caso a empresa não tenha pago ainda.
 
 const obterLinkPagamento = async (req, res) => {
@@ -385,9 +361,7 @@ const obterLinkPagamento = async (req, res) => {
   }
 };
 
-// ──────────────────────────────────────────────────────────────
 // MÉTRICAS DA EMPRESA (sem alteração na lógica)
-// ──────────────────────────────────────────────────────────────
 
 const obterMetricas = async (req, res) => {
   try {
@@ -492,9 +466,7 @@ const obterMetricasVaga = async (req, res) => {
   }
 };
 
-// ──────────────────────────────────────────────────────────────
 // HISTÓRICO DE ATIVIDADES (mantido do original)
-// ──────────────────────────────────────────────────────────────
 
 const registrarAtividade = (entidade_tipo, entidade_id, acao, detalhes, usuario_id) => {
   try {
@@ -527,9 +499,7 @@ const listarAtividades = async (req, res) => {
   }
 };
 
-// ──────────────────────────────────────────────────────────────
 // EXPORTS
-// ──────────────────────────────────────────────────────────────
 
 module.exports = {
   listarPagamentos,

@@ -3,16 +3,13 @@ const pagamentoController  = require('../controllers/pagamentoController');
 
 const router = express.Router();
 
-// ──────────────────────────────────────────────────────────────
 // IMPORTANTE: O webhook DEVE vir antes de qualquer middleware
 // que faça parse do body como JSON, pois precisamos do raw body
 // para validar a assinatura HMAC do Pagar.me.
-//
 // No servidor.js, registre esta rota ANTES do express.json():
-//   app.use('/api/v1/pagamentos', pagamentosRoutes);
-//   app.use(express.json()); ← NÃO, coloque o json() antes mas
-//                              use express.raw() só no webhook
-// ──────────────────────────────────────────────────────────────
+// app.use('/api/v1/pagamentos', pagamentosRoutes);
+// app.use(express.json()); ← NÃO, coloque o json() antes mas
+// use express.raw() só no webhook
 
 // POST /api/v1/pagamentos/webhook
 // Recebe eventos automáticos do Pagar.me (order.paid, etc.)
