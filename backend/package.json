@@ -1,6 +1,6 @@
 {
   "name": "esqueleto-trivio-backend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Backend do projeto Esqueleto Trivio",
   "main": "servidor.js",
   "type": "commonjs",
