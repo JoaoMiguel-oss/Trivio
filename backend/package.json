@@ -6,7 +6,8 @@
   "type": "commonjs",
   "scripts": {
     "start": "node servidor.js",
-    "dev": "node servidor.js"
+    "dev": "node servidor.js",
+    "postinstall": "echo 'Dependencies installed successfully'"
   },
   "dependencies": {
     "@babel/parser": "^7.24.0",
