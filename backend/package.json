@@ -9,6 +9,7 @@
     "dev": "node servidor.js"
   },
   "dependencies": {
+    "@babel/parser": "^7.24.0",
     "bcrypt": "^6.0.0",
     "better-sqlite3": "^12.6.2",
     "cloudinary": "^2.9.0",
