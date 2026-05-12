@@ -2,7 +2,7 @@
   "name": "trivio",
   "version": "1.0.0",
   "description": "Trivio - Plataforma de Recrutamento",
-  "main": "backend/servidor.js",
+  "main": "src/servidor.js",
   "type": "commonjs",
   "scripts": {
     "start": "node backend/servidor.js",
