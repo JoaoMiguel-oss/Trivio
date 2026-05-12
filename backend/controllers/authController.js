@@ -7,13 +7,12 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
 
 const gerarIdUnico = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
 
-// CADASTRO
 const cadastrar = async (req, res) => {
     try {
         const { tipo, nome, email, senha, cnpj } = req.body;
 
         if (!tipo || !nome || !email || !senha) {
-            return res.status(400).json({ erro: 'Tipo, nome, email e senha são obrigatórios' });
+            return res.status(400).json({ erro: 'Tipo, nome, email e senha sao obrigatorios' });
         }
 
         if (!['candidato', 'empresa'].includes(tipo)) {
@@ -28,16 +27,16 @@ const cadastrar = async (req, res) => {
 
         const emailExiste = db.prepare(`SELECT id FROM ${tabela} WHERE email = ?`).get(email);
         if (emailExiste) {
-            return res.status(409).json({ erro: 'Este e-mail já está cadastrado' });
+            return res.status(409).json({ erro: 'Este e-mail ja esta cadastrado' });
         }
 
         if (tipo === 'empresa') {
             if (!cnpj) {
-                return res.status(400).json({ erro: 'CNPJ é obrigatório para empresas' });
+                return res.status(400).json({ erro: 'CNPJ e obrigatorio para empresas' });
             }
             const cnpjExiste = db.prepare('SELECT id FROM empresas WHERE cnpj = ?').get(cnpj);
             if (cnpjExiste) {
-                return res.status(409).json({ erro: 'Este CNPJ já está cadastrado' });
+                return res.status(409).json({ erro: 'Este CNPJ ja esta cadastrado' });
             }
         }
 
@@ -67,13 +66,12 @@ const cadastrar = async (req, res) => {
     }
 };
 
-// LOGIN
 const login = async (req, res) => {
     try {
         const { tipo, email, senha } = req.body;
 
         if (!tipo || !email || !senha) {
-            return res.status(400).json({ erro: 'Tipo, email e senha são obrigatórios' });
+            return res.status(400).json({ erro: 'Tipo, email e senha sao obrigatorios' });
         }
 
         if (!['candidato', 'empresa'].includes(tipo)) {
@@ -81,7 +79,6 @@ const login = async (req, res) => {
         }
 
         const tabela = tipo === 'candidato' ? 'candidatos' : 'empresas';
-
         const usuario = db.prepare(`SELECT * FROM ${tabela} WHERE email = ?`).get(email);
 
         if (!usuario) {

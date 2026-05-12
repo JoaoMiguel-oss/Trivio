@@ -1,44 +1,52 @@
-// TRIVIO - CONTROLLER DE SUBMISSÕES DE CÓDIGO
-// Gerencia o envio e avaliação de soluções dos candidatos.
-// DECISÃO DE ARQUITETURA:
-// A tabela candidaturas_desafio já existe e tem campos para
-// solucao_url e solucao_descricao. Este controller ESTENDE
-// essa tabela com novos campos (code, language, mensagem)
-// via migration no database/setup.js — sem quebrar nada.
-// Fluxo:
-// 1. Candidato aceita desafio → candidaturas_desafio criada
-// 2. Candidato submete solução → preenche campos de submissão
-// 3. Empresa revisa → aprova ou rejeita (status)
-
 const db = require('../banco/conexao');
+const { analyzeCode } = require('../services/analyzeCodeService');
 
-// POST /api/v1/submissoes
-// Candidato envia a solução de um desafio
-const criarSubmissao = (req, res) => {
+const criarSubmissao = async (req, res) => {
     try {
         const { desafio_id, candidato_id, codigo, linguagem, mensagem, solucao_url } = req.body;
 
-        // Validação dos campos obrigatórios
         if (!desafio_id || !candidato_id || !codigo || !linguagem) {
             return res.status(400).json({
                 sucesso: false,
-                mensagem: 'desafio_id, candidato_id, codigo e linguagem são obrigatórios'
+                mensagem: 'desafio_id, candidato_id, codigo e linguagem sao obrigatorios'
             });
         }
 
-        // Verifica se o desafio existe e está ativo
         const desafio = db.prepare('SELECT * FROM desafios WHERE id = ? AND status = "ativo"').get(desafio_id);
         if (!desafio) {
-            return res.status(404).json({ sucesso: false, mensagem: 'Desafio não encontrado ou encerrado' });
+            return res.status(404).json({ sucesso: false, mensagem: 'Desafio nao encontrado ou encerrado' });
         }
 
-        // Verifica se o candidato existe
         const candidato = db.prepare('SELECT id, nome, email FROM candidatos WHERE public_id = ?').get(candidato_id);
         if (!candidato) {
-            return res.status(404).json({ sucesso: false, mensagem: 'Candidato não encontrado' });
+            return res.status(404).json({ sucesso: false, mensagem: 'Candidato nao encontrado' });
         }
 
-        // Verifica se já existe candidatura para este desafio+candidato
+        let score_ia = null;
+        let relatorio_ia = null;
+        
+        try {
+            console.log(`[SUBMISSAO] Analisando codigo do candidato ${candidato_id}...`);
+            const analiseResultado = await analyzeCode(codigo, linguagem);
+            
+            if (analiseResultado.success) {
+                score_ia = Math.round(analiseResultado.overallScore);
+                relatorio_ia = JSON.stringify({
+                    score: analiseResultado.overallScore,
+                    grade: analiseResultado.grade,
+                    summary: analiseResultado.summary,
+                    breakdown: analiseResultado.scoreBreakdown,
+                    topSuggestions: analiseResultado.topSuggestions,
+                    meta: analiseResultado.meta
+                });
+                console.log(`[SUBMISSAO] Analise concluida - Score: ${score_ia}/100`);
+            } else {
+                console.warn(`[SUBMISSAO] Analise falhou: ${analiseResultado.error}`);
+            }
+        } catch (errAnalise) {
+            console.error('[SUBMISSAO] Erro durante analise automatica:', errAnalise);
+        }
+
         const candidatura = db.prepare(
             'SELECT * FROM candidaturas_desafio WHERE desafio_id = ? AND candidato_id = ?'
         ).get(desafio_id, candidato_id);
@@ -46,7 +54,6 @@ const criarSubmissao = (req, res) => {
         const agora = new Date().toISOString();
 
         if (candidatura) {
-            // Candidatura existe → atualiza com a submissão de código
             db.prepare(`
                 UPDATE candidaturas_desafio
                 SET codigo = ?,
@@ -54,55 +61,61 @@ const criarSubmissao = (req, res) => {
                     mensagem_candidato = ?,
                     solucao_url = ?,
                     status = 'entregue',
-                    entregue_em = ?
+                    entregue_em = ?,
+                    score_ia = ?,
+                    relatorio_ia = ?
                 WHERE desafio_id = ? AND candidato_id = ?
             `).run(
-                codigo,
-                linguagem,
-                mensagem || null,
-                solucao_url || null,
-                agora,
-                desafio_id,
-                candidato_id
+                codigo, linguagem, mensagem || null, solucao_url || null,
+                agora, score_ia, relatorio_ia, desafio_id, candidato_id
             );
         } else {
-            // Ainda não se candidatou → cria candidatura + submissão em um passo
             db.prepare(`
                 INSERT INTO candidaturas_desafio
-                    (desafio_id, candidato_id, codigo, linguagem, mensagem_candidato, solucao_url, status, entregue_em)
-                VALUES (?, ?, ?, ?, ?, ?, 'entregue', ?)
-            `).run(desafio_id, candidato_id, codigo, linguagem, mensagem || null, solucao_url || null, agora);
+                    (desafio_id, candidato_id, codigo, linguagem, mensagem_candidato, solucao_url, status, entregue_em, score_ia, relatorio_ia)
+                VALUES (?, ?, ?, ?, ?, ?, 'entregue', ?, ?, ?)
+            `).run(
+                desafio_id, candidato_id, codigo, linguagem,
+                mensagem || null, solucao_url || null, agora, score_ia, relatorio_ia
+            );
         }
 
-        // Registra no histórico de atividades (padrão existente do projeto)
         try {
             db.prepare(`
                 INSERT INTO historico_atividades (entidade_tipo, entidade_id, acao, detalhes, usuario_id)
                 VALUES ('candidatura', ?, 'submissao_enviada', ?, ?)
-            `).run(desafio_id, `Candidato ${candidato_id} enviou solução em ${linguagem}`, candidato_id);
-        } catch (_) { /* histórico é melhor esforço */ }
+            `).run(
+                desafio_id,
+                `Candidato ${candidato_id} enviou solucao em ${linguagem}${score_ia ? ` - Score IA: ${score_ia}/100` : ''}`,
+                candidato_id
+            );
+        } catch (_) {}
 
         const submissaoSalva = db.prepare(
             'SELECT * FROM candidaturas_desafio WHERE desafio_id = ? AND candidato_id = ?'
         ).get(desafio_id, candidato_id);
 
-        return res.status(201).json({ sucesso: true, submissao: submissaoSalva });
+        return res.status(201).json({ 
+            sucesso: true, 
+            submissao: submissaoSalva,
+            analise: score_ia ? {
+                score: score_ia,
+                mensagem: `Codigo analisado automaticamente. Score: ${score_ia}/100`
+            } : null
+        });
 
     } catch (err) {
         console.error('[SUBMISSAO CREATE]', err);
-        return res.status(500).json({ sucesso: false, mensagem: 'Erro ao criar submissão' });
+        return res.status(500).json({ sucesso: false, mensagem: 'Erro ao criar submissao' });
     }
 };
 
-// GET /api/v1/submissoes/usuario?candidato_id=xxx
-// Candidato lista suas próprias submissões
 const listarSubmissoesUsuario = (req, res) => {
     try {
-        // ID do candidato pode vir do header (auth) ou query param
         const candidato_id = req.headers['id-usuario'] || req.query.candidato_id;
 
         if (!candidato_id) {
-            return res.status(401).json({ sucesso: false, mensagem: 'candidato_id é obrigatório' });
+            return res.status(401).json({ sucesso: false, mensagem: 'candidato_id e obrigatorio' });
         }
 
         const submissoes = db.prepare(`
@@ -121,7 +134,6 @@ const listarSubmissoesUsuario = (req, res) => {
             ORDER BY cd.entregue_em DESC
         `).all(candidato_id);
 
-        // Esconde o código completo na listagem (para não sobrecarregar o response)
         const lista = submissoes.map(s => ({
             ...s,
             codigo: s.codigo ? s.codigo.substring(0, 200) + (s.codigo.length > 200 ? '...' : '') : null
@@ -131,17 +143,14 @@ const listarSubmissoesUsuario = (req, res) => {
 
     } catch (err) {
         console.error('[SUBMISSAO USER LIST]', err);
-        return res.status(500).json({ sucesso: false, mensagem: 'Erro ao listar submissões' });
+        return res.status(500).json({ sucesso: false, mensagem: 'Erro ao listar submissoes' });
     }
 };
 
-// GET /api/v1/submissoes/:id
-// Detalhe completo de uma submissão (candidato vê a própria, empresa vê as do desafio dela)
 const obterSubmissao = (req, res) => {
     try {
         const { id } = req.params;
         const requesterId = req.headers['id-usuario'];
-        const tipoUsuario = req.headers['tipo-usuario']; // 'candidato' ou 'empresa'
 
         const submissao = db.prepare(`
             SELECT
@@ -163,12 +172,9 @@ const obterSubmissao = (req, res) => {
         `).get(id);
 
         if (!submissao) {
-            return res.status(404).json({ sucesso: false, mensagem: 'Submissão não encontrada' });
+            return res.status(404).json({ sucesso: false, mensagem: 'Submissao nao encontrada' });
         }
 
-        // Controle de acesso:
-        // - Candidato só vê a própria submissão
-        // - Empresa só vê submissões dos seus desafios
         if (requesterId) {
             const eCandidato = submissao.candidato_id === requesterId;
             const eEmpresa = submissao.empresa_id === requesterId;
@@ -181,34 +187,28 @@ const obterSubmissao = (req, res) => {
 
     } catch (err) {
         console.error('[SUBMISSAO GET]', err);
-        return res.status(500).json({ sucesso: false, mensagem: 'Erro ao buscar submissão' });
+        return res.status(500).json({ sucesso: false, mensagem: 'Erro ao buscar submissao' });
     }
 };
 
-// PATCH /api/v1/submissoes/:id/status
-// Empresa aprova ou rejeita uma submissão
-// Apenas empresas podem usar este endpoint (validado pela presença do empresa_id nos headers)
 const atualizarStatus = (req, res) => {
     try {
         const { id } = req.params;
         const empresa_id = req.headers['id-usuario'];
         const { status, feedback } = req.body;
 
-        // Só empresas podem aprovar/rejeitar
         if (!empresa_id) {
-            return res.status(401).json({ sucesso: false, mensagem: 'Autenticação necessária' });
+            return res.status(401).json({ sucesso: false, mensagem: 'Autenticacao necessaria' });
         }
 
-        // Status permitidos
         const statusPermitidos = ['aprovado', 'rejeitado', 'em_revisao'];
         if (!status || !statusPermitidos.includes(status)) {
             return res.status(400).json({
                 sucesso: false,
-                mensagem: `Status inválido. Use: ${statusPermitidos.join(', ')}`
+                mensagem: `Status invalido. Use: ${statusPermitidos.join(', ')}`
             });
         }
 
-        // Busca a submissão e verifica se pertence a um desafio desta empresa
         const submissao = db.prepare(`
             SELECT cd.*, d.empresa_id
             FROM candidaturas_desafio cd
@@ -217,32 +217,24 @@ const atualizarStatus = (req, res) => {
         `).get(id);
 
         if (!submissao) {
-            return res.status(404).json({ sucesso: false, mensagem: 'Submissão não encontrada' });
+            return res.status(404).json({ sucesso: false, mensagem: 'Submissao nao encontrada' });
         }
 
-        // Garante que a empresa só mexe nos seus próprios desafios
         if (submissao.empresa_id !== empresa_id) {
             return res.status(403).json({
                 sucesso: false,
-                mensagem: 'Você não tem permissão para avaliar esta submissão'
+                mensagem: 'Voce nao tem permissao para avaliar esta submissao'
             });
         }
 
-        // Atualiza status + feedback (empresa pode deixar comentário)
         db.prepare(`
             UPDATE candidaturas_desafio
             SET status = ?,
                 feedback_empresa = ?,
                 avancou_entrevista = ?
             WHERE id = ?
-        `).run(
-            status,
-            feedback || null,
-            status === 'aprovado' ? 1 : 0,
-            id
-        );
+        `).run(status, feedback || null, status === 'aprovado' ? 1 : 0, id);
 
-        // Registra no histórico
         try {
             db.prepare(`
                 INSERT INTO historico_atividades (entidade_tipo, entidade_id, acao, detalhes, usuario_id)
@@ -259,17 +251,14 @@ const atualizarStatus = (req, res) => {
     }
 };
 
-// GET /api/v1/submissoes/desafio/:desafio_id
-// Empresa lista todas as submissões de um desafio seu
 const listarSubmissoesDesafio = (req, res) => {
     try {
         const { desafio_id } = req.params;
         const empresa_id = req.headers['id-usuario'];
 
-        // Verifica que o desafio pertence à empresa
         const desafio = db.prepare('SELECT * FROM desafios WHERE id = ?').get(desafio_id);
         if (!desafio) {
-            return res.status(404).json({ sucesso: false, mensagem: 'Desafio não encontrado' });
+            return res.status(404).json({ sucesso: false, mensagem: 'Desafio nao encontrado' });
         }
 
         if (empresa_id && desafio.empresa_id !== empresa_id) {
@@ -278,16 +267,9 @@ const listarSubmissoesDesafio = (req, res) => {
 
         const submissoes = db.prepare(`
             SELECT
-                cd.id,
-                cd.candidato_id,
-                cd.status,
-                cd.linguagem,
-                cd.mensagem_candidato,
-                cd.solucao_url,
-                cd.entregue_em,
-                cd.avancou_entrevista,
-                cd.feedback_empresa,
-                cd.score_ia,
+                cd.id, cd.candidato_id, cd.status, cd.linguagem,
+                cd.mensagem_candidato, cd.solucao_url, cd.entregue_em,
+                cd.avancou_entrevista, cd.feedback_empresa, cd.score_ia,
                 c.nome   AS candidato_nome,
                 c.email  AS candidato_email,
                 c.github_url AS candidato_github,
@@ -308,7 +290,72 @@ const listarSubmissoesDesafio = (req, res) => {
 
     } catch (err) {
         console.error('[SUBMISSAO DESAFIO LIST]', err);
-        return res.status(500).json({ sucesso: false, mensagem: 'Erro ao listar submissões do desafio' });
+        return res.status(500).json({ sucesso: false, mensagem: 'Erro ao listar submissoes do desafio' });
+    }
+};
+
+const obterAnaliseIA = (req, res) => {
+    try {
+        const { id } = req.params;
+        const empresa_id = req.headers['id-usuario'];
+
+        const submissao = db.prepare(`
+            SELECT 
+                cd.id, cd.candidato_id, cd.desafio_id, cd.codigo,
+                cd.linguagem, cd.score_ia, cd.relatorio_ia, cd.entregue_em,
+                d.empresa_id, d.titulo AS desafio_titulo,
+                c.nome AS candidato_nome
+            FROM candidaturas_desafio cd
+            JOIN desafios d ON cd.desafio_id = d.id
+            LEFT JOIN candidatos c ON cd.candidato_id = c.public_id
+            WHERE cd.id = ?
+        `).get(id);
+
+        if (!submissao) {
+            return res.status(404).json({ sucesso: false, mensagem: 'Submissao nao encontrada' });
+        }
+
+        if (empresa_id && submissao.empresa_id !== empresa_id) {
+            return res.status(403).json({ sucesso: false, mensagem: 'Acesso negado' });
+        }
+
+        if (!submissao.relatorio_ia) {
+            return res.status(404).json({ 
+                sucesso: false, 
+                mensagem: 'Esta submissao nao possui analise de IA disponivel' 
+            });
+        }
+
+        let relatorio;
+        try {
+            relatorio = JSON.parse(submissao.relatorio_ia);
+        } catch (parseErr) {
+            console.error('[ANALISE IA] Erro ao fazer parse do relatorio:', parseErr);
+            return res.status(500).json({ 
+                sucesso: false, 
+                mensagem: 'Erro ao processar relatorio de analise' 
+            });
+        }
+
+        return res.status(200).json({
+            sucesso: true,
+            submissao: {
+                id: submissao.id,
+                candidato_nome: submissao.candidato_nome,
+                desafio_titulo: submissao.desafio_titulo,
+                linguagem: submissao.linguagem,
+                entregue_em: submissao.entregue_em,
+                linhas_codigo: submissao.codigo ? submissao.codigo.split('\n').length : 0
+            },
+            analise: {
+                score: submissao.score_ia,
+                ...relatorio
+            }
+        });
+
+    } catch (err) {
+        console.error('[SUBMISSAO ANALISE IA]', err);
+        return res.status(500).json({ sucesso: false, mensagem: 'Erro ao obter analise de IA' });
     }
 };
 
@@ -317,5 +364,6 @@ module.exports = {
     listarSubmissoesUsuario,
     obterSubmissao,
     atualizarStatus,
-    listarSubmissoesDesafio
+    listarSubmissoesDesafio,
+    obterAnaliseIA
 };

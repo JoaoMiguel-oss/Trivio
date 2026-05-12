@@ -22,14 +22,13 @@ const criarVaga = async (req, res) => {
     try {
         const { empresa_id, titulo, descricao, requisitos, remuneracao, localizacao, tipo, bolsa_tecnica } = req.body;
         if (!empresa_id || !titulo) {
-            return res.status(400).json({ erro: 'empresa_id e titulo são obrigatórios' });
+            return res.status(400).json({ erro: 'empresa_id e titulo sao obrigatorios' });
         }
 
-        const status = 'ativa';
         const result = db.prepare(`
             INSERT INTO vagas (empresa_id, titulo, descricao, requisitos, remuneracao, localizacao, tipo, status, bolsa_tecnica)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `).run(empresa_id, titulo, descricao || '', requisitos || '', remuneracao || '', localizacao || '', tipo || 'CLT', status, bolsa_tecnica || 0);
+        `).run(empresa_id, titulo, descricao || '', requisitos || '', remuneracao || '', localizacao || '', tipo || 'CLT', 'ativa', bolsa_tecnica || 0);
 
         const novaVaga = db.prepare('SELECT * FROM vagas WHERE id = ?').get(result.lastInsertRowid);
         res.status(201).json(novaVaga);
@@ -43,7 +42,7 @@ const atualizarVaga = async (req, res) => {
     try {
         const { id } = req.params;
         const v = db.prepare('SELECT * FROM vagas WHERE id = ?').get(id);
-        if (!v) return res.status(404).json({ erro: 'Vaga não encontrada' });
+        if (!v) return res.status(404).json({ erro: 'Vaga nao encontrada' });
 
         const { titulo, descricao, requisitos, remuneracao, localizacao, tipo, status, bolsa_tecnica } = req.body;
 
@@ -73,7 +72,7 @@ const excluirVaga = async (req, res) => {
     try {
         const { id } = req.params;
         const v = db.prepare('SELECT * FROM vagas WHERE id = ?').get(id);
-        if (!v) return res.status(404).json({ erro: 'Vaga não encontrada' });
+        if (!v) return res.status(404).json({ erro: 'Vaga nao encontrada' });
 
         db.prepare('UPDATE vagas SET status = ? WHERE id = ?').run('inativa', id);
         res.status(200).json({ mensagem: 'Vaga inativada com sucesso' });

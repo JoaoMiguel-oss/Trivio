@@ -1,4 +1,3 @@
-// rotas de usuário
 const express = require('express');
 const db = require('../banco/conexao');
 const verificarAutenticacao = require('../middlewares/verificarAutenticacao');
@@ -16,7 +15,7 @@ router.get('/verificar/:id', verificarAutenticacao, (req, res) => {
     if (!usuario) {
       return res.status(404).json({ 
         sucesso: false,
-        mensagem: 'Usuário não encontrado' 
+        mensagem: 'Usuario nao encontrado' 
       });
     }
 
@@ -27,7 +26,7 @@ router.get('/verificar/:id', verificarAutenticacao, (req, res) => {
   } catch (erro) {
     res.status(500).json({ 
       sucesso: false,
-      mensagem: 'Erro ao verificar usuário' 
+      mensagem: 'Erro ao verificar usuario' 
     });
   }
 });
