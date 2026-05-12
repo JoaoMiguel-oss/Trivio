@@ -1,37 +1,25 @@
 {
-  "name": "trivio",
-  "version": "1.0.0",
-  "description": "Trivio - Plataforma de Recrutamento",
-  "main": "src/index.js",
-  "type": "module",
+  "name": "esqueleto-trivio-backend",
+  "version": "1.0.1",
+  "description": "Backend do projeto Esqueleto Trivio",
+  "main": "servidor.js",
+  "type": "commonjs",
   "scripts": {
-    "start": "node backend/servidor.js",
-    "dev": "node backend/servidor.js",
-    "frontend": "npx serve public"
+    "start": "node servidor.js",
+    "dev": "node servidor.js",
+    "postinstall": "echo 'Dependencies installed successfully'"
   },
-  "keywords": [
-    "recruitment",
-    "platform",
-    "trivio",
-    "employment"
-  ],
-  "author": "Trivio Team",
-  "license": "MIT",
   "dependencies": {
-    "@babel/parser": "^7.25.0",
+    "@babel/parser": "^7.24.0",
     "bcrypt": "^6.0.0",
-    "better-sqlite3": "^12.8.0",
+    "better-sqlite3": "^12.6.2",
     "cloudinary": "^2.9.0",
-    "cors": "^2.8.5",
-    "dotenv": "^17.4.1",
-    "express": "^4.19.2",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^4.22.1",
     "helmet": "^8.1.0",
-    "jsonwebtoken": "^9.0.3",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.1",
-    "multer": "^2.0.2",
-    "streamifier": "^0.1.1"
-  },
-  "devDependencies": {
-    "serve": "^14.2.6"
+    "multer": "^1.4.5-lts.1"
   }
 }
