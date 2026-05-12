@@ -1,2 +1,3 @@
 // Wrapper to redirect to the actual backend server
-require('../backend/servidor.js');
+const path = require('path');
+require(path.join(__dirname, '../backend/servidor.js'));
