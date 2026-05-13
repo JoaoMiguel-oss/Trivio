@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Estrela de 5 pontas com cor sólida #AD1457 e pontas arredondadas -->
+  <path fill="#AD1457" d="M 50 10 Q 58 28 65 36 Q 80 38 90 42 Q 75 52 72 68 Q 78 82 58 88 Q 50 75 42 88 Q 28 82 22 68 Q 25 52 10 42 Q 20 38 35 36 Q 42 28 50 10 Z"/>
+</svg>
