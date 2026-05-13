@@ -5,74 +5,94 @@ const db = require('../banco/conexao');
 const router = express.Router();
 
 router.post('/cadastro', async (req, res) => {
-  const { nome, email, senha } = req.body;
+  const { tipo, nome, email, senha, cnpj } = req.body;
 
-  if (!nome || !email || !senha) {
-    return res.status(400).json({ 
+  if (!tipo || !nome || !email || !senha) {
+    return res.status(400).json({
       sucesso: false,
-      mensagem: 'Nome, email e senha sao obrigatorios' 
+      mensagem: 'Tipo, nome, email e senha sao obrigatorios'
+    });
+  }
+
+  if (!['candidato', 'empresa'].includes(tipo)) {
+    return res.status(400).json({
+      sucesso: false,
+      mensagem: 'Tipo deve ser "candidato" ou "empresa"'
     });
   }
 
   try {
-    const usuarioExiste = db.prepare('SELECT id FROM usuarios WHERE email = ?').get(email);
-    
-    if (usuarioExiste) {
-      return res.status(400).json({ 
+    const tabela = tipo === 'candidato' ? 'candidatos' : 'empresas';
+    const existe = db.prepare(`SELECT id FROM ${tabela} WHERE email = ?`).get(email);
+
+    if (existe) {
+      return res.status(400).json({
         sucesso: false,
-        mensagem: 'Email ja cadastrado' 
+        mensagem: 'Email ja cadastrado'
       });
     }
 
     const senhaHash = await bcrypt.hash(senha, 10);
-    
-    const resultado = db.prepare(
-      'INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)'
-    ).run(nome, email, senhaHash);
+    const public_id = Date.now().toString(36) + Math.random().toString(36).substr(2);
 
-    res.status(201).json({ 
+    if (tipo === 'candidato') {
+      db.prepare(
+        'INSERT INTO candidatos (public_id, nome, email, senha_hash) VALUES (?, ?, ?, ?)'
+      ).run(public_id, nome, email, senhaHash);
+    } else {
+      db.prepare(
+        'INSERT INTO empresas (public_id, nome, cnpj, email, senha_hash) VALUES (?, ?, ?, ?, ?)'
+      ).run(public_id, nome, cnpj || null, email, senhaHash);
+    }
+
+    res.status(201).json({
       sucesso: true,
       mensagem: 'Usuario cadastrado com sucesso',
-      dados: {
-        id: resultado.lastInsertRowid,
-        nome,
-        email
-      }
+      dados: { public_id, nome, email, tipo }
     });
   } catch (erro) {
-    res.status(500).json({ 
+    console.error('[AUTENTICACAO CADASTRO]', erro);
+    res.status(500).json({
       sucesso: false,
-      mensagem: 'Erro ao cadastrar usuario' 
+      mensagem: 'Erro ao cadastrar usuario'
     });
   }
 });
 
 router.post('/login', async (req, res) => {
-  const { email, senha } = req.body;
+  const { tipo, email, senha } = req.body;
 
-  if (!email || !senha) {
-    return res.status(400).json({ 
+  if (!tipo || !email || !senha) {
+    return res.status(400).json({
       sucesso: false,
-      mensagem: 'Email e senha sao obrigatorios' 
+      mensagem: 'Tipo, email e senha sao obrigatorios'
+    });
+  }
+
+  if (!['candidato', 'empresa'].includes(tipo)) {
+    return res.status(400).json({
+      sucesso: false,
+      mensagem: 'Tipo deve ser "candidato" ou "empresa"'
     });
   }
 
   try {
-    const usuario = db.prepare('SELECT * FROM usuarios WHERE email = ?').get(email);
+    const tabela = tipo === 'candidato' ? 'candidatos' : 'empresas';
+    const usuario = db.prepare(`SELECT * FROM ${tabela} WHERE email = ?`).get(email);
 
     if (!usuario) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         sucesso: false,
-        mensagem: 'Email ou senha incorretos' 
+        mensagem: 'Email ou senha incorretos'
       });
     }
 
-    const senhaValida = await bcrypt.compare(senha, usuario.senha);
+    const senhaValida = await bcrypt.compare(senha, usuario.senha_hash);
 
     if (!senhaValida) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         sucesso: false,
-        mensagem: 'Email ou senha incorretos' 
+        mensagem: 'Email ou senha incorretos'
       });
     }
 
@@ -80,15 +100,17 @@ router.post('/login', async (req, res) => {
       sucesso: true,
       mensagem: 'Login realizado com sucesso',
       dados: {
-        id: usuario.id,
+        public_id: usuario.public_id,
         nome: usuario.nome,
-        email: usuario.email
+        email: usuario.email,
+        tipo
       }
     });
   } catch (erro) {
-    res.status(500).json({ 
+    console.error('[AUTENTICACAO LOGIN]', erro);
+    res.status(500).json({
       sucesso: false,
-      mensagem: 'Erro ao fazer login' 
+      mensagem: 'Erro ao fazer login'
     });
   }
 });
