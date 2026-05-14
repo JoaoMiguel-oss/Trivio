@@ -353,8 +353,8 @@
             <div class="desafio-item" data-id="${desafio.id}">
                 <div class="desafio-header">
                     <div class="desafio-title">${desafio.titulo}</div>
-                    <div class="desafio-status ${desafio.status === 'completed' ? 'completed' : 'active'}">
-                        ${desafio.status === 'completed' ? 'Concluído' : 'Ativo'}
+                    <div class="desafio-status ${desafio.status === 'inativo' ? 'completed' : 'active'}">
+                        ${desafio.status === 'inativo' ? 'Fechado' : 'Ativo'}
                     </div>
                 </div>
                 <div class="desafio-meta">
@@ -364,7 +364,7 @@
                     ${desafio.bolsa_tecnica ? `<div><svg class="w-4 h-4" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2z"></svg>R$ ${desafio.bolsa_tecnica}</div>` : ''}
                 </div>
                 <div class="desafio-desc">${desafio.descricao}</div>
-                ${desafio.status !== 'completed' ? `
+                ${desafio.status !== 'inativo' ? `
                     <div class="desafio-actions">
                         <button class="btn-action btn-view" onclick="visualizarDesafio(${desafio.id})">
                             <svg class="w-4 h-4" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7l-1.647-1.646a6.002 6.002 0 00-8.495-3.751zm0 0C1.169 16.057 2.96 19 7.523 19c4.477 0 8.268-2.943 9.542-7l1.647 1.646a6.002 6.002 0 00-8.495 3.751z"></path></svg>
@@ -409,7 +409,7 @@
                 descricao: document.getElementById('descricao').value.trim(),
                 requisitos: document.getElementById('requisitos').value.trim(),
                 empresa_id: usuarioLogado.id,
-                status: 'active'
+                status: 'ativo'
             };
             
             // Validação básica
@@ -490,7 +490,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ status: 'completed' })
+                    body: JSON.stringify({ status: 'inativo' })
                 });
                 
                 if (!response.ok) {
@@ -501,13 +501,13 @@
                 // Fallback para localStorage
                 const desafioIndex = desafiosProprios.findIndex(d => d.id === desafioId);
                 if (desafioIndex !== -1) {
-                    desafiosProprios[desafioIndex].status = 'completed';
+                    desafiosProprios[desafioIndex].status = 'inativo';
                     
                     // Atualizar localStorage
                     const desafiosAtuais = JSON.parse(localStorage.getItem(`desafios_${usuarioLogado.id}`) || '[]');
                     const desafioLocalIndex = desafiosAtuais.findIndex(d => d.id === desafioId);
                     if (desafioLocalIndex !== -1) {
-                        desafiosAtuais[desafioLocalIndex].status = 'completed';
+                        desafiosAtuais[desafioLocalIndex].status = 'inativo';
                         localStorage.setItem(`desafios_${usuarioLogado.id}`, JSON.stringify(desafiosAtuais));
                     }
                 }
@@ -592,8 +592,8 @@
                             <p class="text-white whitespace-pre-line">${desafio.requisitos}</p>
                         </div>
                         <div class="pt-4 border-t border-gray-700">
-                            <p class="text-sm text-gray-400">Status: <span class="text-${desafio.status === 'completed' ? 'green' : 'primary'}-500 font-medium">${desafio.status === 'completed' ? 'Concluído' : 'Ativo'}</span></p>
-                            ${desafio.status !== 'completed' ? `
+                            <p class="text-sm text-gray-400">Status: <span class="text-${desafio.status === 'inativo' ? 'red' : 'primary'}-500 font-medium">${desafio.status === 'inativo' ? 'Fechado' : 'Ativo'}</span></p>
+                            ${desafio.status !== 'inativo' ? `
                             <p class="text-sm text-gray-400 mt-1">Candidatos: ${desafio.candidatos?.length || 0} desenvolvedores</p>
                             ` : ''}
                         </div>
