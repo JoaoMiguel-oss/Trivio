@@ -179,29 +179,40 @@
                 <!-- Itens de navegação horizontal entre logo e pesquisa -->
                 <div class="flex items-center gap-2">
 
-                    <!-- Botão: Vagas (Item ativo por padrão) -->
-                    <button onclick="loadSection('vagas', this)"
-                        class="nav-item nav-item-horizontal nav-item-active flex items-center gap-2"
-                        style="background-color: var(--color-primary);">
-                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                            <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path>
-                        </svg>
-                        <span>Vagas</span>
-                    </button>
+                     <!-- Botão: Vagas (Item ativo por padrão) -->
+                     <button onclick="loadSection('vagas', this)"
+                         class="nav-item nav-item-horizontal nav-item-active flex items-center gap-2"
+                         style="background-color: var(--color-primary);">
+                         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                             stroke-linecap="round" stroke-linejoin="round">
+                             <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                             <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path>
+                         </svg>
+                         <span>Vagas</span>
+                     </button>
 
-                    <!-- Botão: Pagamentos -->
-                    <button onclick="loadSection('pagamentos', this)"
-                        class="nav-item nav-item-horizontal text-gray-300 hover:text-white flex items-center gap-2">
-                        <!-- Ícone de cartão de crédito -->
-                        <svg class="w-5 h-5" viewBox="0 0 24 24">
-                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2" stroke="currentColor"
-                                stroke-width="2" fill="none" />
-                            <path d="M1 9h22" stroke="currentColor" stroke-width="2" fill="none" />
-                        </svg>
-                        <span>Pagamentos</span>
-                    </button>
+                     <!-- Botão: Publicar Desafio -->
+                     <button onclick="loadSection('publicar-desafio', this)"
+                         class="nav-item nav-item-horizontal text-gray-300 hover:text-white flex items-center gap-2">
+                         <!-- Ícone de troféu/desafio -->
+                         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                             stroke-linecap="round" stroke-linejoin="round">
+                             <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26 12,2"></polygon>
+                         </svg>
+                         <span>Publicar Desafio</span>
+                     </button>
+
+                     <!-- Botão: Pagamentos -->
+                     <button onclick="loadSection('pagamentos', this)"
+                         class="nav-item nav-item-horizontal text-gray-300 hover:text-white flex items-center gap-2">
+                         <!-- Ícone de cartão de crédito -->
+                         <svg class="w-5 h-5" viewBox="0 0 24 24">
+                             <rect x="1" y="4" width="22" height="16" rx="2" ry="2" stroke="currentColor"
+                                 stroke-width="2" fill="none" />
+                             <path d="M1 9h22" stroke="currentColor" stroke-width="2" fill="none" />
+                         </svg>
+                         <span>Pagamentos</span>
+                     </button>
 
                     <!-- Botão: Configurações -->
                     <button onclick="loadSection('configuracoes', this)"

@@ -1,0 +1,617 @@
+<style>
+    .desafio-form {
+        background: var(--color-surface);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 24px;
+        border: 1px solid rgba(233, 30, 99, 0.2);
+    }
+    
+    .desafio-form h2 {
+        color: var(--color-primary);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .form-group {
+        margin-bottom: 16px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        color: white;
+        font-size: 14px;
+        transition: all 0.2s ease;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        background: rgba(255, 255, 255, 0.08);
+    }
+    
+    .form-group textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+    
+    .btn-publicar {
+        background: var(--color-primary);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-publicar:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(173, 20, 87, 0.3);
+    }
+    
+    .btn-publicar:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    .desafios-list {
+        margin-top: 24px;
+    }
+    
+    .desafios-list h2 {
+        color: var(--color-primary);
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .desafio-item {
+        background: var(--color-surface);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 16px;
+        border: 1px solid rgba(233, 30, 99, 0.2);
+        transition: all 0.2s ease;
+    }
+    
+    .desafio-item:hover {
+        border-color: rgba(233, 30, 99, 0.4);
+        transform: translateY(-2px);
+    }
+    
+    .desafio-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+    }
+    
+    .desafio-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--color-primary);
+        flex: 1;
+    }
+    
+    .desafio-status {
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .desafio-status.active {
+        background: rgba(34, 197, 94, 0.2);
+        color: #22c55e;
+        border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+    
+    .desafio-status.completed {
+        background: rgba(168, 85, 247, 0.2);
+        color: #a855f7;
+        border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+    
+    .desafio-meta {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 12px;
+        margin-bottom: 16px;
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .desafio-meta div {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .desafio-desc {
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 16px;
+    }
+    
+    .desafio-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+    }
+    
+    .btn-action {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .btn-view {
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .btn-view:hover {
+        background: rgba(255, 255, 255, 0.12);
+    }
+    
+    .btn-complete {
+        background: #22c55e;
+        color: white;
+    }
+    
+    .btn-complete:hover {
+        background: #16a34a;
+        transform: translateY(-1px);
+    }
+    
+    .btn-complete:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .empty-state svg {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+    }
+</style>
+
+<div class="desafio-form">
+    <h2><svg class="w-5 h-5" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>Publicar Novo Desafio</h2>
+    
+    <form id="form-publicar-desafio">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="form-group">
+                <label for="titulo">Título do Desafio *</label>
+                <input type="text" id="titulo" placeholder="Ex: Desenvolvimento de API REST para E-commerce" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="empresa">Empresa *</label>
+                <input type="text" id="empresa" placeholder="Nome da sua empresa" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="localizacao">Localização</label>
+                <input type="text" id="localizacao" placeholder="Ex: Remoto, São Paulo, etc.">
+            </div>
+            
+            <div class="form-group">
+                <label for="tipo">Tipo de Desafio *</label>
+                <select id="tipo" required>
+                    <option value="">Selecione o tipo</option>
+                    <option value="frontend">Frontend</option>
+                    <option value="backend">Backend</option>
+                    <option value="fullstack">Fullstack</option>
+                    <option value="mobile">Mobile</option>
+                    <option value="data">Data Science</option>
+                    <option value="devops">DevOps</option>
+                    <option value="qa">QA/Testes</option>
+                    <option value="uiux">UI/UX Design</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="remuneracao">Remuneração (R$) *</label>
+                <input type="number" id="remuneracao" placeholder="Ex: 500" min="0" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="bolsa_tecnica">Bolsa Técnica (R$)</label>
+                <input type="number" id="bolsa_tecnica" placeholder="Ex: 300 (opcional)" min="0">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="stack">Tecnologias/Stack *</label>
+            <input type="text" id="stack" placeholder="Ex: React, Node.js, PostgreSQL, Docker" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="nivel">Nível *</label>
+            <select id="nivel" required>
+                <option value="">Selecione o nível</option>
+                <option value="estagiario">Estagiário</option>
+                <option value="junior">Junior</option>
+                <option value="pleno">Pleno</option>
+                <option value="senior">Senior</option>
+                <option value="lead">Lead/Especialista</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="tempo_limite">Tempo Limite (horas) *</label>
+            <input type="number" id="tempo_limite" placeholder="Ex: 4" min="1" max="168" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="descricao">Descrição do Desafio *</label>
+            <textarea id="descricao" placeholder="Descreva detalhadamente o que o desenvolvedor precisa fazer..." required></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="requisitos">Requisitos *</label>
+            <textarea id="requisitos" placeholder="Liste os requisitos necessários para participar do desafio..." required></textarea>
+        </div>
+        
+        <button type="submit" class="btn-publicar" id="btn-publicar">
+            <svg class="w-4 h-4" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 2l-8 8h4v8h8v-8h4l-8-8z"></path></svg>
+            Publicar Desafio
+        </button>
+    </form>
+</div>
+
+<div class="desafios-list">
+    <h2><svg class="w-5 h-5" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M7 20h10a2 2 0 002-2V6a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>Desafios Publicados</h2>
+    
+    <div id="desafios-list-content">
+        <div class="empty-state">
+            <svg stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 10c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c2.21 0 4 1.79 4 4h-2c0-1.1-.9-2-2-2s-2 .9-2 2h-2c0-2.21-1.79-4-4-4S4 3.79 4 6s1.79 4 4 4z"></path></svg>
+            <p>Nenhum desafio publicado ainda. Publique seu primeiro desafio acima!</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    let desafiosProprios = [];
+    const usuarioLogado = JSON.parse(sessionStorage.getItem('usuario') || '{}');
+    
+    // Função para buscar desafios da empresa logada
+    async function carregarDesafiosProprios() {
+        try {
+            // Primeiro tenta obter da API
+            const response = await fetch(`/api/v1/empresa/${usuarioLogado.id}/desafios`);
+            if (!response.ok) throw new Error('Falha ao buscar desafios');
+            
+            desafiosProprios = await response.json();
+            renderizarDesafios();
+        } catch (error) {
+            console.error('Erro ao carregar desafios:', error);
+            // Fallback para simulação com dados locais
+            desafiosProprios = JSON.parse(localStorage.getItem(`desafios_${usuarioLogado.id}`) || '[]');
+            renderizarDesafios();
+        }
+    }
+    
+    // Função para renderizar a lista de desafios
+    function renderizarDesafios() {
+        const container = document.getElementById('desafios-list-content');
+        
+        if (desafiosProprios.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <svg stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 10c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c2.21 0 4 1.79 4 4h-2c0-1.1-.9-2-2-2s-2 .9-2 2h-2c0-2.21-1.79-4-4-4S4 3.79 4 6s1.79 4 4 4z"></path></svg>
+                    <p>Nenhum desafio publicado ainda. Publique seu primeiro desafio acima!</p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = desafiosProprios.map(desafio => `
+            <div class="desafio-item" data-id="${desafio.id}">
+                <div class="desafio-header">
+                    <div class="desafio-title">${desafio.titulo}</div>
+                    <div class="desafio-status ${desafio.status === 'completed' ? 'completed' : 'active'}">
+                        ${desafio.status === 'completed' ? 'Concluído' : 'Ativo'}
+                    </div>
+                </div>
+                <div class="desafio-meta">
+                    <div><svg class="w-4 h-4" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path></svg>${desafio.localizacao || 'Não informado'}</div>
+                    <div><svg class="w-4 h-4" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 4H5a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zM5 10h14v2H5v-2z"></svg>${desafio.tipo || 'Não informado'}</div>
+                    <div><svg class="w-4 h-4" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM12 4v1h10V5h-5V4h-2v1H9V4H5v1h2V5h5v2h-5v1z"></svg>R$ ${desafio.remuneracao || 0}</div>
+                    ${desafio.bolsa_tecnica ? `<div><svg class="w-4 h-4" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2z"></svg>R$ ${desafio.bolsa_tecnica}</div>` : ''}
+                </div>
+                <div class="desafio-desc">${desafio.descricao}</div>
+                ${desafio.status !== 'completed' ? `
+                    <div class="desafio-actions">
+                        <button class="btn-action btn-view" onclick="visualizarDesafio(${desafio.id})">
+                            <svg class="w-4 h-4" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7l-1.647-1.646a6.002 6.002 0 00-8.495-3.751zm0 0C1.169 16.057 2.96 19 7.523 19c4.477 0 8.268-2.943 9.542-7l1.647 1.646a6.002 6.002 0 00-8.495 3.751z"></path></svg>
+                            Visualizar
+                        </button>
+                        <button class="btn-action btn-complete" onclick="concluirDesafio(${desafio.id})">
+                            <svg class="w-4 h-4" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 16l-4-4 1.41-1.41L9 13.17l3.59-3.59L18 9l-9 9z"></svg>
+                            Concluir
+                        </button>
+                    </div>
+                ` : `
+                    <div class="desafio-actions">
+                        <button class="btn-action btn-view" onclick="visualizarDesafio(${desafio.id})">
+                            <svg class="w-4 h-4" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7l-1.647-1.646a6.002 6.002 0 00-8.495-3.751zm0 0C1.169 16.057 2.96 19 7.523 19c4.477 0 8.268-2.943 9.542-7l1.647 1.646a6.002 6.002 0 00-8.495 3.751z"></path></svg>
+                            Visualizar
+                        </button>
+                    </div>
+                `}
+            </div>
+        `).join('');
+    }
+    
+    // Função para publicar um novo desafio
+    async function publicarDesafio(event) {
+        event.preventDefault();
+        
+        const btnPublicar = document.getElementById('btn-publicar');
+        btnPublicar.disabled = true;
+        btnPublicar.textContent = 'Publicando...';
+        
+        try {
+            const desafioData = {
+                titulo: document.getElementById('titulo').value.trim(),
+                empresa: document.getElementById('empresa').value.trim(),
+                localizacao: document.getElementById('localizacao').value.trim() || null,
+                tipo: document.getElementById('tipo').value,
+                remuneracao: parseFloat(document.getElementById('remuneracao').value),
+                bolsa_tecnica: document.getElementById('bolsa_tecnica').value ? parseFloat(document.getElementById('bolsa_tecnica').value) : null,
+                stack: document.getElementById('stack').value.trim(),
+                nivel: document.getElementById('nivel').value,
+                tempo_limite: parseInt(document.getElementById('tempo_limite').value),
+                descricao: document.getElementById('descricao').value.trim(),
+                requisitos: document.getElementById('requisitos').value.trim(),
+                empresa_id: usuarioLogado.id,
+                status: 'active'
+            };
+            
+            // Validação básica
+            if (!desafioData.titulo || !desafioData.empresa || !desafioData.tipo || 
+                !desafioData.remuneracao || !desafioData.stack || !desafioData.nivel || 
+                !desafioData.tempo_limite || !desafioData.descricao || !desafioData.requisitos) {
+                throw new Error('Por favor, preencha todos os campos obrigatórios');
+            }
+            
+            // Tentar enviar para a API
+            let desafioSalvo;
+            try {
+                const response = await fetch('/api/v1/desafios', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(desafioData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Erro na API: ${response.status}`);
+                }
+                
+                desafioSalvo = await response.json();
+            } catch (apiError) {
+                console.warn('API não disponível, usando storage local:', apiError);
+                // Fallback para localStorage
+                desafioSalvo = {
+                    ...desafioData,
+                    id: Date.now() + Math.floor(Math.random() * 1000),
+                    data_publicacao: new Date().toISOString()
+                };
+                
+                // Salvar no localStorage
+                const desafiosAtuais = JSON.parse(localStorage.getItem(`desafios_${usuarioLogado.id}`) || '[]');
+                desafiosAtuais.push(desafioSalvo);
+                localStorage.setItem(`desafios_${usuarioLogado.id}`, JSON.stringify(desafiosAtuais));
+            }
+            
+            // Adicionar à lista local e renderizar
+            desafiosProprios.push(desafioSalvo);
+            renderizarDesafios();
+            
+            // Limpar formulário
+            event.target.reset();
+            
+            // Mostrar toast de sucesso
+            if (typeof showToast === 'function') {
+                showToast('Desafio publicado com sucesso!');
+            } else {
+                alert('Desafio publicado com sucesso!');
+            }
+        } catch (error) {
+            console.error('Erro ao publicar desafio:', error);
+            if (typeof cfgToast === 'function') {
+                cfgToast(`Erro: ${error.message}`, true);
+            } else {
+                alert(`Erro: ${error.message}`);
+            }
+        } finally {
+            btnPublicar.disabled = false;
+            btnPublicar.textContent = 'Publicar Desafio';
+        }
+    }
+    
+    // Função para concluir um desafio
+    async function concluirDesafio(desafioId) {
+        if (!confirm('Tem certeza que deseja marcar este desafio como concluído? Esta ação não pode ser desfeita.')) {
+            return;
+        }
+        
+        try {
+            // Tentar atualizar via API
+            try {
+                const response = await fetch(`/api/v1/desafios/${desafioId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ status: 'completed' })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Erro na API: ${response.status}`);
+                }
+            } catch (apiError) {
+                console.warn('API não disponível, atualizando localmente:', apiError);
+                // Fallback para localStorage
+                const desafioIndex = desafiosProprios.findIndex(d => d.id === desafioId);
+                if (desafioIndex !== -1) {
+                    desafiosProprios[desafioIndex].status = 'completed';
+                    
+                    // Atualizar localStorage
+                    const desafiosAtuais = JSON.parse(localStorage.getItem(`desafios_${usuarioLogado.id}`) || '[]');
+                    const desafioLocalIndex = desafiosAtuais.findIndex(d => d.id === desafioId);
+                    if (desafioLocalIndex !== -1) {
+                        desafiosAtuais[desafioLocalIndex].status = 'completed';
+                        localStorage.setItem(`desafios_${usuarioLogado.id}`, JSON.stringify(desafiosAtuais));
+                    }
+                }
+            }
+            
+            // Atualizar interface
+            renderizarDesafios();
+            
+            if (typeof showToast === 'function') {
+                showToast('Desafio marcado como concluído!');
+            } else {
+                alert('Desafio marcado como concluído!');
+            }
+        } catch (error) {
+            console.error('Erro ao concluir desafio:', error);
+            if (typeof cfgToast === 'function') {
+                cfgToast(`Erro: ${error.message}`, true);
+            } else {
+                alert(`Erro: ${error.message}`);
+            }
+        }
+    }
+    
+    // Função para visualizar detalhes do desafio
+    function visualizarDesafio(desafioId) {
+        const desafio = desafiosProprios.find(d => d.id === desafioId);
+        if (!desafio) return;
+        
+        // Criar modal simples
+        const modalHTML = `
+            <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" id="detalhes-modal">
+                <div class="bg-surface rounded-xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto border border-primary/20">
+                    <div class="flex justify-between items-start mb-4">
+                        <h2 class="text-2xl font-bold text-primary">${desafio.titulo}</h2>
+                        <button onclick="document.getElementById('detalhes-modal').remove()" class="text-gray-400 hover:text-white">
+                            <svg class="w-5 h-5" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="font-semibold text-gray-300">Empresa</h3>
+                            <p class="text-white">${desafio.empresa}</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm text-gray-400">Tipo</p>
+                                <p class="text-white">${desafio.tipo}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-400">Nível</p>
+                                <p class="text-white">${desafio.nivel}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-400">Localização</p>
+                                <p class="text-white">${desafio.localizacao || 'Não informado'}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-400">Tempo Limite</p>
+                                <p class="text-white">${desafio.tempo_limite}h</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-400">Remuneração</p>
+                                <p class="text-white">R$ ${desafio.remuneracao}</p>
+                            </div>
+                            ${desafio.bolsa_tecnica ? `
+                            <div>
+                                <p class="text-sm text-gray-400">Bolsa Técnica</p>
+                                <p class="text-white">R$ ${desafio.bolsa_tecnica}</p>
+                            </div>
+                            ` : ''}
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-400">Stack/Tecnologias</p>
+                            <p class="text-white">${desafio.stack}</p>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-300 mb-2">Descrição</h3>
+                            <p class="text-white whitespace-pre-line">${desafio.descricao}</p>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-300 mb-2">Requisitos</h3>
+                            <p class="text-white whitespace-pre-line">${desafio.requisitos}</p>
+                        </div>
+                        <div class="pt-4 border-t border-gray-700">
+                            <p class="text-sm text-gray-400">Status: <span class="text-${desafio.status === 'completed' ? 'green' : 'primary'}-500 font-medium">${desafio.status === 'completed' ? 'Concluído' : 'Ativo'}</span></p>
+                            ${desafio.status !== 'completed' ? `
+                            <p class="text-sm text-gray-400 mt-1">Candidatos: ${desafio.candidatos?.length || 0} desenvolvedores</p>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+    }
+    
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('form-publicar-desafio');
+        if (form) {
+            form.addEventListener('submit', publicarDesafio);
+        }
+        
+        carregarDesafiosProprios();
+    });
+</script>
