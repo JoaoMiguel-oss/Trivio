@@ -989,6 +989,14 @@
                         onclick="cfgEndAllSessions(this)">Encerrar Todas as Sessões</button>
                 </div>
 
+                <div class="cfg-card">
+                    <div class="cfg-card-title">
+                        <div class="cfg-dot"></div>Sair da Conta
+                    </div>
+                    <p style="font-size:0.78rem;color:rgba(255,255,255,0.35);margin-bottom:1rem;">Encerre sua sessão atual e volte à tela de login.</p>
+                    <button class="btn-cfg-outline" onclick="cfgLogout()">Sair da Conta</button>
+                </div>
+
                 <!-- Zona de perigo -->
                 <div
                     style="border:1px solid rgba(239,68,68,0.2);border-radius:13px;padding:1.5rem;background:rgba(239,68,68,0.04);">
@@ -1382,6 +1390,14 @@
             if (confirm('Isso vai excluir todos os seus dados permanentemente. Continuar?')) {
                 cfgToast('Conta deletada (demo)', true);
             }
+        }
+    }
+
+    /* ===== SAIR DA CONTA ===== */
+    function cfgLogout() {
+        if (confirm('Deseja realmente sair da sua conta?')) {
+            sessionStorage.clear();
+            window.location.href = '/login.html';
         }
     }
 
