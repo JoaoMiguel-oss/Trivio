@@ -36,6 +36,8 @@
             /* Cor primária rosa/magenta menos vibrante */
             --color-accent: #D81B60;
             /* Cor de destaque rosa menos neon */
+            --color-glass: rgba(255, 255, 255, 0.03);
+            --color-glass-border: rgba(255, 255, 255, 0.08);
         }
 
         /* ===== ESTILO GLOBAL DO BODY ===== */
@@ -44,6 +46,36 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--color-dark-bg);
             color: #FFFFFF;
+        }
+
+        /* ===== INDICADOR DE ABA (CAIXINHA ROSA) ===== */
+        .tab-indicator {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+            border-radius: 3px 3px 0 0;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 0 12px rgba(233, 30, 99, 0.6);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .nav-indicator-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* ===== EFEITO BLUR NO CONTEÚDO ===== */
+        .content-blur {
+            filter: blur(4px);
+            opacity: 0.3;
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+
+        .content-transition {
+            animation: contentFade 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         /* ===== ESTILO PARA ÍCONES SVG ===== */
@@ -105,6 +137,31 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
+            }
+        }
+
+        /* ===== ANIMAÇÕES DE TRANSIÇÃO ===== */
+        @keyframes contentFade {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes blurFade {
+            from {
+                filter: blur(4px);
+                opacity: 0.3;
+            }
+
+            to {
+                filter: blur(0);
+                opacity: 1;
             }
         }
 
@@ -175,15 +232,18 @@
                     <span class="text-xl font-bold text-white">Trivio</span>
                 </div>
 
-                <!-- ===== MENU DE NAVEGAÇÃO (CENTRO) ===== -->
+<!-- ===== MENU DE NAVEGAÇÃO (CENTRO) ===== -->
                 <!-- Itens de navegação horizontal entre logo e pesquisa -->
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 nav-indicator-container" style="position: relative;">
 
+                    <!-- Indicador de aba (caixinha rosa) -->
+                    <div class="tab-indicator" id="tab-indicator" style="width: 80px; left: 0;"></div>
 
 
                     <!-- Botão: Desafios -->
-                    <button onclick="loadSection('desafios', this)"
-                        class="nav-item nav-item-horizontal flex items-center gap-2"
+                    <button onclick="loadSection('desafios', this, 'desafios')"
+                        class="nav-item nav-item-horizontal nav-btn flex items-center gap-2"
+                        data-section="desafios"
                         style="background-color: var(--color-primary);">
                         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
@@ -197,8 +257,9 @@
                     </button>
 
                     <!-- Botão: Pagamentos -->
-                    <button onclick="loadSection('pagamentos', this)"
-                        class="nav-item nav-item-horizontal text-gray-300 hover:text-white flex items-center gap-2">
+                    <button onclick="loadSection('pagamentos', this, 'pagamentos')"
+                        class="nav-item nav-item-horizontal nav-btn text-gray-300 hover:text-white flex items-center gap-2"
+                        data-section="pagamentos">
                         <!-- Ícone de cartão de crédito -->
                         <svg class="w-5 h-5" viewBox="0 0 24 24">
                             <rect x="1" y="4" width="22" height="16" rx="2" ry="2" stroke="currentColor"
@@ -209,8 +270,9 @@
                     </button>
 
                     <!-- Botão: Configurações -->
-                    <button onclick="loadSection('configuracoes', this)"
-                        class="nav-item nav-item-horizontal text-gray-300 hover:text-white flex items-center gap-2">
+                    <button onclick="loadSection('configuracoes', this, 'configuracoes')"
+                        class="nav-item nav-item-horizontal nav-btn text-gray-300 hover:text-white flex items-center gap-2"
+                        data-section="configuracoes">
                         <!-- Ícone de configurações (engrenagem) -->
                         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="3" />
@@ -220,8 +282,9 @@
                     </button>
 
                     <!-- Botão: Perfil -->
-                    <button onclick="loadSection('perfil', this)"
-                        class="nav-item nav-item-horizontal text-gray-300 hover:text-white flex items-center gap-2">
+                    <button onclick="loadSection('perfil', this, 'perfil')"
+                        class="nav-item nav-item-horizontal nav-btn text-gray-300 hover:text-white flex items-center gap-2"
+                        data-section="perfil">
                         <!-- Ícone de usuário/perfil -->
                         <svg class="w-5 h-5" viewBox="0 0 24 24">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"
@@ -287,15 +350,42 @@
          * 
          * @param {string} sectionName - Nome do módulo a ser carregado (ex: 'bugs', 'pagamentos')
          * @param {HTMLElement} buttonElement - Elemento do botão clicado para atualizar estado ativo
+         * @param {string} sectionKey - Chave da seção para posicionamento do indicador
          * 
          * Como funciona:
          * 1. Busca o arquivo HTML do módulo na pasta ./modules/
          * 2. Injeta o HTML no elemento #main-content
          * 3. Atualiza os estilos dos botões para destacar o item ativo
-         * 4. Exibe mensagem de erro caso o módulo não seja encontrado
+         * 4. Move o indicador de aba com animação suave
+         * 5. Exibe mensagem de erro caso o módulo não seja encontrado
          */
-        async function loadSection(sectionName, buttonElement) {
+        async function loadSection(sectionName, buttonElement, sectionKey) {
             try {
+                // ===== ANIMAÇÃO DO INDICADOR DE ABA =====
+                const indicator = document.getElementById('tab-indicator');
+                const navContainer = document.querySelector('.nav-indicator-container');
+                const navButtons = document.querySelectorAll('.nav-btn');
+                
+                // Adiciona efeito blur ao conteúdo durante a transição
+                const mainContent = document.getElementById('main-content');
+                mainContent.classList.add('content-blur');
+                
+                // Calcula a posição do indicador baseado no botão clicado
+                if (buttonElement && indicator) {
+                    const buttonRect = buttonElement.getBoundingClientRect();
+                    const containerRect = navContainer.getBoundingClientRect();
+                    const leftPos = buttonRect.left - containerRect.left + navContainer.scrollLeft;
+                    const buttonWidth = buttonRect.width;
+                    
+                    // Anima o indicador para a nova posição
+                    indicator.style.width = buttonWidth + 'px';
+                    indicator.style.left = leftPos + 'px';
+                    indicator.style.opacity = '1';
+                }
+                
+                // Pequeno delay para a animação de blur
+                await new Promise(resolve => setTimeout(resolve, 150));
+                
                 // Faz requisição HTTP para buscar o arquivo HTML do módulo
                 const response = await fetch(`./modules/${sectionName}.html`);
 
@@ -306,8 +396,16 @@
                 const html = await response.text();
 
                 // Injeta o HTML no elemento principal da página
-                const mainContent = document.getElementById('main-content');
                 mainContent.innerHTML = html;
+                
+                // Remove o blur e adiciona animação de fade in
+                mainContent.classList.remove('content-blur');
+                mainContent.classList.add('content-transition');
+
+                // Remove a classe de transição após a animação
+                setTimeout(() => {
+                    mainContent.classList.remove('content-transition');
+                }, 400);
 
                 // ===== EXECUTA SCRIPTS DO MÓDULO INJETADO =====
                 // Como innerHTML não executa as tags <script>, precisamos recriá-las e adicioná-las manualmente
@@ -320,21 +418,13 @@
                 });
 
                 // ===== ATUALIZAÇÃO DO ESTADO VISUAL DOS BOTÕES DE NAVEGAÇÃO =====
-
-                // Seleciona todos os botões de navegação
-                const navItems = document.querySelectorAll('.nav-item');
-
-                // Remove a classe 'active' de todos os botões
-                navItems.forEach(item => item.classList.remove('nav-item-active'));
-
-                // Adiciona a classe 'active' ao botão clicado
+                // Atualiza os botões de navegação para mostrar qual está ativo
+                navButtons.forEach(btn => btn.classList.remove('nav-item-active'));
                 buttonElement.classList.add('nav-item-active');
-
-                // Define o fundo do botão ativo com a cor primária
+                
                 buttonElement.style.backgroundColor = 'var(--color-primary)';
-
-                // Remove o fundo dos outros botões (estado inativo)
-                navItems.forEach(item => {
+                
+                navButtons.forEach(item => {
                     if (item !== buttonElement) {
                         item.style.backgroundColor = 'transparent';
                     }
@@ -342,10 +432,10 @@
 
             } catch (error) {
                 // ===== TRATAMENTO DE ERRO =====
-                // Exibe mensagem de erro caso o módulo não seja encontrado
-
                 console.error(`Erro ao carregar módulo ${sectionName}:`, error);
-
+                
+                mainContent.classList.remove('content-blur');
+                
                 // Injeta mensagem de erro visual no conteúdo principal
                 document.getElementById('main-content').innerHTML = `
                     <div class="p-6 rounded-lg" style="background-color: var(--color-surface);">
@@ -364,12 +454,27 @@
          * 
          * Como funciona:
          * 1. Aguarda o carregamento completo da estrutura HTML
-         * 2. Busca o botão "Bugs" (primeiro item da navegação)
-         * 3. Carrega automaticamente a seção de bugs como conteúdo inicial
+         * 2. Busca o botão "Desafios" (primeiro item da navegação)
+         * 3. Carrega automaticamente a seção de desafios como conteúdo inicial
+         * 4. Posiciona o indicador de aba corretamente
          */
         document.addEventListener('DOMContentLoaded', () => {
-            const desafiosButton = document.querySelector('button[onclick*="desafios"]');
-            if (desafiosButton) loadSection('desafios', desafiosButton);
+            // Aguarda um frame para garantir que o layout esteja pronto
+            requestAnimationFrame(() => {
+                const desafiosButton = document.querySelector('button[onclick*="desafios"]');
+                if (desafiosButton) {
+                    // Define posição inicial do indicador
+                    const indicator = document.getElementById('tab-indicator');
+                    if (indicator) {
+                        const buttonRect = desafiosButton.getBoundingClientRect();
+                        const containerRect = desafiosButton.closest('.nav-indicator-container').getBoundingClientRect();
+                        indicator.style.width = buttonRect.width + 'px';
+                        indicator.style.left = (buttonRect.left - containerRect.left) + 'px';
+                        indicator.style.opacity = '1';
+                    }
+                    loadSection('desafios', desafiosButton, 'desafios');
+                }
+            });
         });
 
         // ==========================================
