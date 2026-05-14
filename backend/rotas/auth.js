@@ -43,6 +43,7 @@ router.post('/cadastro', authController.cadastrar);
 // - senha: Senha
 
 router.post('/login', authController.login);
+router.get('/remembered', authController.obterUsuarioLembrado);
 
 
 // EXPORTAÇÃO

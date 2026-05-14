@@ -485,33 +485,41 @@
         let selectedUserType = 'candidato';
         let isAnimating = false;
 
-        function carregarUsuarioSalvo() {
-            const salvo = JSON.parse(localStorage.getItem('ultimoUsuario') || 'null');
-            if (!salvo) return;
+        async function carregarUsuarioLembrado() {
+            try {
+                const resposta = await fetch('/api/v1/auth/remembered');
+                if (!resposta.ok) return;
 
-            if (salvo.tipo && salvo.tipo !== selectedUserType) {
-                const indicator = document.getElementById('selectorIndicator');
-                const cardTitle = document.getElementById('cardTitle');
-                const cardSubtitle = document.getElementById('cardSubtitle');
+                const dados = await resposta.json();
+                const salvo = dados.data;
+                if (!salvo) return;
 
-                selectedUserType = salvo.tipo;
-                indicator.classList.toggle('empresa', salvo.tipo === 'empresa');
-                document.querySelectorAll('.user-type-btn').forEach(btn => {
-                    btn.classList.toggle('active', btn.dataset.type === salvo.tipo);
-                });
+                if (salvo.tipo && salvo.tipo !== selectedUserType) {
+                    const indicator = document.getElementById('selectorIndicator');
+                    const cardTitle = document.getElementById('cardTitle');
+                    const cardSubtitle = document.getElementById('cardSubtitle');
 
-                if (salvo.tipo === 'empresa') {
-                    cardTitle.textContent = 'Área da Empresa';
-                    cardSubtitle.textContent = 'Acesse sua conta corporativa';
-                } else {
-                    cardTitle.textContent = 'Bem-vindo de volta';
-                    cardSubtitle.textContent = 'Entre com sua conta para continuar';
+                    selectedUserType = salvo.tipo;
+                    indicator.classList.toggle('empresa', salvo.tipo === 'empresa');
+                    document.querySelectorAll('.user-type-btn').forEach(btn => {
+                        btn.classList.toggle('active', btn.dataset.type === salvo.tipo);
+                    });
+
+                    if (salvo.tipo === 'empresa') {
+                        cardTitle.textContent = 'Área da Empresa';
+                        cardSubtitle.textContent = 'Acesse sua conta corporativa';
+                    } else {
+                        cardTitle.textContent = 'Bem-vindo de volta';
+                        cardSubtitle.textContent = 'Entre com sua conta para continuar';
+                    }
                 }
-            }
 
-            if (salvo.email) {
-                const emailInput = document.getElementById('email');
-                if (emailInput) emailInput.value = salvo.email;
+                if (salvo.email) {
+                    const emailInput = document.getElementById('email');
+                    if (emailInput) emailInput.value = salvo.email;
+                }
+            } catch (err) {
+                console.error('Erro ao buscar usuário lembrado:', err);
             }
         }
 
@@ -577,7 +585,7 @@
             }, 3000);
         }
 
-        carregarUsuarioSalvo();
+        carregarUsuarioLembrado();
 
         document.getElementById('loginForm').addEventListener('submit', async function (e) {
             e.preventDefault();
@@ -607,7 +615,6 @@
 
                 // Salva dados do usuário na sessão
                 sessionStorage.setItem('usuario', JSON.stringify(dados.usuario));
-                localStorage.setItem('ultimoUsuario', JSON.stringify({ email, tipo: selectedUserType }));
                 const token = dados.token || dados.usuario?.token;
                 if (token) {
                     sessionStorage.setItem('token', token);

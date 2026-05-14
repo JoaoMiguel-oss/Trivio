@@ -42,14 +42,15 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(4px);
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         display: none;
         align-items: center;
         justify-content: center;
         z-index: 1000;
         opacity: 0;
-        transition: opacity 0.3s;
+        transition: opacity 0.3s ease;
     }
 
     .modal-overlay.show {
@@ -58,96 +59,131 @@
     }
 
     .modal-content {
-        background: #1a1a1a;
-        border: 1px solid rgba(233, 30, 99, 0.3);
-        border-radius: 16px;
+        background: rgba(26, 26, 26, 0.85);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(233, 30, 99, 0.25);
+        border-radius: 20px;
         width: 100%;
-        max-width: 650px;
+        max-width: 700px;
         max-height: 90vh;
         overflow-y: auto;
-        padding: 2rem;
+        padding: 3rem 2.5rem;
         position: relative;
         transform: translateY(20px);
-        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
     .modal-overlay.show .modal-content {
         transform: translateY(0);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
     }
 
     .modal-close {
         position: absolute;
         top: 1.5rem;
         right: 1.5rem;
-        background: none;
-        border: none;
-        color: rgba(255, 255, 255, 0.4);
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: rgba(255, 255, 255, 0.6);
         cursor: pointer;
-        font-size: 1.4rem;
+        font-size: 1.8rem;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
     }
 
     .modal-close:hover {
+        background: rgba(255, 255, 255, 0.15);
         color: white;
+        border-color: rgba(255, 255, 255, 0.2);
     }
 
     .form-group-emp {
-        margin-bottom: 1.1rem;
+        margin-bottom: 1.5rem;
     }
 
     .form-label-emp {
         display: block;
-        margin-bottom: 0.4rem;
-        color: rgba(255, 255, 255, 0.65);
-        font-size: 0.88rem;
-        font-weight: 500;
+        margin-bottom: 0.6rem;
+        color: rgba(255, 255, 255, 0.75);
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
     }
 
     .form-input-emp {
         width: 100%;
-        padding: 10px 12px;
-        border-radius: 8px;
-        background: rgba(0, 0, 0, 0.35);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 12px 14px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.12);
         color: white;
         font-family: inherit;
         font-size: 0.95rem;
-        transition: border-color 0.2s;
+        transition: all 0.2s ease;
+    }
+
+    .form-input-emp::placeholder {
+        color: rgba(255, 255, 255, 0.35);
     }
 
     .form-input-emp:focus {
         outline: none;
-        border-color: var(--color-primary);
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(233, 30, 99, 0.6);
+        box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
     }
 
     textarea.form-input-emp {
-        min-height: 90px;
+        min-height: 100px;
         resize: vertical;
+        font-family: 'Courier New', monospace;
     }
 
     .form-row-emp {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 1rem;
+        gap: 1.2rem;
+    }
+
+    @media (max-width: 640px) {
+        .form-row-emp {
+            grid-template-columns: 1fr;
+        }
     }
 
     .btn-primary-emp {
-        background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
         border: none;
         border-radius: 10px;
         color: white;
         font-weight: 700;
         cursor: pointer;
-        padding: 11px 20px;
-        transition: opacity 0.2s;
+        padding: 13px 24px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(233, 30, 99, 0.35);
+        font-size: 0.95rem;
+        letter-spacing: 0.3px;
     }
 
     .btn-primary-emp:hover {
-        opacity: 0.85;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(233, 30, 99, 0.5);
+    }
+
+    .btn-primary-emp:active {
+        transform: translateY(0);
     }
 
     .btn-primary-emp:disabled {
         opacity: 0.5;
         cursor: not-allowed;
+        transform: none;
     }
 
     .candidatos-grid {
@@ -202,6 +238,18 @@
     .toast-emp.show {
         transform: translateY(0);
         opacity: 1;
+    }
+
+    /* Modal Title Enhancement */
+    #modal-desafio-title {
+        background: linear-gradient(135deg, rgba(233, 30, 99, 0.9) 0%, rgba(255, 20, 147, 0.7) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 1.6rem !important;
+        font-weight: 800 !important;
+        margin-bottom: 2.5rem !important;
+        letter-spacing: -0.3px;
     }
 </style>
 

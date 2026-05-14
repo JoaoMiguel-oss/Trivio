@@ -699,7 +699,6 @@
 
                 // Salva dados do usuário na sessão
                 sessionStorage.setItem('usuario', JSON.stringify(dados.usuario));
-                localStorage.setItem('ultimoUsuario', JSON.stringify({ email: payload.email, tipo: selectedUserType }));
                 const token = dados.token || dados.usuario?.token;
                 if (token) {
                     sessionStorage.setItem('token', token);

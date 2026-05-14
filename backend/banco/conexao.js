@@ -99,6 +99,20 @@ db.exec(`
   )
 `);
 
+// TABELA: remembered_users
+// Armazena o último email e tipo usados pelo navegador, mas no banco de dados.
+// Usamos uma chave única enviada como cookie para identificar o registro.
+db.exec(`
+  CREATE TABLE IF NOT EXISTS remembered_users (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    remember_key  TEXT UNIQUE NOT NULL,
+    email         TEXT NOT NULL,
+    tipo          TEXT NOT NULL,
+    created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP
+  )
+`);
+
 
 // TABELA: desafios
 // Desafios técnicos são testes que as empresas criam para

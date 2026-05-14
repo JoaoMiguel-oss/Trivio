@@ -7,6 +7,53 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
 
 const gerarIdUnico = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
 
+const parseCookies = (req) => {
+    const header = req.headers.cookie || '';
+    return header.split(';').map(cookie => cookie.trim()).filter(Boolean).reduce((acc, cookie) => {
+        const [name, ...value] = cookie.split('=');
+        acc[name] = decodeURIComponent(value.join('='));
+        return acc;
+    }, {});
+};
+
+const salvarUsuarioLembrado = (email, tipo, remember_key = null) => {
+    if (!remember_key) remember_key = gerarIdUnico();
+
+    const now = new Date().toISOString();
+    const existe = db.prepare('SELECT id FROM remembered_users WHERE remember_key = ?').get(remember_key);
+
+    if (existe) {
+        db.prepare('UPDATE remembered_users SET email = ?, tipo = ?, updated_at = ? WHERE remember_key = ?')
+            .run(email, tipo, now, remember_key);
+    } else {
+        db.prepare(`
+            INSERT INTO remembered_users (remember_key, email, tipo, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?)
+        `).run(remember_key, email, tipo, now, now);
+    }
+
+    return remember_key;
+};
+
+const setRememberCookie = (res, remember_key) => {
+    res.setHeader('Set-Cookie', `remember_key=${remember_key}; Path=/; Max-Age=31536000; SameSite=Lax; HttpOnly`);
+};
+
+const obterUsuarioLembrado = (req, res) => {
+    try {
+        const cookies = parseCookies(req);
+        if (!cookies.remember_key) {
+            return res.status(200).json({ data: null });
+        }
+
+        const usuario = db.prepare('SELECT email, tipo FROM remembered_users WHERE remember_key = ?').get(cookies.remember_key);
+        return res.status(200).json({ data: usuario || null });
+    } catch (erro) {
+        console.error('[OBTER USUARIO LEMBRADO]', erro);
+        return res.status(500).json({ erro: 'Erro interno ao buscar usuário lembrado' });
+    }
+};
+
 // CADASTRO
 const cadastrar = async (req, res) => {
     try {
@@ -55,6 +102,9 @@ const cadastrar = async (req, res) => {
                 VALUES (?, ?, ?, ?, ?)
             `).run(public_id, nome, cnpj, email, senha_hash);
         }
+
+        const remember_key = salvarUsuarioLembrado(email, tipo, parseCookies(req).remember_key);
+        setRememberCookie(res, remember_key);
 
         return res.status(201).json({
             mensagem: 'Conta criada com sucesso',
@@ -107,6 +157,9 @@ const login = async (req, res) => {
             try { configuracoes = JSON.parse(usuario.configuracoes); } catch (_) {}
         }
 
+        const remember_key = salvarUsuarioLembrado(email, tipo, parseCookies(req).remember_key);
+        setRememberCookie(res, remember_key);
+
         return res.status(200).json({
             mensagem: 'Login realizado com sucesso',
             token,
@@ -126,4 +179,4 @@ const login = async (req, res) => {
     }
 };
 
-module.exports = { cadastrar, login };
+module.exports = { cadastrar, login, obterUsuarioLembrado };
