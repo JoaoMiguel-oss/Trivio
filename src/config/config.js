@@ -6,7 +6,7 @@
 const config = {
     // API Configuration
     api: {
-        baseUrl: 'https://trivio.up.railway.app',
+        baseUrl: 'https://trivio-gz8l.onrender.com',
         version: 'v1',
         endpoints: {
             users: '/api/v1/users',
