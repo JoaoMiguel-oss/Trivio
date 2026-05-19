@@ -19,6 +19,8 @@
 
 const db = require('./banco/conexao');       // Conexão com o banco de dados
 const bcrypt = require('bcrypt');           // Biblioteca para criptografar senhas
+const fs = require('fs');
+const path = require('path');
 
 
 // FUNÇÃO AUXILIAR: Gerador de ID único
@@ -40,7 +42,26 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET 
 });
 
-const uploadParaCloudinary = (fileBuffer) => {
+const uploadParaCloudinary = (fileBuffer, originalname) => {
+  // Se Cloudinary não estiver configurado, salva localmente
+  if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+    console.log('[UPLOAD] Cloudinary não configurado. Salvando localmente...');
+    try {
+      const uploadsDir = path.join(__dirname, '..', 'public', 'uploads');
+      if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+      }
+      const ext = path.extname(originalname || 'avatar.jpg');
+      const filename = `avatar_${Date.now()}_${Math.random().toString(36).substr(2, 9)}${ext}`;
+      const filepath = path.join(uploadsDir, filename);
+      fs.writeFileSync(filepath, fileBuffer);
+      return Promise.resolve(`/uploads/${filename}`);
+    } catch (err) {
+      console.error('[UPLOAD LOCAL ERROR]', err);
+      return Promise.reject(err);
+    }
+  }
+
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       { folder: 'trivio' },
@@ -98,8 +119,8 @@ const criarUsuario = async (req, res) => {
     let photo_url = null;
     if (arquivo) {
       try {
-        // Envia a foto para o Cloudinary
-        photo_url = await uploadParaCloudinary(arquivo.buffer);
+        // Envia a foto para o Cloudinary ou salva localmente
+        photo_url = await uploadParaCloudinary(arquivo.buffer, arquivo.originalname);
       } catch (uploadErr) {
         return res.status(500).json({ erro: 'Falha no upload da imagem' });
       }
@@ -148,8 +169,8 @@ const uploadImagemAvulsa = async (req, res) => {
       return res.status(400).json({ erro: 'Nenhum arquivo enviado' });
     }
 
-    // Envia para o Cloudinary e retorna a URL
-    const url = await uploadParaCloudinary(req.file.buffer);
+    // Envia para o Cloudinary ou salva localmente e retorna a URL
+    const url = await uploadParaCloudinary(req.file.buffer, req.file.originalname);
     res.status(200).json({ url });
 
   } catch (erro) {
@@ -193,7 +214,7 @@ const atualizarFotoPerfil = async (req, res) => {
     }
 
     // Faz upload da nova foto
-    const photo_url = await uploadParaCloudinary(arquivo.buffer);
+    const photo_url = await uploadParaCloudinary(arquivo.buffer, arquivo.originalname);
 
     // Atualiza no banco
     const stmt = db.prepare(`UPDATE ${tabela} SET ${campo_foto} = ? WHERE public_id = ?`);

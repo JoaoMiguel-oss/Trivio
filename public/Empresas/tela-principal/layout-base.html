@@ -225,14 +225,15 @@
 
                     <!-- Botão: Perfil -->
                     <button onclick="loadSection('perfil')"
-                        class="nav-item nav-item-horizontal text-gray-300 hover:text-white flex items-center gap-2">
+                        class="nav-item nav-item-horizontal text-gray-300 hover:text-white flex items-center gap-2"
+                        data-section="perfil">
                         <!-- Ícone de usuário/perfil -->
-                        <svg class="w-5 h-5" viewBox="0 0 24 24">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round" fill="none" />
-                            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" fill="none" />
-                        </svg>
+                        <div class="w-6 h-6 rounded-full overflow-hidden flex items-center justify-center bg-neutral-800 border border-neutral-700/50 shrink-0" id="nav-profile-img-container">
+                            <svg class="w-4 h-4 text-gray-300" viewBox="0 0 24 24" id="nav-profile-svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
+                        </div>
                         <span>Perfil</span>
                     </button>
 
@@ -416,11 +417,22 @@
             }
         }
 
+        function updateNavProfilePicture(userObj) {
+            const user = userObj || JSON.parse(sessionStorage.getItem('usuario') || '{}');
+            if (user && user.foto_url) {
+                const navProfileImgContainer = document.getElementById('nav-profile-img-container');
+                if (navProfileImgContainer) {
+                    navProfileImgContainer.innerHTML = `<img src="${user.foto_url}" class="w-full h-full object-cover">`;
+                }
+            }
+        }
+
         /**
          * Event Listener: DOMContentLoaded
          */
         document.addEventListener('DOMContentLoaded', async () => {
             await fetchUserConfig();
+            updateNavProfilePicture();
             loadSection('vagas');
         });
 

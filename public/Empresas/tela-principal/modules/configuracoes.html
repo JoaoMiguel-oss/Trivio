@@ -1480,6 +1480,9 @@
                 usuario.foto_url = data.photo_url;
                 sessionStorage.setItem('usuario', JSON.stringify(usuario));
                 cfgLoadProfileData();
+                if (typeof updateNavProfilePicture === 'function') {
+                    updateNavProfilePicture(usuario);
+                }
                 cfgToast('Foto atualizada com sucesso!');
             } else { cfgToast('Erro ao fazer upload', true); }
         } catch(e) { console.error(e); cfgToast('Erro na conexão', true); }
