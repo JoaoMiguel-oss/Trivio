@@ -8,6 +8,8 @@ const listarVagas = async (req, res) => {
         if (empresa_id) {
             query += ' WHERE empresa_id = ?';
             params.push(empresa_id);
+        } else {
+            query += " WHERE status = 'ativa'";
         }
         query += ' ORDER BY created_at DESC';
         const vagas = db.prepare(query).all(...params);
@@ -75,8 +77,14 @@ const excluirVaga = async (req, res) => {
         const v = db.prepare('SELECT * FROM vagas WHERE id = ?').get(id);
         if (!v) return res.status(404).json({ erro: 'Vaga não encontrada' });
 
-        db.prepare('UPDATE vagas SET status = ? WHERE id = ?').run('inativa', id);
-        res.status(200).json({ mensagem: 'Vaga inativada com sucesso' });
+        // Limpa referências em outras tabelas
+        db.prepare('UPDATE desafios SET vaga_id = NULL WHERE vaga_id = ?').run(id);
+        db.prepare('UPDATE pagamentos SET vaga_id = NULL WHERE vaga_id = ?').run(id);
+        db.prepare('UPDATE metricas_empresa SET vaga_id = NULL WHERE vaga_id = ?').run(id);
+
+        // Deleta a vaga fisicamente do banco de dados
+        db.prepare('DELETE FROM vagas WHERE id = ?').run(id);
+        res.status(200).json({ mensagem: 'Vaga excluída com sucesso' });
     } catch (err) {
         console.error('[VAGAS DELETE]', err);
         res.status(500).json({ erro: 'Erro ao excluir vaga' });

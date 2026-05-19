@@ -422,7 +422,7 @@
             // Tentar enviar para a API
             let desafioSalvo;
             try {
-                const response = await fetch('https://trivio-gz8l.onrender.com/api/v1/desafios', {
+                const response = await fetch('/api/v1/desafios', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -485,7 +485,7 @@
         try {
             // Tentar atualizar via API
             try {
-                const response = await fetch(`https://trivio-gz8l.onrender.com/api/v1/desafios/${desafioId}`, {
+                const response = await fetch(`/api/v1/desafios/${desafioId}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',

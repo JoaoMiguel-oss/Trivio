@@ -33,19 +33,21 @@ const listarVagas = async (req, res) => {
     const { empresa_id } = req.query;
 
     // Começa a construir a query (consulta SQL)
-    // LEFT JOIN traz o nome da empresa mesmo se a vaga for_anônima
+    // LEFT JOIN traz o nome da empresa mesmo se a vaga for anônima
     let query = `
       SELECT v.*, COALESCE(e.nome, 'Empresa Parceira') as empresa_nome
       FROM vagas v
       LEFT JOIN empresas e ON v.empresa_id = e.public_id
-      WHERE v.status = 'ativa'
     `;
     const params = [];
 
-    // Se filtrou por empresa, adiciona essa condição
+    // Se filtrou por empresa, mostra ativas e concluídas (mas não inativas)
     if (empresa_id) {
-      query += ` AND v.empresa_id = ?`;
+      query += ` WHERE v.empresa_id = ? AND v.status != 'inativa'`;
       params.push(empresa_id);
+    } else {
+      // Para candidatos, mostra apenas ativas
+      query += ` WHERE v.status = 'ativa'`;
     }
 
     // Ordena do mais recente para o mais antigo

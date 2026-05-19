@@ -240,11 +240,23 @@
                     <div class="tab-indicator" id="tab-indicator" style="width: 80px; left: 0;"></div>
 
 
+                    <!-- Botão: Vagas -->
+                    <button onclick="loadSection('vagas', this, 'vagas')"
+                        class="nav-item nav-item-horizontal nav-btn flex items-center gap-2"
+                        data-section="vagas"
+                        style="background-color: var(--color-primary);">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                            <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path>
+                        </svg>
+                        <span>Vagas</span>
+                    </button>
+
                     <!-- Botão: Desafios -->
                     <button onclick="loadSection('desafios', this, 'desafios')"
-                        class="nav-item nav-item-horizontal nav-btn flex items-center gap-2"
-                        data-section="desafios"
-                        style="background-color: var(--color-primary);">
+                        class="nav-item nav-item-horizontal nav-btn text-gray-300 hover:text-white flex items-center gap-2"
+                        data-section="desafios">
                         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="14.5 17 14.5 22 9.5 22 9.5 17" />
@@ -461,18 +473,18 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Aguarda um frame para garantir que o layout esteja pronto
             requestAnimationFrame(() => {
-                const desafiosButton = document.querySelector('button[onclick*="desafios"]');
-                if (desafiosButton) {
+                const defaultButton = document.querySelector('button[onclick*="vagas"]');
+                if (defaultButton) {
                     // Define posição inicial do indicador
                     const indicator = document.getElementById('tab-indicator');
                     if (indicator) {
-                        const buttonRect = desafiosButton.getBoundingClientRect();
-                        const containerRect = desafiosButton.closest('.nav-indicator-container').getBoundingClientRect();
+                        const buttonRect = defaultButton.getBoundingClientRect();
+                        const containerRect = defaultButton.closest('.nav-indicator-container').getBoundingClientRect();
                         indicator.style.width = buttonRect.width + 'px';
                         indicator.style.left = (buttonRect.left - containerRect.left) + 'px';
                         indicator.style.opacity = '1';
                     }
-                    loadSection('desafios', desafiosButton, 'desafios');
+                    loadSection('vagas', defaultButton, 'vagas');
                 }
             });
         });

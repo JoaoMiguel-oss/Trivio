@@ -1,30 +1,15 @@
 <style>
-    .desafios-container {
+    .recom-container {
         animation: fadeIn 0.4s ease;
     }
 
-    .desafios-header {
-        margin-bottom: 2rem;
-    }
-
-    .desafios-title {
-        font-size: 1.8rem;
-        font-weight: 800;
-        color: #fff;
-    }
-
-    .desafios-subtitle {
-        color: rgba(255, 255, 255, 0.5);
-        margin-top: 5px;
-    }
-
-    .desafios-grid {
+    .recom-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
         gap: 1.5rem;
     }
 
-    .desafio-card {
+    .recom-card {
         background: rgba(255, 255, 255, 0.03);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 12px;
@@ -35,13 +20,13 @@
         cursor: pointer;
     }
 
-    .desafio-card:hover {
+    .recom-card:hover {
         border-color: rgba(233, 30, 99, 0.4);
         background: rgba(233, 30, 99, 0.08);
         transform: translateY(-2px);
     }
 
-    .desafio-company {
+    .recom-company {
         display: flex;
         align-items: center;
         gap: 10px;
@@ -68,14 +53,14 @@
         color: rgba(255, 255, 255, 0.6);
     }
 
-    .desafio-title {
+    .recom-job-title {
         font-size: 1.2rem;
         font-weight: 700;
         color: #fff;
         margin-bottom: 0.5rem;
     }
 
-    .desafio-meta {
+    .recom-meta {
         display: flex;
         flex-wrap: wrap;
         gap: 0.6rem;
@@ -84,7 +69,7 @@
         margin-bottom: 1rem;
     }
 
-    .desafio-meta span {
+    .recom-meta span {
         display: flex;
         align-items: center;
         gap: 4px;
@@ -93,7 +78,7 @@
         border-radius: 6px;
     }
 
-    .desafio-desc {
+    .recom-desc {
         font-size: 0.88rem;
         color: rgba(255, 255, 255, 0.65);
         margin-bottom: 1.2rem;
@@ -106,7 +91,7 @@
         overflow: hidden;
     }
 
-    .btn-aceitar {
+    .btn-apply {
         width: 100%;
         padding: 10px;
         background: rgba(233, 30, 99, 0.1);
@@ -120,10 +105,25 @@
         font-size: 0.9rem;
     }
 
-    .desafio-card:hover .btn-aceitar {
+    .recom-card:hover .btn-apply {
         background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
         color: white;
         border-color: transparent;
+    }
+
+    .btn-resolver {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: opacity 0.2s;
+    }
+
+    .btn-resolver:hover {
+        opacity: 0.88;
     }
 
     .stat-card {
@@ -197,68 +197,56 @@
         gap: 8px;
     }
 
-    .btn-aceitar-desafio {
+    .btn-candidatar {
         flex: 1;
         padding: 14px;
-        background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
-        border: none;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 10px;
         color: white;
         font-weight: 700;
         font-size: 1rem;
         cursor: pointer;
-        transition: opacity 0.2s;
+        transition: background 0.2s;
     }
 
-    .btn-aceitar-desafio:hover {
-        opacity: 0.85;
+    .btn-candidatar:hover {
+        background: rgba(255, 255, 255, 0.1);
     }
 
-    .btn-aceitar-desafio:disabled {
+    .btn-candidatar:disabled {
         opacity: 0.5;
         cursor: not-allowed;
     }
-
-    .badge-bolsa {
-        background: rgba(233, 30, 99, 0.2);
-        border: 1px solid rgba(233, 30, 99, 0.4);
-        color: var(--color-accent);
-        padding: 4px 10px;
-        border-radius: 20px;
-        font-size: 0.82rem;
-        font-weight: 700;
-    }
 </style>
 
-<div class="desafios-container">
-    <div class="desafios-header">
-        <h1 class="desafios-title">Desafios Técnicos</h1>
-        <p class="desafios-subtitle">Vagas com avaliação prática e bolsa técnica garantida, independente de contratação.
-        </p>
+<div class="recom-container">
+    <div class="mb-8">
+        <h1 style="font-size:1.8rem; font-weight:800; color:#fff;">Vagas Disponíveis</h1>
+        <p style="color:rgba(255,255,255,0.5); margin-top:5px;">Encontre vagas com avaliação prática e bolsa técnica garantida, independente de contratação.</p>
     </div>
 
     <!-- Stats -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
         <div class="stat-card">
-            <p style="color:rgba(255,255,255,0.5); font-size:0.82rem; margin-bottom:6px;">Total de Desafios</p>
+            <p style="color:rgba(255,255,255,0.5); font-size:0.82rem; margin-bottom:6px;">Total de Vagas</p>
             <h3 style="font-size:1.8rem; font-weight:800;" id="stat-total">0</h3>
-            <p style="color:var(--color-accent); font-size:0.72rem; margin-top:6px;" id="stat-total-label">Carregando...
-            </p>
+            <p style="color:var(--color-accent); font-size:0.72rem; margin-top:6px;" id="stat-total-label">Carregando...</p>
         </div>
         <div class="stat-card">
             <p style="color:rgba(255,255,255,0.5); font-size:0.82rem; margin-bottom:6px;">Com Bolsa Técnica</p>
-            <h3 style="font-size:1.8rem; font-weight:800;" id="stat-bolsa">0</h3>
+            <h3 style="font-size:1.8rem; font-weight:800;" id="stat-clt">0</h3>
             <p style="color:#22c55e; font-size:0.72rem; margin-top:6px;">Remuneração garantida</p>
         </div>
         <div class="stat-card">
             <p style="color:rgba(255,255,255,0.5); font-size:0.82rem; margin-bottom:6px;">Maior Bolsa</p>
-            <h3 style="font-size:1.8rem; font-weight:800;" id="stat-maior-bolsa">R$ 0</h3>
+            <h3 style="font-size:1.8rem; font-weight:800;" id="stat-pj">R$ 0</h3>
             <p style="color:var(--color-primary); font-size:0.72rem; margin-top:6px;">Valor máximo</p>
         </div>
         <div class="stat-card">
-            <p style="color:rgba(255,255,255,0.5); font-size:0.82rem; margin-bottom:6px;">Meus Desafios</p>
-            <h3 style="font-size:1.8rem; font-weight:800;" id="stat-meus">0</h3>
-            <p style="color:#3b82f6; font-size:0.72rem; margin-top:6px;">Que eu participei</p>
+            <p style="color:rgba(255,255,255,0.5); font-size:0.82rem; margin-bottom:6px;">Candidaturas</p>
+            <h3 style="font-size:1.8rem; font-weight:800;" id="stat-candidaturas">0</h3>
+            <p style="color:#3b82f6; font-size:0.72rem; margin-top:6px;">Vagas que me candidatei</p>
         </div>
     </div>
 
@@ -270,11 +258,11 @@
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <input type="text" id="desafios-search" placeholder="Buscar por título, empresa ou tecnologia..."
-                oninput="filtrarDesafios()"
+            <input type="text" id="recom-search" placeholder="Buscar por título, empresa ou tecnologia..."
+                oninput="filtrarVagas()"
                 style="width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); padding:10px 12px 10px 36px; border-radius:8px; color:white; font-size:0.9rem; outline:none;">
         </div>
-        <select id="desafios-filter-tipo" onchange="filtrarDesafios()"
+        <select id="recom-filter-tipo" onchange="filtrarVagas()"
             style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1); color:white; padding:10px 14px; border-radius:8px; font-size:0.9rem; cursor:pointer; outline:none;">
             <option value="">Todos os tipos</option>
             <option value="CLT">CLT</option>
@@ -282,7 +270,7 @@
             <option value="Freelance">Freelance</option>
             <option value="Estágio">Estágio</option>
         </select>
-        <select id="desafios-filter-local" onchange="filtrarDesafios()"
+        <select id="recom-filter-local" onchange="filtrarVagas()"
             style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1); color:white; padding:10px 14px; border-radius:8px; font-size:0.9rem; cursor:pointer; outline:none;">
             <option value="">Qualquer local</option>
             <option value="Remoto">Remoto</option>
@@ -291,13 +279,13 @@
         </select>
     </div>
 
-    <div class="desafios-grid" id="desafios-list"></div>
+    <div class="recom-grid" id="recom-list"></div>
 </div>
 
-<!-- MODAL DETALHES DO DESAFIO -->
-<div class="modal-overlay" id="desafioDetailsModal">
+<!-- MODAL DETALHES -->
+<div class="modal-overlay" id="vagaDetailsModal">
     <div class="modal-content">
-        <button class="modal-close" onclick="closeDesafioModal()">×</button>
+        <button class="modal-close" onclick="closeModal()">×</button>
 
         <span id="detail-company" style="color:rgba(255,255,255,0.5); font-weight:600; font-size:0.9rem;"></span>
         <h2 id="detail-title" style="font-size:1.8rem; font-weight:800; color:#fff; margin-top:0.3rem;"></h2>
@@ -320,7 +308,7 @@
                     <line x1="12" y1="16" x2="12" y2="12"></line>
                     <line x1="12" y1="8" x2="12.01" y2="8"></line>
                 </svg>
-                Sobre o Desafio
+                Sobre a Vaga
             </h3>
             <p id="detail-desc" style="color:rgba(255,255,255,0.7); line-height:1.6;"></p>
         </div>
@@ -330,7 +318,7 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z"></path>
                 </svg>
-                Requisitos Técnicos
+                Requisitos
             </h3>
             <div
                 style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); padding:1.2rem; border-radius:10px;">
@@ -338,11 +326,11 @@
             </div>
         </div>
 
-        <div style="margin-top:2rem; display:flex; gap:12px;">
-            <button class="btn-aceitar-desafio" id="btn-aceitar-modal" onclick="aceitarDesafio()">Aceitar
-                Desafio</button>
-            <button onclick="closeDesafioModal()"
-                style="background:transparent; border:1px solid rgba(255,255,255,0.2); color:white; border-radius:10px; padding:0 20px; cursor:pointer; font-size:0.95rem;">
+        <div style="margin-top:2rem; display:flex; gap:12px; flex-wrap:wrap;">
+            <button class="btn-resolver" id="btn-resolver-modal" onclick="resolverVaga(currentVaga.id)" style="flex:1.5; padding:14px; text-align:center;">Resolver Desafio</button>
+            <button class="btn-candidatar" id="btn-candidatar-modal" onclick="candidatarVaga()">Candidatar-se</button>
+            <button onclick="closeModal()"
+                style="background:transparent; border:1px solid rgba(255,255,255,0.2); color:white; border-radius:10px; padding:0 20px; cursor:pointer; font-size:0.95rem; min-height:48px;">
                 Voltar
             </button>
         </div>
@@ -350,199 +338,185 @@
 </div>
 
 <script>
-    let todosDesafios = [];
-    let currentDesafio = null;
-    let minhasCandidaturas = JSON.parse(localStorage.getItem('trivio_candidaturas') || '[]');
+    let todasVagas = [];
+    let currentVaga = null;
+    let candidaturas = JSON.parse(localStorage.getItem('trivio_candidaturas') || '[]');
 
     function salvarCandidaturas() {
-        localStorage.setItem('trivio_candidaturas', JSON.stringify(minhasCandidaturas));
+        localStorage.setItem('trivio_candidaturas', JSON.stringify(candidaturas));
     }
 
-    function atualizarContadorMeusDesafios() {
-        const el = document.getElementById('stat-meus');
-        if (el) el.textContent = minhasCandidaturas.length;
+    function atualizarContadorCandidaturas() {
+        const el = document.getElementById('stat-candidaturas');
+        if (el) el.textContent = candidaturas.length;
     }
 
-    async function carregarDesafios() {
-        const listDiv = document.getElementById('desafios-list');
-        listDiv.innerHTML = '<p style="color:rgba(255,255,255,0.4); grid-column:1/-1; text-align:center; padding:3rem;">Buscando desafios...</p>';
+    function resolverVaga(vagaId) {
+        window.location.href = `/resolver.html?vaga_id=${vagaId}`;
+    }
 
+    async function carregarVagas() {
+        const listDiv = document.getElementById('recom-list');
+        listDiv.innerHTML = '<p style="color:rgba(255,255,255,0.4); grid-column:1/-1; text-align:center; padding:3rem;">Buscando vagas...</p>';
         try {
-            const res = await fetch('/api/v1/desafios', {
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...(sessionStorage.getItem('token') ? { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` } : {})
-                }
-            });
+            const tokenHeader = sessionStorage.getItem('token');
+            const headers = { 'Content-Type': 'application/json' };
+            if (tokenHeader) headers.Authorization = `Bearer ${tokenHeader}`;
+
+            const res = await fetch('/api/v1/vagas', { headers });
             if (!res.ok) throw new Error();
-            todosDesafios = await res.json();
+            todasVagas = await res.json();
 
-            document.getElementById('stat-total').textContent = todosDesafios.length;
-            document.getElementById('stat-total-label').textContent = todosDesafios.length > 0 ? `${todosDesafios.length} disponíveis` : 'Nenhum no momento';
-            document.getElementById('stat-bolsa').textContent = todosDesafios.filter(v => v.bolsa_tecnica > 0).length;
-            const maiorBolsa = todosDesafios.reduce((max, v) => Math.max(max, v.bolsa_tecnica || 0), 0);
-            document.getElementById('stat-maior-bolsa').textContent = maiorBolsa > 0 ? `R$ ${maiorBolsa.toLocaleString('pt-BR')}` : 'R$ 0';
-            atualizarContadorMeusDesafios();
+            const usuario = JSON.parse(sessionStorage.getItem('usuario') || '{}');
+            const userSkillsRaw = (window.userConfig?.skills || window.userBasicData?.skills || usuario.skills || '');
+            const userSkills = Array.isArray(userSkillsRaw)
+                ? userSkillsRaw.map(s => (s || '').toLowerCase())
+                : String(userSkillsRaw).split(/[,;\s]+/).filter(Boolean).map(s => s.toLowerCase());
 
-            renderizarDesafios(todosDesafios);
+            const vagasRecomendadas = userSkills.length
+                ? todasVagas.filter(v => {
+                    const text = [(v.titulo || ''), (v.descricao || ''), (v.requisitos || ''), (v.tipo || ''), (v.empresa_nome || '')]
+                        .join(' ').toLowerCase();
+                    return userSkills.some(skill => text.includes(skill));
+                })
+                : todasVagas;
+
+            document.getElementById('stat-total').textContent = vagasRecomendadas.length;
+            document.getElementById('stat-total-label').textContent = vagasRecomendadas.length > 0 ? `${vagasRecomendadas.length} disponíveis` : 'Nenhuma no momento';
+            document.getElementById('stat-clt').textContent = vagasRecomendadas.filter(v => v.bolsa_tecnica > 0).length;
+            const maiorBolsa = vagasRecomendadas.reduce((max, v) => Math.max(max, v.bolsa_tecnica || 0), 0);
+            document.getElementById('stat-pj').textContent = maiorBolsa > 0 ? `R$ ${maiorBolsa.toLocaleString('pt-BR')}` : 'R$ 0';
+            atualizarContadorCandidaturas();
+
+            renderizarVagas(vagasRecomendadas);
         } catch {
-            listDiv.innerHTML = '<p style="color:#ef4444; text-align:center; grid-column:1/-1;">Erro ao carregar desafios.</p>';
+            listDiv.innerHTML = '<p style="color:#ef4444; text-align:center; grid-column:1/-1;">Erro ao carregar vagas.</p>';
         }
     }
 
-    function filtrarDesafios() {
-        const busca = (document.getElementById('desafios-search')?.value || '').toLowerCase();
-        const tipo = document.getElementById('desafios-filter-tipo')?.value || '';
-        const local = document.getElementById('desafios-filter-local')?.value || '';
+    function filtrarVagas() {
+        const busca = (document.getElementById('recom-search')?.value || '').toLowerCase();
+        const tipo = document.getElementById('recom-filter-tipo')?.value || '';
+        const local = document.getElementById('recom-filter-local')?.value || '';
 
-        const filtrados = todosDesafios.filter(v => {
-            const ok1 = !busca || [v.titulo, v.descricao, v.empresa_nome, v.requisitos].some(s => (s || '').toLowerCase().includes(busca));
+        const filtradas = todasVagas.filter(v => {
+            const ok1 = !busca || [v.titulo, v.descricao, v.empresa_name || v.empresa_nome, v.requisitos].some(s => (s || '').toLowerCase().includes(busca));
             const ok2 = !tipo || (v.tipo || '').toLowerCase() === tipo.toLowerCase();
             const ok3 = !local || (v.localizacao || '').toLowerCase().includes(local.toLowerCase());
             return ok1 && ok2 && ok3;
         });
 
-        renderizarDesafios(filtrados);
+        renderizarVagas(filtradas);
     }
 
-    function renderizarDesafios(desafios) {
-        const listDiv = document.getElementById('desafios-list');
+    function renderizarVagas(vagas) {
+        const listDiv = document.getElementById('recom-list');
 
-        if (!desafios.length) {
+        if (!vagas.length) {
             listDiv.innerHTML = `
                 <div style="grid-column:1/-1; text-align:center; padding:4rem; background:rgba(255,255,255,0.02); border-radius:12px; border:1px dashed rgba(255,255,255,0.1);">
-                    <p style="color:rgba(255,255,255,0.6); font-size:1.05rem;">Nenhum desafio encontrado.</p>
+                    <p style="color:rgba(255,255,255,0.6); font-size:1.05rem;">Nenhuma vaga encontrada.</p>
                     <p style="color:rgba(255,255,255,0.4); font-size:0.85rem; margin-top:5px;">Tente outros filtros ou aguarde novas oportunidades.</p>
                 </div>`;
             return;
         }
 
-        const getNome = v => v.empresa_nome || 'Empresa Parceira';
-        const getIni = n => n.substring(0, 2).toUpperCase();
-        const jaParticipo = v => minhasCandidaturas.includes(v.id);
+        const nome = v => v.empresa_nome || 'Empresa Parceira';
+        const ini = n => n.substring(0, 2).toUpperCase();
+        const jaCandidatou = v => candidaturas.includes(v.id);
 
-        listDiv.innerHTML = desafios.map(v => `
-            <div class="desafio-card" onclick='abrirModal(${JSON.stringify(v).replace(/'/g, "'")})'>
-                <div class="desafio-company">
-                    <div class="company-avatar">${getIni(getNome(v))}</div>
-                    <span class="company-name">${getNome(v)}</span>
-                    ${jaParticipo(v) ? `<span style="margin-left:auto; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.3); color:#22c55e; padding:2px 8px; border-radius:20px; font-size:0.72rem; font-weight:700;">Em Andamento</span>` : ''}
+        listDiv.innerHTML = vagas.map(v => `
+            <div class="recom-card" onclick='abrirModal(${JSON.stringify(v).replace(/'/g, "&#39;")})'>
+                <div class="recom-company">
+                    <div class="company-avatar">${ini(nome(v))}</div>
+                    <span class="company-name">${nome(v)}</span>
+                    ${jaCandidatou(v) ? `<span style="margin-left:auto; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.3); color:#22c55e; padding:2px 8px; border-radius:20px; font-size:0.72rem; font-weight:700;">Candidatado</span>` : ''}
                 </div>
-                <h3 class="desafio-title">${v.titulo}</h3>
-                <div class="desafio-meta">
+                <h3 class="recom-job-title">${v.titulo}</h3>
+                <div class="recom-meta">
                     <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ${v.tipo || 'N/D'}</span>
                     <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ${v.localizacao || 'N/D'}</span>
                     ${v.remuneracao ? `<span>R$ ${v.remuneracao}</span>` : ''}
-                    ${v.bolsa_tecnica ? `<span class="badge-bolsa">Bolsa: R$ ${parseFloat(v.bolsa_tecnica).toLocaleString('pt-BR')}</span>` : ''}
+                    ${v.bolsa_tecnica ? `<span style="background:rgba(233,30,99,0.15); border:1px solid rgba(233,30,99,0.25); color:var(--color-accent); font-weight:700;">Bolsa: R$ ${parseFloat(v.bolsa_tecnica).toLocaleString('pt-BR')}</span>` : ''}
                 </div>
-                <div class="desafio-desc">${v.descricao || 'Sem descrição.'}</div>
-                <div class="btn-aceitar">${jaParticipo(v) ? 'Ver Detalhes' : 'Ver Desafio'}</div>
+                <div class="recom-desc">${v.descricao || 'Sem descrição.'}</div>
+                
+                <div style="display:flex; gap:10px; margin-top:1.2rem; width:100%;">
+                    <button class="btn-resolver" onclick="event.stopPropagation(); resolverVaga(${v.id})" style="flex:1; padding:10px; text-align:center;">Resolver</button>
+                    <button class="btn-apply" style="flex:1.2; padding:10px; margin-top:0;">${jaCandidatou(v) ? 'Ver Detalhes' : 'Ver Vaga + Desafio'}</button>
+                </div>
             </div>
         `).join('');
     }
 
-    function abrirModal(desafio) {
-        currentDesafio = desafio;
-        document.getElementById('detail-title').innerText = desafio.titulo;
-        document.getElementById('detail-company').innerText = (desafio.empresa_nome || 'Empresa Parceira') + ' · Postado recentemente';
-        document.getElementById('detail-tipo').innerText = desafio.tipo || 'Não informado';
-        document.getElementById('detail-loc').innerText = desafio.localizacao || 'Não informada';
-        document.getElementById('detail-remun').innerText = desafio.remuneracao ? `R$ ${desafio.remuneracao}` : 'A combinar';
-        document.getElementById('detail-desc').innerText = desafio.descricao || 'Sem descrição.';
-        document.getElementById('detail-reqs').innerText = desafio.requisitos || 'Sem requisitos cadastrados.';
+    function abrirModal(vaga) {
+        currentVaga = vaga;
+        document.getElementById('detail-title').innerText = vaga.titulo;
+        document.getElementById('detail-company').innerText = (vaga.empresa_nome || 'Empresa Parceira') + ' · Postada recentemente';
+        document.getElementById('detail-tipo').innerText = vaga.tipo || 'Não informado';
+        document.getElementById('detail-loc').innerText = vaga.localizacao || 'Não informada';
+        document.getElementById('detail-remun').innerText = vaga.remuneracao ? `R$ ${vaga.remuneracao}` : 'A combinar';
+        document.getElementById('detail-desc').innerText = vaga.descricao || 'Sem descrição.';
+        document.getElementById('detail-reqs').innerText = vaga.requisitos || 'Sem requisitos cadastrados.';
 
         // Bolsa técnica
         const bolsaEl = document.getElementById('detail-bolsa');
-        if (desafio.bolsa_tecnica && desafio.bolsa_tecnica > 0) {
-            bolsaEl.textContent = `💰 Bolsa técnica: R$ ${parseFloat(desafio.bolsa_tecnica).toLocaleString('pt-BR')}`;
+        if (vaga.bolsa_tecnica && vaga.bolsa_tecnica > 0) {
+            bolsaEl.textContent = `💰 Bolsa técnica: R$ ${parseFloat(vaga.bolsa_tecnica).toLocaleString('pt-BR')}`;
             bolsaEl.style.display = 'inline-block';
         } else {
             bolsaEl.style.display = 'none';
         }
 
-        const btn = document.getElementById('btn-aceitar-modal');
-        if (minhasCandidaturas.includes(desafio.id)) {
-            btn.textContent = 'Desafio em Andamento';
+        const btn = document.getElementById('btn-candidatar-modal');
+        if (candidaturas.includes(vaga.id)) {
+            btn.textContent = 'Já candidatado';
             btn.disabled = true;
             btn.style.opacity = '0.5';
         } else {
-            btn.textContent = 'Aceitar Desafio';
+            btn.textContent = 'Candidatar-se';
             btn.disabled = false;
             btn.style.opacity = '1';
         }
 
-        document.getElementById('desafioDetailsModal').classList.add('show');
+        document.getElementById('vagaDetailsModal').classList.add('show');
     }
 
-    function closeDesafioModal() {
-        document.getElementById('desafioDetailsModal').classList.remove('show');
+    function closeModal() {
+        document.getElementById('vagaDetailsModal').classList.remove('show');
     }
 
-    async function aceitarDesafio() {
-        if (!currentDesafio || minhasCandidaturas.includes(currentDesafio.id)) return;
+    function candidatarVaga() {
+        if (!currentVaga || candidaturas.includes(currentVaga.id)) return;
 
-        const btn = document.getElementById('btn-aceitar-modal');
+        const btn = document.getElementById('btn-candidatar-modal');
         btn.textContent = 'Enviando...';
         btn.disabled = true;
 
-        const usuario = JSON.parse(sessionStorage.getItem('usuario') || '{}');
-        const candidato_id = usuario.public_id;
-
-        if (!candidato_id) {
-            alert('Faça login para aceitar desafios.');
-            btn.textContent = 'Aceitar Desafio';
-            btn.disabled = false;
-            return;
-        }
-
-        try {
-            const token = sessionStorage.getItem('token');
-            const headers = { 'Content-Type': 'application/json' };
-            if (token) headers.Authorization = `Bearer ${token}`;
-
-            const res = await fetch(`/api/v1/desafios/${currentDesafio.id}/candidatar`, {
-                method: 'POST',
-                headers,
-                body: JSON.stringify({ candidato_id })
-            });
-
-            if (!res.ok) {
-                const data = await res.json().catch(() => ({}));
-                alert(data.erro || 'Erro ao aceitar desafio');
-                btn.textContent = 'Aceitar Desafio';
-                btn.disabled = false;
-                return;
-            }
-
-            minhasCandidaturas.push(currentDesafio.id);
+        setTimeout(() => {
+            candidaturas.push(currentVaga.id);
             salvarCandidaturas();
-            atualizarContadorMeusDesafios();
+            atualizarContadorCandidaturas();
 
-            btn.textContent = 'Desafio em Andamento';
+            btn.textContent = 'Já candidatado';
             btn.style.opacity = '0.5';
 
-            closeDesafioModal();
-            renderizarDesafios(todosDesafios.filter(v => {
-                const busca = (document.getElementById('desafios-search')?.value || '').toLowerCase();
-                const tipo = document.getElementById('desafios-filter-tipo')?.value || '';
-                const local = document.getElementById('desafios-filter-local')?.value || '';
-                const ok1 = !busca || [v.titulo, v.descricao, v.empresa_nome, v.requisitos].some(s => (s || '').toLowerCase().includes(busca));
+            closeModal();
+            renderizarVagas(todasVagas.filter(v => {
+                const busca = (document.getElementById('recom-search')?.value || '').toLowerCase();
+                const tipo = document.getElementById('recom-filter-tipo')?.value || '';
+                const local = document.getElementById('recom-filter-local')?.value || '';
+                const ok1 = !busca || [v.titulo, v.descricao, v.empresa_name || v.empresa_nome, v.requisitos].some(s => (s || '').toLowerCase().includes(busca));
                 const ok2 = !tipo || (v.tipo || '').toLowerCase() === tipo.toLowerCase();
                 const ok3 = !local || (v.localizacao || '').toLowerCase().includes(local.toLowerCase());
                 return ok1 && ok2 && ok3;
             }));
 
             if (typeof showToast === 'function') {
-                showToast(`Desafio "${currentDesafio.titulo}" aceito! Boa sorte!`);
+                showToast(`Candidatura para "${currentVaga.titulo}" enviada!`);
             }
-        } catch (err) {
-            console.error(err);
-            alert('Erro de conexão. Tente novamente.');
-            btn.textContent = 'Aceitar Desafio';
-            btn.disabled = false;
-        }
+        }, 1200);
     }
 
-    // Inicializar
-    carregarDesafios();
+    carregarVagas();
 </script>

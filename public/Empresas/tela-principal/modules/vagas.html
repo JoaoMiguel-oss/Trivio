@@ -78,6 +78,12 @@
         border: 1px solid rgba(239, 68, 68, 0.2);
     }
 
+    .status-concluida {
+        background: rgba(59, 130, 246, 0.15);
+        color: #3b82f6;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+
     .vaga-title {
         font-size: 1.25rem;
         font-weight: 700;
@@ -326,7 +332,7 @@
         try {
             const us = JSON.parse(sessionStorage.getItem('usuario') || '{}');
             const empresaId = us.public_id || '';
-            const url = empresaId ? `https://trivio-gz8l.onrender.com/api/v1/vagas?empresa_id=${encodeURIComponent(empresaId)}` : 'https://trivio-gz8l.onrender.com/api/v1/vagas';
+            const url = empresaId ? `/api/v1/vagas?empresa_id=${encodeURIComponent(empresaId)}` : '/api/v1/vagas';
             const response = await fetch(url);
             if (!response.ok) throw new Error('Falha ao buscar vagas');
 
@@ -360,7 +366,8 @@
                     ${v.bolsa_tecnica ? `<div style="margin-bottom:0.8rem; padding:6px 10px; border-radius:8px; background:rgba(233,30,99,0.1); border:1px solid rgba(233,30,99,0.2); display:flex; align-items:center; gap:6px;"><span style="color:rgba(255,255,255,0.5); font-size:0.78rem;">Bolsa t\u00e9cnica:</span><span style="color:var(--color-accent); font-weight:700; font-size:0.88rem;">R$ ${parseFloat(v.bolsa_tecnica).toLocaleString('pt-BR')}</span></div>` : ''}
                     
                     <div class="vaga-actions">
-                        <button class="btn-edit" onclick='editarVaga(${JSON.stringify(v).replace(/'/g, "&#39;")})'>Editar Detahes</button>
+                        <button class="btn-edit" onclick='editarVaga(${JSON.stringify(v).replace(/'/g, "&#39;")})'>Editar Detalhes</button>
+                        ${v.status === 'ativa' ? `<button class="btn-concluir" onclick="concluirVaga(${v.id})" style="padding: 8px 12px; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 8px; color: #22c55e; cursor: pointer; transition: 0.2s;" onmouseenter="this.style.background='rgba(34,197,94,0.2)'" onmouseleave="this.style.background='rgba(34,197,94,0.1)'">Concluir</button>` : ''}
                         <button class="btn-delete" onclick="apagarVaga(${v.id})" title="Remover Vaga">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                         </button>
@@ -399,15 +406,35 @@
     }
 
     async function apagarVaga(id) {
-        if (!confirm('Deseja realmente apagar/inativar esta vaga?')) return;
+        if (!confirm('Deseja realmente apagar esta vaga?')) return;
 
         try {
-            const res = await fetch(`https://trivio-gz8l.onrender.com/api/v1/vagas/${id}`, { method: 'DELETE' });
+            const res = await fetch(`/api/v1/vagas/${id}`, { method: 'DELETE' });
             if (res.ok) {
                 if (typeof showToast === 'function') showToast('Vaga removida com sucesso!');
                 carregarVagas();
             } else {
                 alert('Erro ao excluir a vaga.');
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    async function concluirVaga(id) {
+        if (!confirm('Deseja realmente marcar esta vaga como concluída? Ela não aparecerá mais para novos candidatos.')) return;
+
+        try {
+            const res = await fetch(`/api/v1/vagas/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: 'concluida' })
+            });
+            if (res.ok) {
+                if (typeof showToast === 'function') showToast('Vaga marcada como concluída!');
+                carregarVagas();
+            } else {
+                alert('Erro ao concluir a vaga.');
             }
         } catch (e) {
             console.error(e);
@@ -436,7 +463,7 @@
         };
 
         try {
-            const url = isEdicao ? `https://trivio-gz8l.onrender.com/api/v1/vagas/${isEdicao}` : 'https://trivio-gz8l.onrender.com/api/v1/vagas';
+            const url = isEdicao ? `/api/v1/vagas/${isEdicao}` : '/api/v1/vagas';
             const method = isEdicao ? 'PUT' : 'POST';
 
             const response = await fetch(url, {
