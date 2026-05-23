@@ -26,6 +26,7 @@ const pagamentosRoutes = require('./rotas/pagamentos');
 const vagasRoutes = require('./rotas/vagas');
 const submissoesRoutes = require('./rotas/submissoes');
 const analyzeRoutes = require('./rotas/analyze');
+const casosTesteRoutes = require('./rotas/casos_teste');
 
 // Importa a função que cria as tabelas do banco de dados
 const inicializarTabelas = require('./database/setup');
@@ -78,6 +79,7 @@ app.use('/api/v1/pagamentos', pagamentosRoutes);
 app.use('/api/v1/vagas', vagasRoutes);
 app.use('/api/v1/submissoes', submissoesRoutes);
 app.use('/api/v1', analyzeRoutes);
+app.use('/api/v1', casosTesteRoutes);
 
 
 

@@ -11,6 +11,7 @@
 // 3. Empresa revisa → aprova ou rejeita (status)
 
 const db = require('../banco/conexao');
+const { corrigirSubmissao } = require('../services/autoCorrector');
 
 // POST /api/v1/submissoes
 // Candidato envia a solução de um desafio
@@ -85,6 +86,9 @@ const criarSubmissao = (req, res) => {
         const submissaoSalva = db.prepare(
             'SELECT * FROM candidaturas_desafio WHERE desafio_id = ? AND candidato_id = ?'
         ).get(desafio_id, candidato_id);
+
+        // Dispara correção automática em background — não bloqueia a resposta ao candidato
+        corrigirSubmissao(submissaoSalva.id).catch(err => console.error('[AUTO-CORREÇÃO]', err));
 
         return res.status(201).json({ sucesso: true, submissao: submissaoSalva });
 

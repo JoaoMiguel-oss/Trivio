@@ -6,6 +6,20 @@ function migrar(sql) {
 }
 
 function inicializarTabelas() {
+  // Tabela de casos de teste vinculados a desafios
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS casos_teste (
+      id               INTEGER PRIMARY KEY AUTOINCREMENT,
+      desafio_id       INTEGER NOT NULL,
+      input            TEXT,
+      output_esperado  TEXT NOT NULL,
+      peso             INTEGER DEFAULT 1,
+      descricao        TEXT,
+      criado_em        DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+
   // Tabela de vagas
   db.exec(`
     CREATE TABLE IF NOT EXISTS vagas (
@@ -55,6 +69,13 @@ function inicializarTabelas() {
   migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN feedback_empresa TEXT`);
 
   console.log('Migrations de submissões aplicadas');
+
+  // Campos para correção automática por casos de teste
+  migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN testes_passados INTEGER DEFAULT 0`);
+  migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN total_testes INTEGER DEFAULT 0`);
+  migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN resultado_execucao TEXT`);
+
+  console.log('Migrations de auto-correção aplicadas');
 }
 
 module.exports = inicializarTabelas;
