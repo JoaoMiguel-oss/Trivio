@@ -35,6 +35,8 @@ const inicializarTabelas = require('./database/setup');
 // Cria a aplicação Express - é como inicializar o servidor
 const app = express();
 
+app.use(helmet())
+
 // Define a porta do servidor (usa a variável PORT ou 3001 como padrão)
 const porta = process.env.PORT || 3001;
 

@@ -12,6 +12,7 @@
 
 const db = require('../banco/conexao');
 const { corrigirSubmissao } = require('../services/autoCorrector');
+const { analyzeCode } = require('../services/analyzeCodeService');
 
 // POST /api/v1/submissoes
 // Candidato envia a solução de um desafio
@@ -89,6 +90,19 @@ const criarSubmissao = (req, res) => {
 
         // Dispara correção automática em background — não bloqueia a resposta ao candidato
         corrigirSubmissao(submissaoSalva.id).catch(err => console.error('[AUTO-CORREÇÃO]', err));
+
+        setImmediate(async () => {
+          try {
+            const result = await analyzeCode(codigo, linguagem);
+            if (result.success) {
+              db.prepare(`
+                UPDATE candidaturas_desafio
+                SET score_ia = ?, relatorio_ia = ?
+                WHERE desafio_id = ? AND candidato_id = ?
+              `).run(result.overallScore, JSON.stringify(result), desafio_id, candidato_id);
+            }
+          } catch (_) {}
+        });
 
         return res.status(201).json({ sucesso: true, submissao: submissaoSalva });
 

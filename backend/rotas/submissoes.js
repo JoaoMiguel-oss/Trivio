@@ -7,6 +7,7 @@ const express = require('express');
 const router = express.Router();
 const submissaoController = require('../controllers/submissaoController');
 const verificarAutenticacao = require('../middlewares/verificarAutenticacao');
+const db = require('../banco/conexao');
 
 // ROTAS DO CANDIDATO
 
@@ -31,6 +32,22 @@ router.get('/desafio/:desafio_id', verificarAutenticacao, submissaoController.li
 // Empresa aprova ou rejeita uma submissão
 // Body: { status: 'aprovado' | 'rejeitado' | 'em_revisao', feedback? }
 router.patch('/:id/status', verificarAutenticacao, submissaoController.atualizarStatus);
+
+// GET /api/v1/submissoes/:id/analise
+// Empresa ou candidato consulta o relatório de IA de uma submissão
+router.get('/:id/analise', verificarAutenticacao, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const submissao = db.prepare(
+      'SELECT score_ia, relatorio_ia FROM candidaturas_desafio WHERE id = ?'
+    ).get(id);
+    if (!submissao) return res.status(404).json({ sucesso: false, mensagem: 'Submissão não encontrada' });
+    if (!submissao.relatorio_ia) return res.status(202).json({ sucesso: false, mensagem: 'Análise ainda em processamento' });
+    return res.status(200).json({ sucesso: true, score: submissao.score_ia, relatorio: JSON.parse(submissao.relatorio_ia) });
+  } catch (err) {
+    return res.status(500).json({ sucesso: false, mensagem: 'Erro ao buscar análise' });
+  }
+});
 
 // ROTA COMPARTILHADA
 
