@@ -47,63 +47,421 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(216, 27, 96, 0.5);
         }
+
+        .problema-box {
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            min-height: 80px;
+            text-align: left;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .code-editor {
+            width: 100%;
+            min-height: 200px;
+            padding: 12px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #fff;
+            resize: vertical;
+            margin-bottom: 16px;
+        }
+
+        .code-editor:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 2px rgba(173,20,87,0.3);
+        }
+
+        .language-select {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 20px;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23FFFFFF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 1em;
+        }
+
+        .language-select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 2px rgba(173,20,87,0.3);
+        }
+
+        .history-item {
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .history-status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .status-entregue { background: rgba(16,185,129,0.2); color: #10B981; }
+        .status-aprovado { background: rgba(34,197,94,0.2); color: #22C55E; }
+        .status-rejeitado { background: rgba(239,68,68,0.2); color: #EF4444; }
+        .status-em_andamento { background: rgba(245,158,11,0.2); color: #F59E0B; }
+        .status-em_revisao { background: rgba(59,130,246,0.2); color: #3B82F6; }
+
+        .empty-history {
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-style: italic;
+            padding: 20px;
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-full:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(216,27,96,0.5);
+        }
+
+        .btn-full:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            padding: 20px;
+        }
     </style>
 </head>
 <body class="p-6">
-    <div class="glass-card max-w-lg w-full p-10 text-center flex flex-col items-center">
-        <!-- Ícone do Desafio -->
-        <div class="w-20 h-20 rounded-2xl flex items-center justify-center mb-6" style="background: rgba(173, 20, 87, 0.1); border: 1px solid rgba(173, 20, 87, 0.25);">
-            <svg class="w-10 h-10" style="color: var(--color-accent);" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-            </svg>
+    <div class="glass-card max-w-2xl w-full p-8 space-y-6">
+        <!-- Cabeçalho -->
+        <div class="flex flex-col items-center">
+            <div class="w-24 h-24 rounded-2xl flex items-center justify-center mb-4" style="background: rgba(173, 20, 87, 0.1); border: 1px solid rgba(173, 20, 87, 0.25);">
+                <svg class="w-10 h-10" style="color: var(--color-accent);" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                </svg>
+            </div>
+            <h1 class="text-2xl font-extrabold tracking-tight mb-2">Resolução de Desafio</h1>
+            <p class="text-gray-400 text-sm mb-4" id="vaga-info">Carregando informações da vaga...</p>
         </div>
 
-        <h1 class="text-3xl font-extrabold tracking-tight mb-3">Resolução de Desafio</h1>
-        <p class="text-gray-400 text-sm mb-2" id="vaga-info">Carregando informações da vaga...</p>
-        
-        <div class="w-12 h-[2px] rounded-full my-4" style="background: linear-gradient(90deg, var(--color-primary), var(--color-accent));"></div>
+        <!-- Divisor -->
+        <div class="w-full h-[1px] bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] my-4"></div>
 
-        <p class="text-gray-300 leading-relaxed mb-8">
-            Esta é a página para resolver o desafio técnico associado a esta vaga. Por enquanto, ela permanece em branco conforme planejado.
-        </p>
+        <!-- Enunciado do Problema -->
+        <div>
+            <h2 class="text-lg font-semibold mb-2">Enunciado da Vaga</h2>
+            <div id="problema-enunciado" class="problema-box loading">Carregando enunciado...</div>
+        </div>
 
-        <!-- Ações -->
-        <div class="flex gap-4 w-full">
-            <button onclick="goBack()" class="flex-1 py-3 px-6 rounded-xl border border-white/10 hover:bg-white/5 transition font-semibold text-sm">
-                Voltar
-            </button>
-            <button onclick="alert('Área de resolução em desenvolvimento!')" class="glow-button flex-1 py-3 px-6 rounded-xl font-bold text-sm text-white">
-                Iniciar
+        <!-- Editor de Código -->
+        <div>
+            <h2 class="text-lg font-semibold mb-2">Sua Solução</h2>
+            <div class="space-y-3">
+                <select id="linguagem-select" class="language-select">
+                    <option value="">Selecione a linguagem</option>
+                    <option value="javascript">JavaScript</option>
+                    <option value="python">Python</option>
+                    <option value="java">Java</option>
+                    <option value="cpp">C++</option>
+                    <option value="c">C</option>
+                    <option value="php">PHP</option>
+                    <option value="ruby">Ruby</option>
+                    <option value="go">Go</option>
+                    <option value="rust">Rust</option>
+                    <option value="typescript">TypeScript</option>
+                </select>
+                <textarea id="codigo-editor" class="code-editor" placeholder="Escreva seu código aqui..."></textarea>
+            </div>
+        </div>
+
+        <!-- Botão de Envio -->
+        <button id="btn-enviar" class="btn-full" disabled>Enviar Solução</button>
+
+        <!-- Histórico de Submissões -->
+        <div>
+            <h2 class="text-lg font-semibold mb-2">Histórico de Submissões</h2>
+            <div id="historico-submissoes" class="space-y-2">
+                <!-- Items will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Botão Voltar -->
+        <div class="mt-6">
+            <button onclick="goBack()" class="w-full px-4 py-2 bg-transparent border border-white/20 rounded-xl hover:bg-white/5 transition font-semibold text-sm">
+                Voltar à Tela Principal
             </button>
         </div>
     </div>
 
     <script>
-        // Carrega o título da vaga se vier por parâmetro
-        const urlParams = new URLSearchParams(window.location.search);
-        const vagaId = urlParams.get('vaga_id');
-        
-        if (vagaId) {
-            fetch(`/api/v1/vagas`)
-                .then(res => res.json())
-                .then(vagas => {
-                    const vaga = vagas.find(v => v.id == vagaId);
-                    if (vaga) {
-                        document.getElementById('vaga-info').innerText = `Vaga: ${vaga.titulo}`;
-                    } else {
-                        document.getElementById('vaga-info').innerText = `Vaga ID: ${vagaId}`;
-                    }
-                })
-                .catch(() => {
-                    document.getElementById('vaga-info').innerText = `Vaga ID: ${vagaId}`;
-                });
-        } else {
-            document.getElementById('vaga-info').innerText = 'Nenhuma vaga especificada';
+        // Estado da aplicação
+        let vagaId = null;
+        let desafioId = null;
+        let candidatoId = null;
+        let candidatoTipo = null;
+        let vagaData = null;
+        let desafioData = null;
+
+        // Inicialização
+        async function init() {
+            // Obter parâmetros da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            vagaId = urlParams.get('vaga_id');
+            
+            // Obter dados do usuário logado
+            const usuarioStr = sessionStorage.getItem('usuario');
+            if (usuarioStr) {
+                const usuario = JSON.parse(usuarioStr);
+                candidatoId = usuario.public_id;
+                candidatoTipo = usuario.tipo;
+            } else {
+                // Redirecionar para login se não estiver autenticado
+                window.location.href = '/login.html';
+                return;
+            }
+
+            if (!vagaId) {
+                document.getElementById('vaga-info').textContent = 'Nenhuma vaga especificada';
+                return;
+            }
+
+            try {
+                // Carregar dados da vaga
+                await carregarVaga();
+                // Carregar dados do desafio vinculado
+                await carregarDesafio();
+                // Carregar histórico de submissões
+                await carregarHistorico();
+                // Habilitar UI
+                habilitarUI();
+            } catch (error) {
+                console.error('Erro na inicialização:', error);
+                mostrarErro('Falha ao carregar dados. Tente novamente.');
+            }
         }
 
+        // Carrega informações da vaga
+        async function carregarVaga() {
+            const response = await fetch(`/api/v1/vagas`);
+            if (!response.ok) throw new Error('Falha ao buscar vagas');
+            const vagas = await response.json();
+            vagaData = vagas.find(v => v.id == vagaId);
+            if (!vagaData) throw new Error('Vaga não encontrada');
+            
+            document.getElementById('vaga-info').textContent = `Vaga: ${vagaData.titulo}`;
+            document.getElementById('problema-enunciado').textContent = vagaData.descricao || 'Descrição não disponível';
+        }
+
+        // Carrega informações do desafio vinculado à vaga
+        async function carregarDesafio() {
+            const response = await fetch(`/api/v1/desafios`);
+            if (!response.ok) throw new Error('Falha ao buscar desafios');
+            const desafios = await response.json();
+            desafioData = desafios.find(d => d.vaga_id == vagaId);
+            if (!desafioData) {
+                // Se não houver desafio vinculado, usar a vaga como desafio genérico
+                desafioId = vagaId; // fallback
+                return;
+            }
+            desafioId = desafioData.id;
+            // Atualizar enunciado com o do desafio (mais específico)
+            document.getElementById('problema-enunciado').textContent = desafioData.descricao || vagaData.descricao || 'Descrição não disponível';
+        }
+
+        // Carrega histórico de submissões do candidato para este desafio
+        async function carregarHistorico() {
+            if (!desafioId) return;
+            
+            const response = await fetch(`/api/v1/submissoes/desafio/${desafioId}`, {
+                headers: {
+                    'id-usuario': candidatoId,
+                    'tipo-usuario': candidatoTipo
+                }
+            });
+            
+            if (!response.ok) {
+                console.warn('Não foi possível carregar histórico');
+                return;
+            }
+            
+            const data = await response.json();
+            const submissoes = data.submissoes || [];
+            
+            const historicoDiv = document.getElementById('historico-submissoes');
+            historicoDiv.innerHTML = ''; // Limpar
+            
+            if (submissoes.length === 0) {
+                historicoDiv.innerHTML = '<p class="empty-history">Nenhuma submissão encontrada para este desafio.</p>';
+                return;
+            }
+            
+            submissoes.forEach(sub => {
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                
+                const statusClass = `status-${sub.status}`;
+                const dataFormatada = new Date(sub.entregue_em).toLocaleString('pt-BR');
+                
+                item.innerHTML = `
+                    <span class="history-status ${statusClass}">${sub.status}</span>
+                    <strong>Linguagem:</strong> ${sub.linguagem || 'Não informada'} |
+                    <strong>Data:</strong> ${dataFormatada} |
+                    <strong>Score IA:</strong> ${sub.score_ia !== null ? sub.score_ia.toFixed(2) : 'Aguardando'}
+                `;
+                
+                historicoDiv.appendChild(item);
+            });
+        }
+
+        // Habilita os elementos da UI após carregamento
+        function habilitarUI() {
+            const btnEnviar = document.getElementById('btn-enviar');
+            const linguagemSelect = document.getElementById('linguagem-select');
+            const codigoEditor = document.getElementById('codigo-editor');
+            
+            // Habilitar botão quando todos os campos estiverem preenchidos
+            function validarFormulario() {
+                const linguagemSelecionada = linguagemSelect.value.trim();
+                const codigo = codigoEditor.value.trim();
+                btnEnviar.disabled = !(linguagemSelecionada && codigo);
+            }
+            
+            linguagemSelect.addEventListener('change', validarFormulario);
+            codigoEditor.addEventListener('input', validarFormulario);
+            
+            // Evento de envio
+            btnEnviar.addEventListener('click', enviarSolucao);
+        }
+
+        // Envia a solução para o servidor
+        async function enviarSolucao() {
+            const btnEnviar = document.getElementById('btn-enviar');
+            const linguagemSelect = document.getElementById('linguagem-select');
+            const codigoEditor = document.getElementById('codigo-editor');
+            
+            const linguagem = linguagemSelect.value.trim();
+            const codigo = codigoEditor.value.trim();
+            
+            if (!linguagem || !codigo) {
+                mostrarErro('Por favor, selecione uma linguagem e escreva algum código.');
+                return;
+            }
+            
+            btnEnviar.disabled = true;
+            btnEnviar.textContent = 'Enviando...';
+            
+            try {
+                const response = await fetch('/api/v1/submissoes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'id-usuario': candidatoId,
+                        'tipo-usuario': candidatoTipo
+                    },
+                    body: JSON.stringify({
+                        desafio_id: desafioId,
+                        candidato_id: candidatoId,
+                        codigo: codigo,
+                        linguagem: linguagem,
+                        mensagem: 'Submissão enviada através da interface de resolução'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.mensagem || 'Erro ao enviar solução');
+                }
+                
+                // Sucesso
+                mostrarSucesso('Solução enviada com sucesso!');
+                
+                // Limpar editor (opcional)
+                // codigoEditor.value = '';
+                // linguagemSelect.value = '';
+                // btnEnviar.disabled = true;
+                
+                // Atualizar histórico
+                await carregarHistorico();
+                
+            } catch (error) {
+                console.error('Erro ao enviar solução:', error);
+                mostrarErro(error.message);
+            } finally {
+                btnEnviar.disabled = false;
+                btnEnviar.textContent = 'Enviar Solução';
+            }
+        }
+
+        // Mostra mensagem de sucesso temporária
+        function mostrarSucesso(mensagem) {
+            // Criar elemento de toast
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+            toast.textContent = mensagem;
+            document.body.appendChild(toast);
+            
+            // Remover após 3 segundos
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Mostra mensagem de erro temporária
+        function mostrarErro(mensagem) {
+            // Criar elemento de toast
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 right-4 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+            toast.textContent = mensagem;
+            document.body.appendChild(toast);
+            
+            // Remover após 3 segundos
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Função de voltar
         function goBack() {
             window.location.href = '/frontend/tela-principal/index.html';
         }
+
+        // Inicializar quando o DOM estiver pronto
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>

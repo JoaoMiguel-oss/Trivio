@@ -76,6 +76,35 @@ function inicializarTabelas() {
   migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN resultado_execucao TEXT`);
 
   console.log('Migrations de auto-correção aplicadas');
+
+  // Sincronizar vagas antigas sem desafio correspondente
+  try {
+    const vagasSemDesafio = db.prepare(`
+      SELECT v.* FROM vagas v
+      LEFT JOIN desafios d ON v.id = d.vaga_id
+      WHERE d.id IS NULL AND v.empresa_id IS NOT NULL
+    `).all();
+
+    for (const v of vagasSemDesafio) {
+      db.prepare(`
+        INSERT INTO desafios (empresa_id, vaga_id, titulo, descricao, stack, nivel, tempo_limite_h, bolsa_tecnica, status, instrucoes, criterios)
+        VALUES (?, ?, ?, ?, ?, 'pleno', 4, ?, 'ativo', ?, 'Qualidade do código, arquitetura, testes e corretude.')
+      `).run(
+        v.empresa_id,
+        v.id,
+        v.titulo,
+        v.descricao || '',
+        v.tipo || 'Fullstack',
+        v.bolsa_tecnica || 0,
+        v.requisitos || 'Resolva o desafio técnico com base no enunciado da vaga.'
+      );
+    }
+    if (vagasSemDesafio.length > 0) {
+      console.log(`[DB SYNC] Sincronizados ${vagasSemDesafio.length} desafios de vagas antigas`);
+    }
+  } catch (e) {
+    console.error('[DB SYNC ERROR] Erro na sincronização de vagas e desafios:', e);
+  }
 }
 
 module.exports = inicializarTabelas;

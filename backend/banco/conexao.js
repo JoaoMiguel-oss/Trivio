@@ -56,22 +56,23 @@ db.pragma('journal_mode = WAL');
 // - criado_em: Data de criação ( automático)
 
 db.exec(`
-  CREATE TABLE IF NOT EXISTS candidatos (
-    id              INTEGER PRIMARY KEY AUTOINCREMENT,
-    public_id       TEXT UNIQUE NOT NULL,
-    nome            TEXT NOT NULL,
-    email           TEXT UNIQUE NOT NULL,
-    senha_hash      TEXT NOT NULL,
-    foto_url        TEXT,
-    github_url      TEXT,
-    linkedin_url    TEXT,
-    skills          TEXT,
-    anos_experiencia INTEGER DEFAULT 0,
-    bio             TEXT,
-    verificado      INTEGER DEFAULT 0,
-    criado_em       DATETIME DEFAULT CURRENT_TIMESTAMP
-  )
-`);
+   CREATE TABLE IF NOT EXISTS candidatos (
+     id              INTEGER PRIMARY KEY AUTOINCREMENT,
+     public_id       TEXT UNIQUE NOT NULL,
+     nome            TEXT NOT NULL,
+     email           TEXT UNIQUE NOT NULL,
+     senha_hash      TEXT NOT NULL,
+     foto_url        TEXT,
+     github_url      TEXT,
+     linkedin_url    TEXT,
+     skills          TEXT,
+     anos_experiencia INTEGER DEFAULT 0,
+     bio             TEXT,
+     verificado      INTEGER DEFAULT 0,
+     configuracoes   TEXT DEFAULT '{}',
+     criado_em       DATETIME DEFAULT CURRENT_TIMESTAMP
+   )
+ `);
 
 
 // TABELA: empresas
@@ -87,17 +88,18 @@ db.exec(`
 // - criado_em: Data de criação
 
 db.exec(`
-  CREATE TABLE IF NOT EXISTS empresas (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    public_id   TEXT UNIQUE NOT NULL,
-    nome        TEXT NOT NULL,
-    cnpj        TEXT UNIQUE,
-    email       TEXT UNIQUE NOT NULL,
-    senha_hash  TEXT NOT NULL,
-    logo_url    TEXT,
-    criado_em   DATETIME DEFAULT CURRENT_TIMESTAMP
-  )
-`);
+   CREATE TABLE IF NOT EXISTS empresas (
+     id          INTEGER PRIMARY KEY AUTOINCREMENT,
+     public_id   TEXT UNIQUE NOT NULL,
+     nome        TEXT NOT NULL,
+     cnpj        TEXT UNIQUE,
+     email       TEXT UNIQUE NOT NULL,
+     senha_hash  TEXT NOT NULL,
+     logo_url    TEXT,
+     configuracoes TEXT DEFAULT '{}',
+     criado_em   DATETIME DEFAULT CURRENT_TIMESTAMP
+   )
+ `);
 
 // TABELA: remembered_users
 // Armazena o último email e tipo usados pelo navegador, mas no banco de dados.

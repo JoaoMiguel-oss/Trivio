@@ -4,7 +4,7 @@ const db = require('../banco/conexao');
 
 const listarDesafios = async (req, res) => {
     try {
-        const { empresa_id, stack, nivel } = req.query;
+        const { empresa_id, stack, nivel, vaga_id } = req.query;
         let query = `
       SELECT d.*, COALESCE(e.nome, 'Empresa Parceira') as empresa_nome,
              v.titulo as vaga_titulo
@@ -17,6 +17,7 @@ const listarDesafios = async (req, res) => {
         if (empresa_id) { query += ` AND d.empresa_id = ?`; params.push(empresa_id); }
         if (stack) { query += ` AND d.stack LIKE ?`; params.push(`%${stack}%`); }
         if (nivel) { query += ` AND d.nivel = ?`; params.push(nivel); }
+        if (vaga_id) { query += ` AND d.vaga_id = ?`; params.push(vaga_id); }
         query += ` ORDER BY d.criado_em DESC`;
         res.status(200).json(db.prepare(query).all(...params));
     } catch (err) {
