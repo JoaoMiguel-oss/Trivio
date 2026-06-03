@@ -103,12 +103,22 @@ const cadastrar = async (req, res) => {
             `).run(public_id, nome, cnpj, email, senha_hash);
         }
 
+        // Busca o usuário criado para retornar dados completos
+        const usuario = db.prepare(`SELECT * FROM ${tabela} WHERE public_id = ?`).get(public_id);
+        
         const remember_key = salvarUsuarioLembrado(email, tipo, parseCookies(req).remember_key);
         setRememberCookie(res, remember_key);
 
         return res.status(201).json({
             mensagem: 'Conta criada com sucesso',
-            usuario: { public_id, nome, email, tipo }
+            usuario: {
+                public_id: usuario.public_id,
+                nome: usuario.nome,
+                email: usuario.email,
+                foto_url: usuario.foto_url || usuario.logo_url || null,
+                tipo,
+                configuracoes: usuario.configuracoes ? JSON.parse(usuario.configuracoes) : {}
+            }
         });
 
     } catch (erro) {

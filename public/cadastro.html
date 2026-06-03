@@ -653,20 +653,22 @@
             }, 3000);
         }
 
-        document.getElementById('registerForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
-
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const registerBtn = document.getElementById('registerBtn');
-
-            if (password !== confirmPassword) {
-                showToast('As senhas não coincidem!', true);
-                return;
-            }
-
-            registerBtn.disabled = true;
-            registerBtn.textContent = 'Criando conta...';
+document.getElementById('registerForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const registerBtn = document.getElementById('registerBtn');
+    
+    if (password !== confirmPassword) {
+        showToast('As senhas não coincidem!', true);
+        registerBtn.disabled = false;
+        registerBtn.textContent = 'Criar Conta';
+        return;
+    }
+    
+    registerBtn.disabled = true;
+    registerBtn.textContent = 'Criando conta...';
 
             // Monta o payload conforme o tipo
             const payload = {
