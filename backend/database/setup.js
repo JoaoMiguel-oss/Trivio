@@ -34,7 +34,9 @@ function inicializarTabelas() {
       status TEXT DEFAULT 'ativa',
       bolsa_tecnica REAL DEFAULT 0,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      pagarme_order_id TEXT,
+      checkout_url TEXT
     )
   `);
 
@@ -74,6 +76,8 @@ function inicializarTabelas() {
   migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN testes_passados INTEGER DEFAULT 0`);
   migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN total_testes INTEGER DEFAULT 0`);
   migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN resultado_execucao TEXT`);
+  migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN entregue_em DATETIME`);
+  migrar(`ALTER TABLE candidaturas_desafio ADD COLUMN avancou_entrevista INTEGER DEFAULT 0`);
 
   console.log('Migrations de auto-correção aplicadas');
 

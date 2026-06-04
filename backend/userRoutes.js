@@ -87,12 +87,6 @@ router.put('/user/:tipo/:id/configuracoes', userController.atualizarConfiguracoe
 // - Exclui uma vaga
 // - :id é o identificador da vaga
 
-router.get('/vagas', vagaController.listarVagas);
-router.post('/vagas', vagaController.criarVaga);
-router.put('/vagas/:id', vagaController.atualizarVaga);
-router.delete('/vagas/:id', vagaController.excluirVaga);
-
-
 // EXPORTAÇÃO DO ROUTER
 // Precisamos exportar o router para que o servidor principal
 // possa usá-lo. É como dizer: "Aqui está o carteiro,
