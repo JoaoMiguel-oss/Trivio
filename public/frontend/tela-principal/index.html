@@ -253,20 +253,7 @@
                         <span>Vagas</span>
                     </button>
 
-                    <!-- Botão: Desafios -->
-                    <button onclick="loadSection('desafios', this, 'desafios')"
-                        class="nav-item nav-item-horizontal nav-btn text-gray-300 hover:text-white flex items-center gap-2"
-                        data-section="desafios">
-                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="14.5 17 14.5 22 9.5 22 9.5 17" />
-                            <path d="M6.5 8H3a1 1 0 0 0-1 1v1a4 4 0 0 0 4 4h.5" />
-                            <path d="M17.5 8H21a1 1 0 0 1 1 1v1a4 4 0 0 1-4 4h-.5" />
-                            <path d="M6 2h12v10a6 6 0 0 1-6 6 6 6 0 0 1-6-6V2Z" />
-                            <line x1="9.5" y1="22" x2="14.5" y2="22" />
-                        </svg>
-                        <span>Desafios</span>
-                    </button>
+
 
                     <!-- Botão: Pagamentos -->
                     <button onclick="loadSection('pagamentos', this, 'pagamentos')"
@@ -522,8 +509,8 @@
          * 
          * Como funciona:
          * 1. Aguarda o carregamento completo da estrutura HTML
-         * 2. Busca o botão "Desafios" (primeiro item da navegação)
-         * 3. Carrega automaticamente a seção de desafios como conteúdo inicial
+         * 2. Busca o botão "Vagas" (primeiro item da navegação)
+         * 3. Carrega automaticamente a seção de vagas como conteúdo inicial
          * 4. Posiciona o indicador de aba corretamente
          */
         document.addEventListener('DOMContentLoaded', () => {
