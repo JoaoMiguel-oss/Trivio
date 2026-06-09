@@ -35,7 +35,19 @@ const inicializarTabelas = require('./database/setup');
 // Cria a aplicação Express - é como inicializar o servidor
 const app = express();
 
-app.use(helmet())
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-hashes'", "https://cdn.tailwindcss.com", "https://cdn.jsdelivr.net"],
+      scriptSrcAttr: ["'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdn.jsdelivr.net"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", "https:"],
+    }
+  }
+}));
 
 // Define a porta do servidor (usa a variável PORT ou 3001 como padrão)
 const porta = process.env.PORT || 3001;
