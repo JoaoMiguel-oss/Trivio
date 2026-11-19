@@ -1,101 +1,138 @@
-# Trivio - Plataforma de Recrutamento
+#  Trivio - Plataforma de Triagem Técnica e Recrutamento
 
-![Trivio](https://img.shields.io/badge/version-1.0.0-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Status](https://shields.io)
+![Hosting](https://shields.io)
 
-## Descrição
+> **Conectando Talentos às Oportunidades** — Uma solução moderna e ágil para processos de triagem técnica e gestão de recrutamento.
 
-Trivio é uma plataforma de recrutamento moderno desenvolvido com tecnologias web contemporâneas. O projeto utiliza uma arquitetura organizada com frontend e backend separados.
-
-## Estrutura do Projeto
-
-```
-projeto/
-├── src/
-│   ├── components/        # Componentes reutilizáveis
-│   │   ├── component1.js  # Componente de navegação
-│   │   └── component2.js   # Componente principal da aplicação
-│   ├── pages/             # Páginas da aplicação
-│   │   ├── index.js       # Página inicial
-│   │   ├── user.js        # Gerenciamento de usuários
-│   │   └── empresa.js     # Gerenciamento de empresas
-│   ├── styles/            # Estilos CSS
-│   │   ├── global.css     # Estilos globais
-│   │   ├── component1.css # Estilos do componente 1
-│   │   └── component2.css # Estilos do componente 2
-│   ├── assets/            # Recursos estáticos
-│   │   └── images/        # Imagens
-│   ├── config/            # Configurações
-│   │   └── config.js      # Arquivo de configuração
-│   └── index.js           # Ponto de entrada
-├── public/
-│   └── index.html         # HTML principal
-├── .gitignore             # Arquivos ignorados pelo Git
-├── package.json           # Dependências do projeto
-└── README.md              # Este arquivo
-```
-
-## Tecnologias
-
-- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
-- **Backend**: Node.js, Express
-- **Frameworks**: Tailwind CSS (via CDN)
-- **Ícones**: Lucide Icons
-
-## Como Executar
-
-### Pré-requisitos
-
-- Node.js (v14 ou superior)
-- npm ou yarn
-
-### Instalação
-
-```bash
-# Instalar dependências
-npm install
-```
-
-### Executar o Projeto
-
-```bash
-# Iniciar o servidor de desenvolvimento
-npm run dev
-
-# ou
-
-# Iniciar o servidor de produção
-npm start
-```
-
-O projeto estará disponível em `http://localhost:3000`
-
-## Funcionalidades
-
-- 📊 Dashboard com estatísticas
-- 👥 Gerenciamento de usuários
-- 🏢 Gerenciamento de empresas
-- 💳 Sistema de pagamentos
-- ⚙️ Configurações personalizáveis
-- 👤 Perfil do usuário
-- 🔔 Sistema de notificações
-
-## Contributing
-
-1. Fork o projeto
-2. Crie sua branch de feature (`git checkout -b feature/nova-feature`)
-3. Commit suas mudanças (`git commit -m 'Adiciona nova feature'`)
-4. Push para a branch (`git push origin feature/nova-feature`)
-5. Abra um Pull Request
-
-## Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
-
-## Autor
-
-Trivio Team
+🌐 **Acesse a aplicação online:** [https://trivio-gz8l.onrender.com](https://trivio-gz8l.onrender.com)
 
 ---
 
-⭐️ Thanks for using Trivio!
+## 📋 Sobre o Projeto
+
+O **Trivio** é uma plataforma web focada em otimizar a triagem técnica e conectar candidatos a empresas de forma eficiente. Desenvolvido com uma arquitetura modular que separa claramente as responsabilidades entre interface e regras de negócio, o sistema oferece uma experiência fluida tanto para recrutadores quanto para profissionais em busca de novas oportunidades.
+
+*(Nota: Como a aplicação está hospedada no plano gratuito do Render, o primeiro acesso após um período de inatividade pode levar alguns segundos para iniciar o servidor).*
+
+---
+
+##  Funcionalidades Principais
+
+- 📊 **Dashboard Analítico:** Visualização rápida de métricas e estatísticas do processo seletivo.
+- 🎯 **Triagem Técnica:** Fluxo estruturado para avaliação e filtragem de talentos.
+- 👥 **Gestão de Candidatos (Usuários):** Cadastro, edição e acompanhamento de perfis profissionais.
+- 🏢 **Portal de Empresas:** Gerenciamento de contas corporativas e oportunidades.
+- 👤 **Perfil Personalizado:** Área dedicada para atualização de dados e portfólio.
+- 🔔 **Central de Notificações:** Alertas em tempo real sobre atualizações nas etapas.
+- 💳 **Módulo de Pagamentos:** Gestão de planos e assinaturas dentro da plataforma.
+- ⚙️ **Configurações:** Personalização de preferências do sistema.
+
+---
+
+##  Tecnologias Utilizadas
+
+### Frontend
+- **HTML5 & CSS3:** Estruturação semântica e estilização responsiva.
+- **JavaScript (ES6+):** Interatividade e consumo de APIs.
+- **Tailwind CSS:** Estilização utilitária rápida (via CDN).
+- **Lucide Icons:** Biblioteca de ícones modernos e consistentes.
+
+### Backend & Banco de Dados
+- **Node.js:** Ambiente de execução JavaScript no servidor.
+- **Express:** Framework minimalista para construção de rotas e APIs REST.
+- **SQLite:** Banco de dados relacional leve, rápido e embutido para persistência dos dados.
+
+### Infraestrutura & Deploy
+- **Render:** Plataforma de nuvem utilizada para hospedagem e deploy contínuo da aplicação.
+
+---
+
+## 📂 Estrutura do Projeto
+
+```text
+projeto/
+├── public/
+│   └── index.html         # Ponto de entrada HTML principal
+├── src/
+│   ├── assets/            # Recursos estáticos (imagens, fontes, etc.)
+│   │   └── images/        
+│   ├── components/        # Componentes reutilizáveis da interface
+│   │   ├── component1.js  # Componente de navegação
+│   │   └── component2.js  # Componente principal da aplicação
+│   ├── config/            # Configurações de ambiente e banco de dados
+│   │   └── config.js      
+│   ├── pages/             # Páginas e visualizações do sistema
+│   │   ├── index.js       # Página inicial
+│   │   ├── user.js        # Gerenciamento de usuários/candidatos
+│   │   └── empresa.js     # Gerenciamento de empresas
+│   ├── styles/            # Folhas de estilo CSS
+│   │   ├── global.css     # Estilos globais
+│   │   ├── component1.css # Estilos da navegação
+│   │   └── component2.css # Estilos do componente principal
+│   └── index.js           # Inicialização do servidor e rotas
+├── .gitignore             # Arquivos ignorados pelo controle de versão
+├── package.json           # Dependências e scripts do projeto
+└── README.md              # Documentação do projeto
+```
+
+---
+
+##  Como Executar Localmente
+
+### Pré-requisitos
+
+Certifique-se de ter instalado em sua máquina:
+- [Node.js](https://nodejs.org) (versão 14 ou superior)
+- Gerenciador de pacotes **npm** ou **yarn**
+
+### Passo a Passo
+
+1. **Clone o repositório:**
+   ```bash
+   git clone https://github.com
+   cd trivio
+   ```
+
+2. **Instale as dependências:**
+   ```bash
+   npm install
+   ```
+
+3. **Inicie a aplicação:**
+   ```bash
+   # Para ambiente de desenvolvimento (com hot-reload, se configurado)
+   npm run dev
+
+   # Ou para ambiente de produção
+   npm start
+   ```
+
+4. **Acesse no navegador:**
+   Abra `http://localhost:3000` para visualizar o projeto rodando localmente.
+
+---
+
+## 🤝 Como Contribuir
+
+Contribuições são muito bem-vindas! Se você deseja melhorar o **Trivio**, siga os passos abaixo:
+
+1. Faça um **Fork** do projeto.
+2. Crie uma nova branch para sua funcionalidade (`git checkout -b feature/MinhaNovaFeature`).
+3. Faça o commit das suas alterações (`git commit -m 'feat: Adiciona nova funcionalidade'`).
+4. Envie para o repositório remoto (`git push origin feature/MinhaNovaFeature`).
+5. Abra um **Pull Request**.
+
+---
+
+
+---
+
+## 👨‍💻 Autor
+
+Desenvolvido por **Trivio Team** 🚀
+
+---
+
+⭐️ *Se este projeto te ajudou ou você gostou da proposta, considere deixar uma estrela no repositório!*
