@@ -2,8 +2,7 @@
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
-![Status](https://shields.io)
-![Hosting](https://shields.io)
+
 
 
 > **Conectando Talentos às Oportunidades** — Uma solução moderna e ágil para processos de triagem técnica e gestão de recrutamento.
