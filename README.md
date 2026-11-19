@@ -1,8 +1,10 @@
 #  Trivio - Plataforma de Triagem Técnica e Recrutamento
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
-![Status](https://shields.io)
-![Hosting](https://shields.io)
+![Version](https://shields.io)
+![License](https://shields.io)
+[![Status](https://shields.io)](https://onrender.com)
+[![Hosting](https://shields.io)](https://onrender.com)
+
 
 > **Conectando Talentos às Oportunidades** — Uma solução moderna e ágil para processos de triagem técnica e gestão de recrutamento.
 
